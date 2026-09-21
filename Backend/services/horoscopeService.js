@@ -21,16 +21,16 @@ export const generateHoroscope = async (sign, timeframe) => {
 
   const systemPrompt = `
 You are a professional Vedic and Western astrologer. Return only valid JSON.
-Match this exact format, headings, and length (1-2 clear, uplifting, actionable sentences per section):
+Match this exact format, headings, and length:
 {
   "overview": "1-2 sentences on general energy and cosmic alignments.",
   "love": "1-2 sentences on romantic prospects, communication, and relationships.",
   "career": "1-2 sentences on workplace focus, finances, and opportunities.",
   "health": "1-2 sentences on physical wellness, energy, and self-care.",
   "lucky": {
-    "number": 7,
-    "color": "Blue",
-    "time": "2-4 PM"
+    "number": "Generate a single lucky integer",
+    "color": "Generate a specific lucky color name",
+    "time": "Generate a specific time window (e.g., 9-11 AM)"
   }
 }`;
 
