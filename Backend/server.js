@@ -1,4 +1,6 @@
 // src/server.js
+import crypto from "crypto";
+globalThis.crypto = crypto;
 import "dotenv/config";
 import app from "./app.js";
 import { connectDB } from "./database.js";
