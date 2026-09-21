@@ -1,0 +1,264 @@
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Star, Heart, Gem, Sparkles } from 'lucide-react';
+import { motion } from 'motion/react';
+
+export function ZodiacSignsPage() {
+  const zodiacDetails = [
+    {
+      id: 'aries',
+      name: 'Aries',
+      symbol: '♈',
+      emoji: '🐏',
+      dates: 'Mar 21 - Apr 19',
+      element: 'Fire',
+      rulingPlanet: 'Mars',
+      luckyColor: 'Red',
+      traits: ['Courageous', 'Energetic', 'Dynamic', 'Quick-witted'],
+      compatibility: 'Leo, Sagittarius, Gemini',
+      description: 'Bold and ambitious, Aries dives headfirst into challenges. Natural leaders with pioneering spirits.',
+    },
+    {
+      id: 'taurus',
+      name: 'Taurus',
+      symbol: '♉',
+      emoji: '🐂',
+      dates: 'Apr 20 - May 20',
+      element: 'Earth',
+      rulingPlanet: 'Venus',
+      luckyColor: 'Green',
+      traits: ['Reliable', 'Patient', 'Practical', 'Devoted'],
+      compatibility: 'Virgo, Capricorn, Cancer',
+      description: 'Grounded and practical, Taurus values stability and comfort. Known for loyalty and determination.',
+    },
+    {
+      id: 'gemini',
+      name: 'Gemini',
+      symbol: '♊',
+      emoji: '👯',
+      dates: 'May 21 - Jun 20',
+      element: 'Air',
+      rulingPlanet: 'Mercury',
+      luckyColor: 'Yellow',
+      traits: ['Adaptable', 'Communicative', 'Witty', 'Curious'],
+      compatibility: 'Libra, Aquarius, Aries',
+      description: 'Versatile and expressive, Gemini thrives on communication and intellectual stimulation.',
+    },
+    {
+      id: 'cancer',
+      name: 'Cancer',
+      symbol: '♋',
+      emoji: '🦀',
+      dates: 'Jun 21 - Jul 22',
+      element: 'Water',
+      rulingPlanet: 'Moon',
+      luckyColor: 'Silver',
+      traits: ['Intuitive', 'Emotional', 'Protective', 'Caring'],
+      compatibility: 'Scorpio, Pisces, Taurus',
+      description: 'Deeply intuitive and sentimental, Cancer is all about home and family. Highly protective of loved ones.',
+    },
+    {
+      id: 'leo',
+      name: 'Leo',
+      symbol: '♌',
+      emoji: '🦁',
+      dates: 'Jul 23 - Aug 22',
+      element: 'Fire',
+      rulingPlanet: 'Sun',
+      luckyColor: 'Gold',
+      traits: ['Confident', 'Generous', 'Creative', 'Passionate'],
+      compatibility: 'Aries, Sagittarius, Gemini',
+      description: 'Charismatic and confident, Leo is a natural performer who loves to be in the spotlight.',
+    },
+    {
+      id: 'virgo',
+      name: 'Virgo',
+      symbol: '♍',
+      emoji: '👸',
+      dates: 'Aug 23 - Sep 22',
+      element: 'Earth',
+      rulingPlanet: 'Mercury',
+      luckyColor: 'Navy Blue',
+      traits: ['Analytical', 'Practical', 'Meticulous', 'Loyal'],
+      compatibility: 'Taurus, Capricorn, Cancer',
+      description: 'Detail-oriented and analytical, Virgo seeks perfection and has a strong sense of service.',
+    },
+    {
+      id: 'libra',
+      name: 'Libra',
+      symbol: '♎',
+      emoji: '⚖️',
+      dates: 'Sep 23 - Oct 22',
+      element: 'Air',
+      rulingPlanet: 'Venus',
+      luckyColor: 'Pink',
+      traits: ['Diplomatic', 'Gracious', 'Fair-minded', 'Social'],
+      compatibility: 'Gemini, Aquarius, Leo',
+      description: 'Balanced and harmonious, Libra seeks justice and beauty in all things. Natural peacemakers.',
+    },
+    {
+      id: 'scorpio',
+      name: 'Scorpio',
+      symbol: '♏',
+      emoji: '🦂',
+      dates: 'Oct 23 - Nov 21',
+      element: 'Water',
+      rulingPlanet: 'Pluto',
+      luckyColor: 'Maroon',
+      traits: ['Passionate', 'Resourceful', 'Brave', 'Determined'],
+      compatibility: 'Cancer, Pisces, Virgo',
+      description: 'Intense and mysterious, Scorpio possesses tremendous emotional depth and transformative power.',
+    },
+    {
+      id: 'sagittarius',
+      name: 'Sagittarius',
+      symbol: '♐',
+      emoji: '🏹',
+      dates: 'Nov 22 - Dec 21',
+      element: 'Fire',
+      rulingPlanet: 'Jupiter',
+      luckyColor: 'Purple',
+      traits: ['Optimistic', 'Adventurous', 'Independent', 'Philosophical'],
+      compatibility: 'Aries, Leo, Libra',
+      description: 'Free-spirited and philosophical, Sagittarius loves adventure and seeks truth and wisdom.',
+    },
+    {
+      id: 'capricorn',
+      name: 'Capricorn',
+      symbol: '♑',
+      emoji: '🐐',
+      dates: 'Dec 22 - Jan 19',
+      element: 'Earth',
+      rulingPlanet: 'Saturn',
+      luckyColor: 'Brown',
+      traits: ['Disciplined', 'Ambitious', 'Practical', 'Patient'],
+      compatibility: 'Taurus, Virgo, Scorpio',
+      description: 'Ambitious and disciplined, Capricorn is a master of self-control and achieves goals through perseverance.',
+    },
+    {
+      id: 'aquarius',
+      name: 'Aquarius',
+      symbol: '♒',
+      emoji: '🏺',
+      dates: 'Jan 20 - Feb 18',
+      element: 'Air',
+      rulingPlanet: 'Uranus',
+      luckyColor: 'Electric Blue',
+      traits: ['Progressive', 'Independent', 'Humanitarian', 'Original'],
+      compatibility: 'Gemini, Libra, Sagittarius',
+      description: 'Innovative and visionary, Aquarius is a humanitarian who thinks outside the box and values independence.',
+    },
+    {
+      id: 'pisces',
+      name: 'Pisces',
+      symbol: '♓',
+      emoji: '🐟',
+      dates: 'Feb 19 - Mar 20',
+      element: 'Water',
+      rulingPlanet: 'Neptune',
+      luckyColor: 'Sea Green',
+      traits: ['Compassionate', 'Artistic', 'Intuitive', 'Gentle'],
+      compatibility: 'Cancer, Scorpio, Capricorn',
+      description: 'Deeply empathetic and artistic, Pisces is a dreamer with a rich inner world and spiritual depth.',
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="py-20 celestial-gradient " style={{color: '#C46D29'}}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"  >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <Sparkles className="w-16 h-16 mx-auto mb-6 animate-float" />
+            <h1 className="text-5xl mb-6">The 12 Zodiac Signs</h1>
+            <p className="text-xl max-w-3xl mx-auto text-white/90" style={{color: '#C46D29'}}>
+              Discover the unique characteristics, traits, and cosmic connections of each zodiac sign
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Zodiac Cards */}
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {zodiacDetails.map((zodiac, index) => (
+              <motion.div
+                key={zodiac.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Card className="h-full border-primary/20 hover:shadow-xl transition-shadow group">
+                  <CardHeader className="text-center bg-gradient-to-br from-primary/5 to-secondary/5">
+                    <div className="text-6xl mb-4 group-hover:scale-110 transition-transform">
+                      {zodiac.emoji}
+                    </div>
+                    <CardTitle className="text-2xl text-primary">{zodiac.name}</CardTitle>
+                    <p className="text-sm text-muted-foreground">{zodiac.dates}</p>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <p className="text-muted-foreground mb-4">{zodiac.description}</p>
+
+                    <div className="space-y-3">
+                      {/* Element */}
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-primary" />
+                        <span className="text-sm">
+                          <strong>Element:</strong> {zodiac.element}
+                        </span>
+                      </div>
+
+                      {/* Ruling Planet */}
+                      <div className="flex items-center gap-2">
+                        <Star className="w-4 h-4 text-[#d4af37]" />
+                        <span className="text-sm">
+                          <strong>Ruling Planet:</strong> {zodiac.rulingPlanet}
+                        </span>
+                      </div>
+
+                      {/* Lucky Color */}
+                      <div className="flex items-center gap-2">
+                        <Gem className="w-4 h-4 text-primary" />
+                        <span className="text-sm">
+                          <strong>Lucky Color:</strong> {zodiac.luckyColor}
+                        </span>
+                      </div>
+
+                      {/* Compatibility */}
+                      <div className="flex items-center gap-2">
+                        <Heart className="w-4 h-4 text-red-500" />
+                        <span className="text-sm">
+                          <strong>Best Match:</strong> {zodiac.compatibility}
+                        </span>
+                      </div>
+
+                      {/* Traits */}
+                      <div className="mt-4">
+                        <p className="text-sm mb-2"><strong>Key Traits:</strong></p>
+                        <div className="flex flex-wrap gap-2">
+                          {zodiac.traits.map((trait) => (
+                            <span
+                              key={trait}
+                              className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs"
+                            >
+                              {trait}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

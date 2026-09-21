@@ -1,0 +1,47 @@
+name: Deploy Full-Stack to CloudPanel
+
+on:
+  push:
+    branches:
+      - main  # Triggers when you push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy Frontend and Backend via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_KEY }}
+          script: |
+            # 1. Navigate to the project root directory
+            cd ${{ secrets.DEPLOY_PATH }}
+            
+            # 2. Pull the latest full-stack code from GitHub
+            git pull origin main
+            
+            # ==========================================
+            # 3. DEPLOY FRONTEND
+            # ==========================================
+            echo "Building Frontend..."
+            cd Frontend
+            npm ci              # Install exact frontend dependencies
+            npm run build       # Build the Vite React app (creates /dist folder)
+            cd ..               # Return to project root
+            
+            # ==========================================
+            # 4. DEPLOY BACKEND
+            # ==========================================
+            echo "Deploying Backend..."
+            cd Backend
+            npm ci              # Install exact backend dependencies
+            
+            # 5. Restart the PM2 process to apply backend changes
+            pm2 restart bhagyane
+            
+            echo "Deployment Complete!"
