@@ -23,7 +23,8 @@ jobs:
             cd ${{ secrets.DEPLOY_PATH }}
             
             # 2. Pull the latest full-stack code from GitHub
-            git pull origin main
+            git fetch --all
+            git reset --hard origin/main
             
             # ==========================================
             # 3. DEPLOY FRONTEND
