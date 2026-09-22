@@ -2,12 +2,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Star, Heart, Gem, Users, TrendingUp, BookOpen, Phone, CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
-interface ServicesPageProps {
-  onNavigate: (page: string) => void;
-}
+export function ServicesPage() {
+  // Use React Router's navigation hook instead of state-based props
+  const navigate = useNavigate();
 
-export function ServicesPage({ onNavigate }: ServicesPageProps) {
   const services = [
     {
       icon: <Star className="w-12 h-12 text-primary" />,
@@ -55,6 +56,13 @@ export function ServicesPage({ onNavigate }: ServicesPageProps) {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Unique SEO Tags for this specific route */}
+      <Helmet>
+        <title>Our Astrology & Vastu Services | Bhagyanetram</title>
+        <meta name="description" content="Explore our professional Vedic astrology services including Birth Chart Reading, Kundli Matching, Gemstone Consultation, and Career Astrology." />
+        <link rel="canonical" href="https://bhagyanetram.com/services" />
+      </Helmet>
+
       {/* Hero Section */}
       <section className="py-20 celestial-gradient text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -107,7 +115,8 @@ export function ServicesPage({ onNavigate }: ServicesPageProps) {
                       <p className="text-2xl text-primary mb-4">
                         {service.price}
                       </p>
-                      <Button onClick={() => onNavigate('contact')} className="w-full bg-primary">
+                      {/* Navigate directly to the /contact route */}
+                      <Button onClick={() => navigate('/contact')} className="w-full bg-primary">
                         <Phone className="w-4 h-4 mr-2" />
                         Book Consultation
                       </Button>
@@ -165,8 +174,9 @@ export function ServicesPage({ onNavigate }: ServicesPageProps) {
           <p className="text-xl mb-8 text-white/90">
             Book your personalized consultation today and unlock the secrets of your cosmic blueprint
           </p>
+          {/* Navigate directly to the /contact route */}
           <Button
-            onClick={() => onNavigate('contact')}
+            onClick={() => navigate('/contact')}
             size="lg"
             className="bg-white text-primary hover:bg-white/90 px-8 py-6 text-lg"
           >

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from './ui/button';
 import {
@@ -11,14 +12,13 @@ import {
 } from './ui/navigation-menu';
 import logoImage from 'figma:asset/d5457f2df4c5864ece0203437258a94768a0cf00.png';
 
-interface NavigationProps {
-  currentPage: string;
-  onNavigate: (page: string) => void;
-}
-
-export function Navigation({ currentPage, onNavigate }: NavigationProps) {
+export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [vastuDropdownOpen, setVastuDropdownOpen] = useState(false);
+  
+  // Use React Router hooks for URL tracking and navigation
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const vastuPages = [
     { id: 'vastu-main-door', label: 'Main Door' },
@@ -38,8 +38,8 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <button
-            onClick={() => onNavigate('home')}
+          <Link
+            to="/"
             className="flex items-center space-x-3 group"
           >
             <img 
@@ -55,35 +55,35 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
                 Vastu & Astrology
               </span>
             </div>
-          </button>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-1">
             <Button
-              variant={currentPage === 'home' ? 'default' : 'ghost'}
-              onClick={() => onNavigate('home')}
-              className={currentPage === 'home' ? 'bg-primary' : ''}
+              variant={location.pathname === '/' ? 'default' : 'ghost'}
+              onClick={() => navigate('/')}
+              className={location.pathname === '/' ? 'bg-primary' : ''}
             >
               Home
             </Button>
             <Button
-              variant={currentPage === 'about' ? 'default' : 'ghost'}
-              onClick={() => onNavigate('about')}
-              className={currentPage === 'about' ? 'bg-primary' : ''}
+              variant={location.pathname === '/about' ? 'default' : 'ghost'}
+              onClick={() => navigate('/about')}
+              className={location.pathname === '/about' ? 'bg-primary' : ''}
             >
               About
             </Button>
             <Button
-              variant={currentPage === 'horoscope' ? 'default' : 'ghost'}
-              onClick={() => onNavigate('horoscope')}
-              className={currentPage === 'horoscope' ? 'bg-primary' : ''}
+              variant={location.pathname === '/horoscope' ? 'default' : 'ghost'}
+              onClick={() => navigate('/horoscope')}
+              className={location.pathname === '/horoscope' ? 'bg-primary' : ''}
             >
               Horoscope
             </Button>
             <Button
-              variant={currentPage === 'zodiac' ? 'default' : 'ghost'}
-              onClick={() => onNavigate('zodiac')}
-              className={currentPage === 'zodiac' ? 'bg-primary' : ''}
+              variant={location.pathname === '/zodiac' ? 'default' : 'ghost'}
+              onClick={() => navigate('/zodiac')}
+              className={location.pathname === '/zodiac' ? 'bg-primary' : ''}
             >
               Zodiac Signs
             </Button>
@@ -92,7 +92,7 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
             <div className="relative group">
               <Button
                 variant="ghost"
-                className="flex items-center gap-1"
+                className={`flex items-center gap-1 ${location.pathname.includes('/vastu') ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
                 onMouseEnter={() => setVastuDropdownOpen(true)}
               >
                 Vastu Shastra
@@ -104,32 +104,30 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
                   onMouseLeave={() => setVastuDropdownOpen(false)}
                 >
                   {vastuPages.map((page) => (
-                    <button
+                    <Link
                       key={page.id}
-                      onClick={() => {
-                        onNavigate(page.id);
-                        setVastuDropdownOpen(false);
-                      }}
-                      className="w-full text-left px-4 py-2 hover:bg-primary/10 hover:text-primary text-sm transition-colors"
+                      to={`/${page.id}`}
+                      onClick={() => setVastuDropdownOpen(false)}
+                      className="block w-full text-left px-4 py-2 hover:bg-primary/10 hover:text-primary text-sm transition-colors"
                     >
                       {page.label}
-                    </button>
+                    </Link>
                   ))}
                 </div>
               )}
             </div>
 
             <Button
-              variant={currentPage === 'blog' ? 'default' : 'ghost'}
-              onClick={() => onNavigate('blog')}
-              className={currentPage === 'blog' ? 'bg-primary' : ''}
+              variant={location.pathname === '/blog' ? 'default' : 'ghost'}
+              onClick={() => navigate('/blog')}
+              className={location.pathname === '/blog' ? 'bg-primary' : ''}
             >
               Blog
             </Button>
             <Button
-              variant={currentPage === 'contact' ? 'default' : 'ghost'}
-              onClick={() => onNavigate('contact')}
-              className={currentPage === 'contact' ? 'bg-primary' : ''}
+              variant={location.pathname === '/contact' ? 'default' : 'ghost'}
+              onClick={() => navigate('/contact')}
+              className={location.pathname === '/contact' ? 'bg-primary' : ''}
             >
               Contact Us
             </Button>
@@ -153,9 +151,9 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
           <div className="lg:hidden py-4 border-t border-primary/10">
             <div className="flex flex-col space-y-2">
               <Button
-                variant={currentPage === 'home' ? 'default' : 'ghost'}
+                variant={location.pathname === '/' ? 'default' : 'ghost'}
                 onClick={() => {
-                  onNavigate('home');
+                  navigate('/');
                   setMobileMenuOpen(false);
                 }}
                 className="justify-start"
@@ -163,9 +161,9 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
                 Home
               </Button>
               <Button
-                variant={currentPage === 'about' ? 'default' : 'ghost'}
+                variant={location.pathname === '/about' ? 'default' : 'ghost'}
                 onClick={() => {
-                  onNavigate('about');
+                  navigate('/about');
                   setMobileMenuOpen(false);
                 }}
                 className="justify-start"
@@ -173,9 +171,9 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
                 About
               </Button>
               <Button
-                variant={currentPage === 'horoscope' ? 'default' : 'ghost'}
+                variant={location.pathname === '/horoscope' ? 'default' : 'ghost'}
                 onClick={() => {
-                  onNavigate('horoscope');
+                  navigate('/horoscope');
                   setMobileMenuOpen(false);
                 }}
                 className="justify-start"
@@ -183,9 +181,9 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
                 Horoscope
               </Button>
               <Button
-                variant={currentPage === 'zodiac' ? 'default' : 'ghost'}
+                variant={location.pathname === '/zodiac' ? 'default' : 'ghost'}
                 onClick={() => {
-                  onNavigate('zodiac');
+                  navigate('/zodiac');
                   setMobileMenuOpen(false);
                 }}
                 className="justify-start"
@@ -199,9 +197,9 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
                 {vastuPages.map((page) => (
                   <Button
                     key={page.id}
-                    variant="ghost"
+                    variant={location.pathname === `/${page.id}` ? 'default' : 'ghost'}
                     onClick={() => {
-                      onNavigate(page.id);
+                      navigate(`/${page.id}`);
                       setMobileMenuOpen(false);
                     }}
                     className="justify-start pl-6 w-full text-sm"
@@ -212,9 +210,9 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
               </div>
 
               <Button
-                variant={currentPage === 'blog' ? 'default' : 'ghost'}
+                variant={location.pathname === '/blog' ? 'default' : 'ghost'}
                 onClick={() => {
-                  onNavigate('blog');
+                  navigate('/blog');
                   setMobileMenuOpen(false);
                 }}
                 className="justify-start"
@@ -222,9 +220,9 @@ export function Navigation({ currentPage, onNavigate }: NavigationProps) {
                 Blog
               </Button>
               <Button
-                variant={currentPage === 'contact' ? 'default' : 'ghost'}
+                variant={location.pathname === '/contact' ? 'default' : 'ghost'}
                 onClick={() => {
-                  onNavigate('contact');
+                  navigate('/contact');
                   setMobileMenuOpen(false);
                 }}
                 className="justify-start"

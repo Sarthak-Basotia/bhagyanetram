@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
@@ -27,18 +29,15 @@ import logoImage from '/src/app/components/figma/d5457f2df4c5864ece0203437258a94
 import nidhiJi from '/src/assets/Nidhi-Ji.png';
 import panditPranav from '/src/assets/Pandit-Pranav.jpeg';
 
-interface HomePageProps {
-  onNavigate: (page: string) => void;
-}
-
-export function HomePage({ onNavigate }: HomePageProps) {
+export function HomePage() {
+  const navigate = useNavigate();
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [bookingReason, setBookingReason] = useState('');
-  const [selectedAstrologer, setSelectedAstrologer] = useState<string | null>(null);
+  const [selectedAstrologer, setSelectedAstrologer] = useState(null);
 
-  const handleOpenBooking = (reason: string, astrologerName?: string) => {
+  const handleOpenBooking = (reason, astrologerName = null) => {
     setBookingReason(reason);
-    setSelectedAstrologer(astrologerName || null);
+    setSelectedAstrologer(astrologerName);
     setBookingModalOpen(true);
   };
 
@@ -124,6 +123,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>Bhagyanetram | India's Most Trusted Astrology Platform</title>
+        <meta name="description" content="Get instant guidance from India's top astrologers. Talk to experts in Vedic Astrology, Tarot, Numerology, and Vastu Shastra for personalized life solutions." />
+        <link rel="canonical" href="https://bhagyanetram.com/" />
+      </Helmet>
+
       {/* Hero Banner */}
       <section className="relative bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 py-16 md:py-24 overflow-hidden">
         <div className="absolute inset-0 opacity-5">
@@ -161,7 +166,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </Button>
                 <Button
                   size="lg"
-                  onClick={() => onNavigate('about')}
+                  onClick={() => navigate('/about')}
                   variant="outline"
                   className="border-2 border-primary text-primary hover:bg-primary/10 px-8 text-lg h-14"
                 >
@@ -386,7 +391,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     </li>
                   </ul>
                   <Button 
-                    onClick={() => onNavigate('horoscope')}
+                    onClick={() => navigate('/horoscope')}
                     className="w-full mt-6 bg-orange-600 hover:bg-orange-700 text-white"
                   >
                     Know More
@@ -438,7 +443,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     </li>
                   </ul>
                   <Button 
-                    onClick={() => onNavigate('horoscope')}
+                    onClick={() => navigate('/horoscope')}
                     className="w-full mt-6 bg-amber-600 hover:bg-amber-700 text-white"
                   >
                     Know More
@@ -480,7 +485,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     </li>
                   </ul>
                   <Button 
-                    onClick={() => onNavigate('zodiac')}
+                    onClick={() => navigate('/zodiac')}
                     className="w-full mt-6 bg-red-600 hover:bg-red-700 text-white"
                   >
                     Know More
@@ -617,7 +622,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     </li>
                   </ul>
                   <Button 
-                    onClick={() => onNavigate('horoscope')}
+                    onClick={() => navigate('/horoscope')}
                     className="bg-primary hover:bg-primary/90 text-white"
                   >
                     Get Your Free Birth Chart
@@ -987,7 +992,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </Button>
                 <Button
                   size="lg"
-                  onClick={() => onNavigate('contact')}
+                  onClick={() => navigate('/contact')}
                   variant="outline"
                   className="border-primary text-primary hover:bg-primary/10"
                 >
@@ -1084,7 +1089,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     <p className="text-primary mb-1">{contact.detail}</p>
                     <p className="text-sm text-muted-foreground mb-4">{contact.description}</p>
                     <Button
-                      onClick={() => index === 1 ? window.open('https://wa.me/917905755326', '_blank') : onNavigate('contact')}
+                      onClick={() => index === 1 ? window.open('https://wa.me/917905755326', '_blank') : navigate('/contact')}
                       variant="outline"
                       className="border-primary text-primary hover:bg-primary/10"
                     >
@@ -1136,7 +1141,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </Button>
               <Button
                 size="lg"
-                onClick={() => onNavigate('contact')}
+                onClick={() => navigate('/contact')}
                 variant="outline"
                 className="bg-white text-primary hover:bg-white/10 px-8 text-lg h-14"
               >

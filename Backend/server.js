@@ -1,6 +1,10 @@
 // src/server.js
 import crypto from "crypto";
-globalThis.crypto = crypto;
+Object.defineProperty(globalThis, 'crypto', {
+  value: crypto,
+  configurable: true,
+  writable: true,
+});
 import "dotenv/config";
 import app from "./app.js";
 import { connectDB } from "./database.js";
