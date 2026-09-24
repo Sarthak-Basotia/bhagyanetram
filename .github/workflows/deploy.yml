@@ -43,6 +43,6 @@ jobs:
             npm ci              # Install exact backend dependencies
             
             # 5. Restart the PM2 process to apply backend changes
-            pm2 restart bhagyane
+            pm2 restart Bhagyanetram-api
             
             echo "Deployment Complete!"
