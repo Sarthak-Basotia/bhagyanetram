@@ -7,6 +7,12 @@ const PYTHON_ENGINE_URL = process.env.ASTRO_ENGINE_URL || "http://127.0.0.1:8000
 
 const getHeaders = () => ({ 'Content-Type': 'application/json' });
 
+const formatDateTime = (dob, time) => {
+  // If time is just "HH:MM", append ":00". If it already has seconds, leave it alone.
+  const safeTime = time.split(':').length === 2 ? `${time}:00` : time;
+  return `${dob}T${safeTime}`;
+};
+
 // ==========================================
 // 1. FREE KUNDLI GENERATOR (AI Synthesis)
 // ==========================================
@@ -16,7 +22,7 @@ export const generateKundli = async (req, res) => {
     
     // 1. Fetch exact mathematical positions from Python Engine
     const payload = {
-      datetime: `${dob}T${time}:00`,
+      datetime: formatDateTime(dob, time),
       timezone_offset: tz_offset || 5.5,
       latitude: parseFloat(lat),
       longitude: parseFloat(lon)

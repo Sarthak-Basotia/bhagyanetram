@@ -20,6 +20,9 @@ import { BlogPage } from './components/pages/BlogPage';
 import { ContactPage } from './components/pages/ContactPage';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { Button } from './components/ui/button';
+import FreeKundli from './components/pages/FreeKundli';
+import PanchangPage from './components/pages/PanchangPage';
+import MatchmakingPage from './components/pages/MatchmakingPage';
 import { ChevronUp } from 'lucide-react';
 import logoImage from 'figma:asset/d5457f2df4c5864ece0203437258a94768a0cf00.png';
 
@@ -44,7 +47,7 @@ export default function App() {
       <div className="min-h-screen">
         {/* Navigation component will also need to be updated to use <Link> inside it */}
         <Navigation />
-        
+
         <main>
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -64,6 +67,9 @@ export default function App() {
             <Route path="/vastu-toilet" element={<VastuToilet />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/free-kundli" element={<FreeKundli />} />
+            <Route path="/panchang" element={<PanchangPage />} />
+            <Route path="/kundli-matching" element={<MatchmakingPage />} />
             {/* Catch-all route to redirect 404s to Home */}
             <Route path="*" element={<HomePage />} />
           </Routes>
@@ -76,9 +82,9 @@ export default function App() {
               {/* About Column */}
               <div>
                 <div className="flex items-center gap-3 mb-4">
-                  <img 
-                    src={logoImage} 
-                    alt="Bhagyanetram Logo" 
+                  <img
+                    src={logoImage}
+                    alt="Bhagyanetram Logo"
                     className="w-10 h-10 object-contain brightness-100 rounded-md"
                   />
                   <h3 className="text-xl">BHAGYANETRAM</h3>

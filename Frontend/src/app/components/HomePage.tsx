@@ -391,7 +391,7 @@ export function HomePage() {
                     </li>
                   </ul>
                   <Button 
-                    onClick={() => navigate('/horoscope')}
+                    onClick={() => navigate('/free-kundli')}
                     className="w-full mt-6 bg-orange-600 hover:bg-orange-700 text-white"
                   >
                     Know More
@@ -443,7 +443,7 @@ export function HomePage() {
                     </li>
                   </ul>
                   <Button 
-                    onClick={() => navigate('/horoscope')}
+                    onClick={() => navigate('/panchang')}
                     className="w-full mt-6 bg-amber-600 hover:bg-amber-700 text-white"
                   >
                     Know More
@@ -485,7 +485,7 @@ export function HomePage() {
                     </li>
                   </ul>
                   <Button 
-                    onClick={() => navigate('/zodiac')}
+                    onClick={() => navigate('/kundli-matching')}
                     className="w-full mt-6 bg-red-600 hover:bg-red-700 text-white"
                   >
                     Know More

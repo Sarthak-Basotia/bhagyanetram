@@ -9,6 +9,9 @@ import {
   updateAllSignsByTimeframe,
 } from "./services/horoscopeService.js";
 
+// Import the new AI Astrology controllers (Adjust the path if your controller is in a different folder)
+import { generateKundli, getAdvancedKundli, getPanchang, matchKundli } from "./controllers/astrologyController.js";
+
 const app = express();
 
 app.use(cors({ origin: "*", credentials: true }));
@@ -16,8 +19,23 @@ app.use(express.json());
 
 const VALID_TIMEFRAMES = ["daily", "weekly", "monthly", "yearly"];
 
+// ==========================================
+// NEW: AI ASTROLOGY ROUTES
+// ==========================================
+app.post("/api/astrology/kundli", generateKundli);
+app.post("/api/astrology/panchang", getPanchang);
+app.post("/api/astrology/matching", matchKundli);
+app.post("/api/astrology/advanced-kundli", getAdvancedKundli);
+
+// ==========================================
+// EXISTING: BOOKING ROUTES (Assuming they are here)
+// ==========================================
 // ... Booking endpoints stay as they are ...
 
+
+// ==========================================
+// EXISTING: HOROSCOPE ROUTES
+// ==========================================
 // GET Horoscope endpoint - Fetches from MongoDB
 app.get("/api/horoscope", async (req, res) => {
   try {
