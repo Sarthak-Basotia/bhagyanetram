@@ -1,0 +1,15 @@
+services:
+  astro-engine:
+    build: .
+    container_name: astro-engine
+    ports:
+      - "8000:8000"
+    environment:
+      # Convention toggles (see README). Defaults shown.
+      ASTRO_NODE_TYPE: mean          # mean | true
+      ASTRO_POSITION_MODE: apparent  # apparent | true
+      # For full JPL precision, mount .se1 files and point here:
+      # SWE_EPHE_PATH: /app/ephe
+    # volumes:
+    #   - ./ephe:/app/ephe:ro        # uncomment if using Swiss Ephemeris data files
+    restart: unless-stopped
