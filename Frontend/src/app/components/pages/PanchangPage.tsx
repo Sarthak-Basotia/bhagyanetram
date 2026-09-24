@@ -8,7 +8,7 @@ export default function PanchangPage() {
     async function getTodayPanchang() {
       try {
         const today = new Date().toISOString().split('T')[0];
-        const res = await fetch('http://localhost:5000/api/astrology/panchang', {
+        const res = await fetch('/api/astrology/panchang', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ date: today, lat: 28.6139, lon: 77.2090, tz_offset: 5.5 })

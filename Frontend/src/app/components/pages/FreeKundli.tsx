@@ -11,7 +11,7 @@ export default function FreeKundli() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/astrology/kundli', {
+      const res = await fetch('/api/astrology/kundli', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
