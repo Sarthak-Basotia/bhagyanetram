@@ -45,3 +45,14 @@ export const fetchMatching = async (boy: any, girl: any) => {
   if (!response.ok) throw new Error('Failed to fetch Kundli Matching');
   return response.json();
 };
+
+// 5. Fetch Numerology (Via Astro-Engine)
+export const fetchNumerology = async (data: { name: string, dob: string, gender: string }) => {
+  const response = await fetch(`${API_BASE}/numerology`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error('Failed to fetch Numerology');
+  return response.json();
+};
