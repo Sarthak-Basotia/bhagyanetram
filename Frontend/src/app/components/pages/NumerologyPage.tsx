@@ -48,7 +48,7 @@ export default function NumerologyPage() {
             <option value="female">Female</option>
           </select>
         </div>
-        <button disabled={loading} className="md:col-span-3 bg-indigo-600 text-white p-4 rounded-xl font-bold text-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30 disabled:opacity-70 flex justify-center items-center gap-2">
+        <button disabled={loading} className="md:col-span-3 bg-#D35400 text-white p-4 rounded-xl font-bold text-lg hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/30 disabled:opacity-70 flex justify-center items-center gap-2">
           {loading ? 'Calculating Vibrations...' : 'Reveal My Numbers'}
         </button>
       </form>

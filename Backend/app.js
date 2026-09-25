@@ -10,7 +10,7 @@ import {
 } from "./services/horoscopeService.js";
 
 // Import the new AI Astrology controllers (Adjust the path if your controller is in a different folder)
-import { generateKundli, getAdvancedKundli, getPanchang, matchKundli } from "./controllers/astrologyController.js";
+import { generateKundli, getAdvancedKundli, getNumerology, getPanchang, matchKundli } from "./controllers/astrologyController.js";
 
 const app = express();
 
@@ -26,6 +26,7 @@ app.post("/api/astrology/kundli", generateKundli);
 app.post("/api/astrology/panchang", getPanchang);
 app.post("/api/astrology/matching", matchKundli);
 app.post("/api/astrology/advanced-kundli", getAdvancedKundli);
+app.post("/api/astrology/numerology", getNumerology);
 
 // ==========================================
 // EXISTING: BOOKING ROUTES (Assuming they are here)
