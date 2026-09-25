@@ -622,7 +622,7 @@ export function HomePage() {
                     </li>
                   </ul>
                   <Button 
-                    onClick={() => navigate('/horoscope')}
+                    onClick={() => navigate('/birth-chart')}
                     className="bg-primary hover:bg-primary/90 text-white"
                   >
                     Get Your Free Birth Chart
