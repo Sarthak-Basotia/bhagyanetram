@@ -1,34 +1,131 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
   <!-- Homepage -->
   <url>
     <loc>https://bhagyanetram.com/</loc>
-    <lastmod>2026-09-20</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-  
-  <!-- Main Service Pages -->
+
+  <!-- Main Pages -->
   <url>
-    <loc>https://bhagyanetram.com/vastu-shastra</loc>
+    <loc>https://bhagyanetram.com/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://bhagyanetram.com/services</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
+
   <url>
-    <loc>https://bhagyanetram.com/zodiac-signs</loc>
+    <loc>https://bhagyanetram.com/horoscope</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
-  
-  <!-- Secondary Pages -->
+
+  <url>
+    <loc>https://bhagyanetram.com/zodiac</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Vastu Pages -->
+  <url>
+    <loc>https://bhagyanetram.com/vastu-main-door</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://bhagyanetram.com/vastu-bedroom</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://bhagyanetram.com/vastu-dining-living</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://bhagyanetram.com/vastu-construction</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://bhagyanetram.com/vastu-kitchen</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://bhagyanetram.com/vastu-study-room</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://bhagyanetram.com/vastu-temple</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://bhagyanetram.com/vastu-office</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://bhagyanetram.com/vastu-vault</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://bhagyanetram.com/vastu-toilet</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Blog -->
   <url>
     <loc>https://bhagyanetram.com/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
+
+  <!-- Contact -->
   <url>
-    <loc>https://bhagyanetram.com/contact-us</loc>
+    <loc>https://bhagyanetram.com/contact</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
+
+  <!-- Astrology / Kundli -->
+  <url>
+    <loc>https://bhagyanetram.com/free-kundli</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bhagyanetram.com/panchang</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://bhagyanetram.com/kundli-matching</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
 </urlset>
