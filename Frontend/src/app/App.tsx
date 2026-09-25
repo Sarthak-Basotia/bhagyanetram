@@ -25,6 +25,7 @@ import PanchangPage from './components/pages/PanchangPage';
 import MatchmakingPage from './components/pages/MatchmakingPage';
 import { ChevronUp } from 'lucide-react';
 import logoImage from 'figma:asset/d5457f2df4c5864ece0203437258a94768a0cf00.png';
+import BirthChartPage from './components/pages/BirthChartPage';
 
 export default function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -70,6 +71,7 @@ export default function App() {
             <Route path="/free-kundli" element={<FreeKundli />} />
             <Route path="/panchang" element={<PanchangPage />} />
             <Route path="/kundli-matching" element={<MatchmakingPage />} />
+            <Route path="/birth-chart" element={<BirthChartPage />} />
             {/* Catch-all route to redirect 404s to Home */}
             <Route path="*" element={<HomePage />} />
           </Routes>
