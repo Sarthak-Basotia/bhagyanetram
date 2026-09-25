@@ -1,7 +1,7 @@
 """Astro Engine — FastAPI app. One modular monolith for Vedic astrology calculations."""
 from fastapi import FastAPI
 
-from .routers import calendar, kundli, match, numerology, panchang
+from app.routers import calendar, kundli, match, numerology, panchang
 
 app = FastAPI(
     title="Astro Engine",

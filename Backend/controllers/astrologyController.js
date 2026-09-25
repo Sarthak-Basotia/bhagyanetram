@@ -212,3 +212,37 @@ export const matchKundli = async (req, res) => {
     res.status(500).json({ error: "Failed to calculate matching" });
   }
 };
+
+// ==========================================
+// 5. NUMEROLOGY (Via Python Astro-Engine)
+// ==========================================
+export const getNumerology = async (req, res) => {
+  try {
+    const { name, dob, gender } = req.body;
+    
+    // Format payload exactly as the Python engine expects
+    const payload = {
+      full_name: name,
+      date_of_birth: dob,
+      gender: gender || "male"
+    };
+
+    const engineResponse = await fetch(`${PYTHON_ENGINE_URL}/numerology/basic`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify(payload)
+    });
+
+    if (!engineResponse.ok) {
+      throw new Error("Astro Engine failed to compute Numerology");
+    }
+    
+    const numData = await engineResponse.json();
+
+    // Pass the rich Python data directly to the frontend
+    res.json({ success: true, data: numData });
+  } catch (error) {
+    console.error("Numerology Error:", error);
+    res.status(500).json({ error: "Failed to generate Numerology reading" });
+  }
+};
