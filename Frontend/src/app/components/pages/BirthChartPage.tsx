@@ -38,50 +38,65 @@ export default function BirthChartPage() {
   };
 
   // Helper component to render planetary tables beautifully
-  const PlanetTable = ({ chart }: { chart: any }) => (
-    <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-slate-200">
-      <table className="w-full text-left text-sm text-slate-700">
-        <thead className="bg-slate-50 text-slate-900 border-b border-slate-200">
-          <tr>
-            <th className="px-4 py-3 font-semibold">Planet</th>
-            <th className="px-4 py-3 font-semibold">Sign</th>
-            <th className="px-4 py-3 font-semibold">Degree</th>
-            <th className="px-4 py-3 font-semibold">House</th>
-            <th className="px-4 py-3 font-semibold">Nakshatra</th>
-            <th className="px-4 py-3 font-semibold">Status</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-slate-100">
-          {/* Ascendant Row */}
-          <tr className="bg-orange-50/50">
-            <td className="px-4 py-3 font-bold text-orange-800">Ascendant (Lagna)</td>
-            <td className="px-4 py-3 font-medium">{chart.ascendant.sign}</td>
-            <td className="px-4 py-3">{chart.ascendant.degree.toFixed(2)}°</td>
-            <td className="px-4 py-3 font-medium">1st</td>
-            <td className="px-4 py-3">{chart.ascendant.nakshatra}</td>
-            <td className="px-4 py-3">-</td>
-          </tr>
-          {/* Planets Rows */}
-          {chart.planets.map((p: any, idx: number) => (
-            <tr key={idx} className="hover:bg-slate-50 transition-colors">
-              <td className="px-4 py-3 font-semibold text-slate-900 flex items-center gap-2">
-                {p.planet}
-              </td>
-              <td className="px-4 py-3 font-medium">{p.sign}</td>
-              <td className="px-4 py-3">{p.degree.toFixed(2)}°</td>
-              <td className="px-4 py-3 font-medium">{p.house}</td>
-              <td className="px-4 py-3">{p.nakshatra}</td>
-              <td className="px-4 py-3 text-xs">
-                {p.is_retrograde && <span className="px-2 py-1 bg-red-100 text-red-700 rounded font-bold">Retrograde</span>}
-                {!p.is_retrograde && <span className="text-slate-400">Direct</span>}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+  const PlanetTable = ({ chart }: { chart: any }) => {
+    // Safely extract the number, checking common property names from pyswisseph
+    const safeDegree = (val: any) => {
+      const num = val?.degree ?? val?.normDegree ?? val?.longitude ?? 0;
+      return Number(num).toFixed(2);
+    };
 
+    return (
+      <div className="overflow-x-auto bg-white rounded-xl shadow-sm border border-slate-200">
+        <table className="w-full text-left text-sm text-slate-700">
+          <thead className="bg-slate-50 text-slate-900 border-b border-slate-200">
+            <tr>
+              <th className="px-4 py-3 font-semibold">Planet</th>
+              <th className="px-4 py-3 font-semibold">Sign</th>
+              <th className="px-4 py-3 font-semibold">Degree</th>
+              <th className="px-4 py-3 font-semibold">House</th>
+              <th className="px-4 py-3 font-semibold">Nakshatra</th>
+              <th className="px-4 py-3 font-semibold">Status</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {/* Ascendant Row */}
+            {chart?.ascendant && (
+              <tr className="bg-orange-50/50">
+                <td className="px-4 py-3 font-bold text-orange-800">Ascendant (Lagna)</td>
+                <td className="px-4 py-3 font-medium">{chart.ascendant.sign || '-'}</td>
+                <td className="px-4 py-3">{safeDegree(chart.ascendant)}°</td>
+                <td className="px-4 py-3 font-medium">1st</td>
+                <td className="px-4 py-3">{chart.ascendant.nakshatra || '-'}</td>
+                <td className="px-4 py-3">-</td>
+              </tr>
+            )}
+            
+            {/* Planets Rows */}
+            {chart?.planets?.map((p: any, idx: number) => (
+              <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                <td className="px-4 py-3 font-semibold text-slate-900 flex items-center gap-2">
+                  {p.planet}
+                </td>
+                <td className="px-4 py-3 font-medium">{p.sign || '-'}</td>
+                <td className="px-4 py-3">{safeDegree(p)}°</td>
+                <td className="px-4 py-3 font-medium">{p.house || '-'}</td>
+                <td className="px-4 py-3">{p.nakshatra || '-'}</td>
+                <td className="px-4 py-3 text-xs">
+                  {p.is_retrograde ? (
+                    <span className="px-2 py-1 bg-red-100 text-red-700 rounded font-bold">Retrograde</span>
+                  ) : (
+                    <span className="text-slate-400">Direct</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen bg-slate-50">
       <div className="mb-8 text-center">
