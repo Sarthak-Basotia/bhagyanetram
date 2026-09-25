@@ -41,32 +41,7 @@ export function HomePage() {
     setBookingModalOpen(true);
   };
 
-  const quickActions = [
-    {
-      icon: <Phone className="w-8 h-8" />,
-      title: 'Talk to Astrologer',
-      subtitle: 'Get instant guidance',
-      gradient: 'from-orange-500 to-red-500',
-    },
-    {
-      icon: <MessageCircle className="w-8 h-8" />,
-      title: 'Chat with Astrologer',
-      subtitle: 'Ask your questions',
-      gradient: 'from-blue-500 to-purple-500',
-    },
-    {
-      icon: <Calendar className="w-8 h-8" />,
-      title: 'Free Kundli',
-      subtitle: 'Generate birth chart',
-      gradient: 'from-green-500 to-teal-500',
-    },
-    {
-      icon: <FileText className="w-8 h-8" />,
-      title: 'Daily Horoscope',
-      subtitle: 'Know your day',
-      gradient: 'from-purple-500 to-pink-500',
-    },
-  ];
+  
 
   const topAstrologers = [
     {
