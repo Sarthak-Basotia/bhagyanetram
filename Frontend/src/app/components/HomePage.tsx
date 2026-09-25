@@ -91,11 +91,42 @@ export function HomePage() {
     },
   ];
 
+  const quickActions = [
+    {
+      icon: <Phone className="w-8 h-8" />,
+      title: 'Talk to Astrologer',
+      subtitle: 'Get instant guidance',
+      gradient: 'from-orange-500 to-red-500',
+      action: () => handleOpenBooking('Quick Action - Talk to Astrologer')
+    },
+    {
+      icon: <MessageCircle className="w-8 h-8" />,
+      title: 'Chat with Astrologer',
+      subtitle: 'Ask your questions',
+      gradient: 'from-blue-500 to-purple-500',
+      action: () => navigate('/contact')
+    },
+    {
+      icon: <Calendar className="w-8 h-8" />,
+      title: 'Free Kundli',
+      subtitle: 'Generate birth chart',
+      gradient: 'from-green-500 to-teal-500',
+      action: () => navigate('/free-kundli')
+    },
+    {
+      icon: <FileText className="w-8 h-8" />,
+      title: 'Daily Horoscope',
+      subtitle: 'Know your day',
+      gradient: 'from-purple-500 to-pink-500',
+      action: () => navigate('/horoscope')
+    },
+  ];
+
   const freeServices = [
-    { title: 'Match Making', image: 'https://images.unsplash.com/photo-1756376748107-12c98ec6b969?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Check compatibility for marriage' },
-    { title: 'Panchang', image: 'https://images.unsplash.com/photo-1701520985505-5ebb240c58cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Daily auspicious timings' },
+    { title: 'Match Making', route: '/kundli-matching', image: 'https://images.unsplash.com/photo-1756376748107-12c98ec6b969?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Check compatibility for marriage' },
+    { title: 'Panchang', route: '/panchang',image: 'https://images.unsplash.com/photo-1701520985505-5ebb240c58cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Daily auspicious timings' },
     { title: 'Tarot Reading', image: 'https://images.unsplash.com/photo-1624274579716-8eeba7da39bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Card-based predictions' },
-    { title: 'Birth Chart', image: 'https://images.unsplash.com/photo-1646208714721-ebce8335cc88?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Complete natal chart analysis' },
+    { title: 'Birth Chart', route: '/birth-chart', image: 'https://images.unsplash.com/photo-1646208714721-ebce8335cc88?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Complete natal chart analysis' },
     { title: 'Palmistry', image: 'https://images.unsplash.com/photo-1759406066833-d361c4f76bf2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Hand reading insights' },
     { title: 'Numerology', image: 'https://images.unsplash.com/photo-1617086286680-12fa90d99f48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Number-based predictions' },
     { title: 'Gemstone Guide', image: 'https://images.unsplash.com/photo-1594997987903-1d322eae8ba8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Lucky stones for you' },
@@ -235,7 +266,7 @@ export function HomePage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Card className="cursor-pointer hover:shadow-xl transition-all border-border group overflow-hidden">
+                <Card onClick={action.action} className="cursor-pointer hover:shadow-xl transition-all border-border group overflow-hidden">
                   <div className={`h-1.5 bg-gradient-to-r ${action.gradient}`} />
                   <CardContent className="pt-6 text-center">
                     <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${action.gradient} flex items-center justify-center text-white mx-auto mb-4 group-hover:scale-110 transition-transform`}>
@@ -663,16 +694,23 @@ export function HomePage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.05 }}
               >
-                <Card className="cursor-pointer hover:shadow-xl transition-all border-border group overflow-hidden h-full">
+                <Card 
+                  onClick={() => service.route ? navigate(service.route) : null}
+                  className={`transition-all border-border group overflow-hidden h-full ${service.route ? 'cursor-pointer hover:shadow-xl' : 'opacity-80 cursor-default'}`}
+                >
                   <div className="relative h-40 overflow-hidden">
                     <img
                       src={service.image}
                       alt={service.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     />
-                    <div className="absolute top-2 right-2">
-                      <Badge className="bg-green-500 text-white text-xs">Coming Soon</Badge>
-                    </div>
+                    
+                    {/* Only show 'Coming Soon' if there is no route defined */}
+                    {!service.route && (
+                      <div className="absolute top-2 right-2">
+                        <Badge className="bg-green-500 text-white text-xs">Coming Soon</Badge>
+                      </div>
+                    )}
                   </div>
                   <CardContent className="pt-4">
                     <h3 className="text-base mb-1 text-foreground">{service.title}</h3>
