@@ -440,11 +440,13 @@ const calculateHouse = (planetSignNum, ascendantSignNum) => {
 // ==========================================
 // 9. PLANET TRANSIT (Current Gochar & Chart Mapper)
 // ==========================================
+// ==========================================
+// 9. PLANET TRANSIT (Current Gochar & Chart Mapper)
+// ==========================================
 export const getPlanetTransit = async (req, res) => {
   try {
     const { datetime, lat, lon, tz_offset } = req.body;
     
-    // 1. Request raw math from Python Engine
     const payload = { 
       datetime: datetime, 
       latitude: parseFloat(lat || 28.6139), 
@@ -459,42 +461,48 @@ export const getPlanetTransit = async (req, res) => {
     });
     
     const pyData = await response.json();
-    if (!response.ok) throw new Error("Failed to fetch from Astro Engine");
+    if (!response.ok) {
+      console.error("Python Engine Error:", pyData);
+      throw new Error("Failed to fetch from Astro Engine");
+    }
 
-    // 2. Safely extract Ascendant Sign Number (1-12)
-    // Adjust these paths based on your exact Python response structure
-    const rawAscendant = pyData.ascendant?.sign_id || pyData.data?.ascendant?.sign_id || 1;
-    
-    // 3. Extract Planets Array
+    // Temporarily log the first planet so we can see the exact keys your Python engine uses
     const rawPlanets = pyData.planets || pyData.data?.planets || [];
+    if (rawPlanets.length > 0) {
+      console.log("Sample Planet Object from Python:", rawPlanets[0]);
+    }
 
-    // 4. Map the data into the exact format required by the React SVG component
+    // Safely extract Ascendant Sign Number (Fallback to 1 if missing)
+    const rawAscendant = pyData.ascendant?.sign_id || pyData.data?.ascendant?.sign_id || pyData.lagna?.sign_id || 1;
+
+    // Map the data with safe fallbacks to prevent undefined crashes
     const formattedPlanets = rawPlanets.map(planet => {
-      // Get UI config, fallback to first 2 letters if planet name is unusual
-      const ui = planetUIConfig[planet.name] || { 
-        name: planet.name.substring(0, 2), 
+      // Find the name, no matter what key the Python engine uses
+      const pName = planet.name || planet.planet_name || planet.body || "Unknown";
+
+      // Get UI config, fallback to first 2 letters safely
+      const ui = planetUIConfig[pName] || { 
+        name: pName !== "Unknown" ? pName.substring(0, 2) : "??", 
         color: "#000000" 
       };
 
-      // Calculate which house this planet sits in
-      // (Assuming Python returns a sign_id from 1 to 12 for the planet)
-      const housePlacement = calculateHouse(planet.sign_id, rawAscendant);
+      // Safely grab the sign ID to calculate the house
+      const signId = planet.sign_id || planet.zodiac_sign || 1;
+      const housePlacement = calculateHouse(signId, rawAscendant);
 
       return {
         name: ui.name,
         house: housePlacement,
-        isRetrograde: planet.isRetrograde || planet.is_retro || false,
+        isRetrograde: planet.isRetrograde || planet.is_retro || planet.retrograde || false,
         color: ui.color
       };
     });
 
-    // 5. Send perfectly formatted payload to the frontend
     res.json({ 
       success: true, 
       data: {
         ascendant: rawAscendant,
-        planets: formattedPlanets,
-        rawDetails: rawPlanets // Keep raw data in case you want to show degrees in a table below the chart
+        planets: formattedPlanets
       } 
     });
 
