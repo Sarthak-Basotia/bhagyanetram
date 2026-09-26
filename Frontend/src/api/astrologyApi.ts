@@ -75,3 +75,25 @@ export const fetchFestivals = async () => {
   if (!response.ok) throw new Error('Failed to fetch Festivals');
   return response.json();
 };
+
+// ==========================================
+// Fetch Planet Transit (Live Gochar)
+// ==========================================
+export const fetchPlanetTransit = async (data: { 
+  datetime: string; 
+  lat: number; 
+  lon: number; 
+  tz_offset: number 
+}) => {
+  const response = await fetch(`${API_BASE}/transit`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch Planet Transit');
+  }
+
+  return response.json();
+};

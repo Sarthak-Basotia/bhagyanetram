@@ -415,3 +415,91 @@ export const getFestivals = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch festival calendar" });
   }
 };
+
+// Helper to map full planet names to chart symbols and colors
+const planetUIConfig = {
+  "Sun": { name: "Su", color: "#E83C3C" },       // Red
+  "Moon": { name: "Mo", color: "#0A0A9C" },      // Blue
+  "Mars": { name: "Ma", color: "#D32F2F" },      // Dark Red
+  "Mercury": { name: "Me", color: "#2E7D32" },   // Green
+  "Jupiter": { name: "Ju", color: "#F57F17" },   // Yellow-Orange
+  "Venus": { name: "Ve", color: "#D81B60" },     // Pink
+  "Saturn": { name: "Sa", color: "#424242" },    // Dark Gray
+  "Rahu": { name: "Ra", color: "#00838F" },      // Teal
+  "Ketu": { name: "Ke", color: "#8D6E63" },      // Brown
+  "Uranus": { name: "Ur", color: "#1976D2" },    // Light Blue
+  "Neptune": { name: "Ne", color: "#009688" },   // Sea Green
+  "Pluto": { name: "Pl", color: "#880E4F" }      // Deep Purple
+};
+
+// Vedic Math Helper: Calculates the House (1-12) based on Planet Sign and Ascendant Sign
+const calculateHouse = (planetSignNum, ascendantSignNum) => {
+  return ((planetSignNum - ascendantSignNum + 12) % 12) + 1;
+};
+
+// ==========================================
+// 9. PLANET TRANSIT (Current Gochar & Chart Mapper)
+// ==========================================
+export const getPlanetTransit = async (req, res) => {
+  try {
+    const { datetime, lat, lon, tz_offset } = req.body;
+    
+    // 1. Request raw math from Python Engine
+    const payload = { 
+      datetime: datetime, 
+      latitude: parseFloat(lat || 28.6139), 
+      longitude: parseFloat(lon || 77.2090),
+      timezone_offset: parseFloat(tz_offset || 5.5) 
+    };
+
+    const response = await fetch(`${PYTHON_ENGINE_URL}/kundli`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    
+    const pyData = await response.json();
+    if (!response.ok) throw new Error("Failed to fetch from Astro Engine");
+
+    // 2. Safely extract Ascendant Sign Number (1-12)
+    // Adjust these paths based on your exact Python response structure
+    const rawAscendant = pyData.ascendant?.sign_id || pyData.data?.ascendant?.sign_id || 1;
+    
+    // 3. Extract Planets Array
+    const rawPlanets = pyData.planets || pyData.data?.planets || [];
+
+    // 4. Map the data into the exact format required by the React SVG component
+    const formattedPlanets = rawPlanets.map(planet => {
+      // Get UI config, fallback to first 2 letters if planet name is unusual
+      const ui = planetUIConfig[planet.name] || { 
+        name: planet.name.substring(0, 2), 
+        color: "#000000" 
+      };
+
+      // Calculate which house this planet sits in
+      // (Assuming Python returns a sign_id from 1 to 12 for the planet)
+      const housePlacement = calculateHouse(planet.sign_id, rawAscendant);
+
+      return {
+        name: ui.name,
+        house: housePlacement,
+        isRetrograde: planet.isRetrograde || planet.is_retro || false,
+        color: ui.color
+      };
+    });
+
+    // 5. Send perfectly formatted payload to the frontend
+    res.json({ 
+      success: true, 
+      data: {
+        ascendant: rawAscendant,
+        planets: formattedPlanets,
+        rawDetails: rawPlanets // Keep raw data in case you want to show degrees in a table below the chart
+      } 
+    });
+
+  } catch (error) {
+    console.error("Transit/Chart API Error:", error.message);
+    res.status(500).json({ error: "Failed to generate Chart Data" });
+  }
+};
