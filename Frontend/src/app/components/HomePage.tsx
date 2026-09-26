@@ -105,7 +105,7 @@ export function HomePage() {
     { title: 'Palmistry', image: 'https://images.unsplash.com/photo-1759406066833-d361c4f76bf2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Hand reading insights' },
     { title: 'Numerology', route: '/numerology', image: 'https://images.unsplash.com/photo-1617086286680-12fa90d99f48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Number-based predictions' },
     { title: 'Gemstone Guide', route: '/gem-guide', image: 'https://images.unsplash.com/photo-1594997987903-1d322eae8ba8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Lucky stones for you' },
-    { title: 'Planet Transit', image: 'https://images.unsplash.com/photo-1676236285859-a2907b80f927?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Current planetary positions' },
+    { title: 'Planet Transit', route: '/planet-chart',image: 'https://images.unsplash.com/photo-1676236285859-a2907b80f927?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Current planetary positions' },
     { title: 'Vastu Tips', image: 'https://images.unsplash.com/photo-1711011476848-7bad9f04379c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Home harmony solutions' },
     { title: 'Zodiac Signs', route: '/zodiac', image: 'https://images.unsplash.com/photo-1614089254151-676cc373b01e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Know your sun sign traits' },
     { title: 'Festivals', route: '/festivals',image: 'https://images.unsplash.com/photo-1674936985746-1993297aad5d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Upcoming Hindu festivals' },
