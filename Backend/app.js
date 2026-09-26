@@ -28,6 +28,8 @@ app.post("/api/astrology/matching", matchKundli);
 app.post("/api/astrology/advanced-kundli", getAdvancedKundli);
 app.post("/api/astrology/numerology", getNumerology);
 app.post("/api/astrology/gemstones", getGemstoneGuide);
+app.post("/api/astrology/seed-festivals", seedFestivals);
+app.get("/api/astrology/festivals", getFestivals);
 
 // ==========================================
 // EXISTING: BOOKING ROUTES (Assuming they are here)
