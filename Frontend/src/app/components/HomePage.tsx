@@ -108,7 +108,7 @@ export function HomePage() {
     { title: 'Planet Transit', image: 'https://images.unsplash.com/photo-1676236285859-a2907b80f927?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Current planetary positions' },
     { title: 'Vastu Tips', image: 'https://images.unsplash.com/photo-1711011476848-7bad9f04379c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Home harmony solutions' },
     { title: 'Zodiac Signs', route: '/zodiac', image: 'https://images.unsplash.com/photo-1614089254151-676cc373b01e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Know your sun sign traits' },
-    { title: 'Festivals', image: 'https://images.unsplash.com/photo-1674936985746-1993297aad5d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Upcoming Hindu festivals' },
+    { title: 'Festivals', route: '/festivals',image: 'https://images.unsplash.com/photo-1674936985746-1993297aad5d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Upcoming Hindu festivals' },
     { title: 'Yantra Meditation', image: 'https://images.unsplash.com/photo-1758466870973-14bfedd22e1a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Sacred geometry for peace' },
   ];
 

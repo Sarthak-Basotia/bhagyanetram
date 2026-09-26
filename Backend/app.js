@@ -11,6 +11,7 @@ import {
 
 // Import the new AI Astrology controllers (Adjust the path if your controller is in a different folder)
 import { generateKundli, getAdvancedKundli, getGemstoneGuide, getNumerology, getPanchang, matchKundli } from "./controllers/astrologyController.js";
+import { getFestivals, seedFestivals } from "./controllers/festivalController.js";
 
 const app = express();
 
