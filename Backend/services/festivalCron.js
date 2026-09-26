@@ -2,49 +2,40 @@ import cron from 'node-cron';
 import { Festival } from '../models/Festival.js';
 import { generateMonthCalendar } from './festivalGenerator.js';
 
-// Helper to calculate future months safely (handling Dec -> Jan rollover)
-const getTargetMonthYear = (startMonth, startYear, addMonths) => {
-  const date = new Date(startYear, startMonth - 1 + addMonths, 1);
-  return { month: date.getMonth() + 1, year: date.getFullYear() };
-};
-
-// Initializes the 12-month queue if empty
+// Initializes the current month in the database if it is missing
 export const initializeFestivalQueue = async () => {
   const now = new Date();
-  const currentMonth = now.getMonth() + 1;
-  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth() + 1; // e.g., 9 for September
+  const currentYear = now.getFullYear();   // e.g., 2026
 
-  console.log("Checking Festival Database Queue...");
+  console.log(`Checking Festival Database for Current Month: ${currentMonth}/${currentYear}...`);
 
-  for (let i = 0; i < 12; i++) {
-    const target = getTargetMonthYear(currentMonth, currentYear, i);
-    
-    // Check if month already exists in Mongo
-    const exists = await Festival.findOne({ year: target.year, month: target.month });
-    
-    if (!exists) {
-      console.log(`Generating data for ${target.month}/${target.year} via OpenAI...`);
-      try {
-        const calendarData = await generateMonthCalendar(target.year, target.month);
-        await Festival.create(calendarData);
-        console.log(`Successfully saved ${target.month}/${target.year}`);
-      } catch (err) {
-        console.error(`Failed to generate/save ${target.month}/${target.year}`);
-      }
+  // Check if current month already exists in Mongo
+  const exists = await Festival.findOne({ year: currentYear, month: currentMonth });
+  
+  if (!exists) {
+    console.log(`Generating data for ${currentMonth}/${currentYear} via OpenAI...`);
+    try {
+      const calendarData = await generateMonthCalendar(currentYear, currentMonth);
+      await Festival.create(calendarData);
+      console.log(`Successfully saved ${currentMonth}/${currentYear}`);
+    } catch (err) {
+      console.error(`Failed to generate/save ${currentMonth}/${currentYear}:`, err.message);
     }
+  } else {
+    console.log(`Data for ${currentMonth}/${currentYear} already exists.`);
   }
-  console.log("Festival Queue is up to date.");
 };
 
 // CRON JOB: Runs at 00:01 AM on the 1st of every month
 cron.schedule('1 0 1 * *', async () => {
-  console.log("Running monthly Festival Queue update...");
+  console.log("Running monthly Festival update...");
   
   const now = new Date();
   const currentMonth = now.getMonth() + 1;
   const currentYear = now.getFullYear();
 
-  // 1. Delete past months (Anything older than the current month/year)
+  // 1. Delete past months to keep the database clean
   await Festival.deleteMany({
     $or: [
       { year: { $lt: currentYear } },
@@ -52,13 +43,16 @@ cron.schedule('1 0 1 * *', async () => {
     ]
   });
 
-  // 2. Add the new 12th month at the end of the queue (Current month + 11)
-  const target = getTargetMonthYear(currentMonth, currentYear, 11);
-  
-  const exists = await Festival.findOne({ year: target.year, month: target.month });
+  // 2. Fetch and store the new current month
+  const exists = await Festival.findOne({ year: currentYear, month: currentMonth });
   if (!exists) {
-    console.log(`Fetching new 12th month data for ${target.month}/${target.year}`);
-    const newMonthData = await generateMonthCalendar(target.year, target.month);
-    await Festival.create(newMonthData);
+    console.log(`Fetching new month data for ${currentMonth}/${currentYear}...`);
+    try {
+      const newMonthData = await generateMonthCalendar(currentYear, currentMonth);
+      await Festival.create(newMonthData);
+      console.log(`Successfully saved ${currentMonth}/${currentYear}`);
+    } catch (err) {
+      console.error(`Failed to generate/save ${currentMonth}/${currentYear}:`, err.message);
+    }
   }
 });
