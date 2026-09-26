@@ -340,6 +340,7 @@ export const getGemstoneGuide = async (req, res) => {
     // 2. Fetch Kundli Lagna
     // NOTE: If this fails, check your PM2 logs. Your python engine might expect 
     // 'latitude' instead of 'lat', or 'tz_offset' instead of 'tzone'.
+    // 2. Fetch Kundli Lagna
     const kundliPayload = { 
       day: parseInt(day), 
       month: parseInt(month), 
