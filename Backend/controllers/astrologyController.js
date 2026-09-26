@@ -323,30 +323,59 @@ export const getGemstoneGuide = async (req, res) => {
     const [year, month, day] = dob.split('-');
     const [hour, min] = time.split(':');
 
-    // 1. Fetch Numerology (For Radical & Destiny Stones)
+    // 1. Fetch Numerology
     const numPayload = { full_name: name, date_of_birth: dob, gender: gender || "male" };
     const numResponse = await fetch(`${PYTHON_ENGINE_URL}/numerology/basic`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(numPayload)
     });
+    
     const numData = await numResponse.json();
+    if (!numResponse.ok) {
+      console.error("Numerology Engine Error:", numData);
+      throw new Error("Failed to fetch Numerology from Astro Engine");
+    }
 
-    // 2. Fetch Kundli Lagna (For Astrological Ascendant Stones)
+    // 2. Fetch Kundli Lagna
+    // NOTE: If this fails, check your PM2 logs. Your python engine might expect 
+    // 'latitude' instead of 'lat', or 'tz_offset' instead of 'tzone'.
     const kundliPayload = { 
-      day: parseInt(day), month: parseInt(month), year: parseInt(year), 
-      hour: parseInt(hour), min: parseInt(min), lat, lon, tzone: tz_offset 
+      day: parseInt(day), 
+      month: parseInt(month), 
+      year: parseInt(year), 
+      hour: parseInt(hour), 
+      min: parseInt(min), 
+      lat: parseFloat(lat), 
+      lon: parseFloat(lon), 
+      tzone: parseFloat(tz_offset) 
     };
+    
     const kundliResponse = await fetch(`${PYTHON_ENGINE_URL}/kundli/lagna`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(kundliPayload)
     });
+    
     const kundliData = await kundliResponse.json();
+    if (!kundliResponse.ok) {
+      console.error("Kundli Engine Error Payload:", kundliData);
+      throw new Error("Failed to fetch Kundli from Astro Engine");
+    }
 
-    // 3. Map Ascendant to Vedic Gems
-    const ascendantSign = kundliData.ascendant.sign || kundliData.ascendant; // Depends on your exact python output
-    const astrologyGems = vedicGemstoneMap[ascendantSign] || null;
+    // 3. Safely Map Ascendant to Vedic Gems
+    // Checks multiple common response structures and provides a safe fallback
+    let ascendantSign = "Aries"; // Default fallback to prevent crashes
+    
+    if (kundliData?.ascendant?.sign) {
+      ascendantSign = kundliData.ascendant.sign;
+    } else if (kundliData?.data?.ascendant?.sign) {
+      ascendantSign = kundliData.data.ascendant.sign;
+    } else if (typeof kundliData?.ascendant === 'string') {
+      ascendantSign = kundliData.ascendant;
+    }
+
+    const astrologyGems = vedicGemstoneMap[ascendantSign] || vedicGemstoneMap["Aries"];
 
     res.json({
       success: true,
@@ -357,21 +386,21 @@ export const getGemstoneGuide = async (req, res) => {
         },
         numerology: {
           radical: {
-            number: numData.numbers.radical_number,
-            gemstone: numData.radical_profile.gemstone,
-            metal: numData.radical_profile.metal
+            number: numData.numbers?.radical_number || 1,
+            gemstone: numData.radical_profile?.gemstone || "Ruby",
+            metal: numData.radical_profile?.metal || "Gold"
           },
           destiny: {
-            number: numData.numbers.destiny_number,
-            gemstone: numData.destiny_profile.gemstone,
-            metal: numData.destiny_profile.metal
+            number: numData.numbers?.destiny_number || 1,
+            gemstone: numData.destiny_profile?.gemstone || "Ruby",
+            metal: numData.destiny_profile?.metal || "Gold"
           }
         }
       }
     });
 
   } catch (error) {
-    console.error("Gemstone API Error:", error);
-    res.status(500).json({ error: "Failed to generate Gemstone Guide" });
+    console.error("Gemstone API Error:", error.message);
+    res.status(500).json({ error: "Failed to generate Gemstone Guide. Please check server logs." });
   }
 };
