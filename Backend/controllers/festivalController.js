@@ -1,5 +1,11 @@
+// import Festival from '../models/Festival.js';
+// import { openai } from '../app.js'; // Assumes openai is exported from your main file
 import Festival from '../models/Festival.js';
-import { openai } from '../app.js'; // Assumes openai is exported from your main file
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY, // Uses the key from your .env file
+});
 
 // ==========================================
 // A. FETCH FROM OPENAI & SAVE TO MONGODB (Run once via Postman or Script)

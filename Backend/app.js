@@ -1,9 +1,7 @@
 // src/app.js
 import express from "express";
 import cors from "cors";
-import ConsultationBooking from "./models/booking.js";
 import Horoscope from "./models/Horoscope.js";
-import { sendBookingEmail } from "./emailUtils.js";
 import {
   generateHoroscope,
   updateAllSignsByTimeframe,
