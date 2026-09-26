@@ -357,7 +357,8 @@ export const getGemstoneGuide = async (req, res) => {
     
     const kundliData = await kundliResponse.json();
     if (!kundliResponse.ok) {
-      console.error("Kundli Engine Error Payload:", kundliData);
+      // JSON.stringify forces Node to print the exact field names instead of [Array]
+      console.error("Kundli Engine Error:", JSON.stringify(kundliData.detail, null, 2));
       throw new Error("Failed to fetch Kundli from Astro Engine");
     }
 
