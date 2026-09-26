@@ -56,3 +56,13 @@ export const fetchNumerology = async (data: { name: string, dob: string, gender:
   if (!response.ok) throw new Error('Failed to fetch Numerology');
   return response.json();
 };
+
+export const fetchGemstones = async (data: { name: string, dob: string, time: string, lat: number, lon: number, tz_offset: number, gender: string }) => {
+  const response = await fetch(`${API_BASE}/gemstones`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) throw new Error('Failed to fetch Gemstones');
+  return response.json();
+};

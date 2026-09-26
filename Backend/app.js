@@ -27,6 +27,7 @@ app.post("/api/astrology/panchang", getPanchang);
 app.post("/api/astrology/matching", matchKundli);
 app.post("/api/astrology/advanced-kundli", getAdvancedKundli);
 app.post("/api/astrology/numerology", getNumerology);
+app.post("/api/astrology/gemstones", getGemstoneGuide);
 
 // ==========================================
 // EXISTING: BOOKING ROUTES (Assuming they are here)

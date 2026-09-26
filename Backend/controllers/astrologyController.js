@@ -246,3 +246,132 @@ export const getNumerology = async (req, res) => {
     res.status(500).json({ error: "Failed to generate Numerology reading" });
   }
 };
+
+// ==========================================
+// 7. GEMSTONE GUIDE (Kundli + Numerology)
+// ==========================================
+
+// Standard Vedic Gemstone Mapping based on Ascendant (1st, 5th, and 9th House Lords)
+const vedicGemstoneMap = {
+  "Aries": { 
+    life: { stone: "Red Coral", planet: "Mars", benefit: "Boosts health, courage, and vitality." },
+    lucky: { stone: "Ruby", planet: "Sun", benefit: "Enhances intellect, creativity, and career." },
+    fortune: { stone: "Yellow Sapphire", planet: "Jupiter", benefit: "Brings luck, higher wisdom, and prosperity." }
+  },
+  "Taurus": {
+    life: { stone: "Diamond / Opal", planet: "Venus", benefit: "Enhances personality, wealth, and health." },
+    lucky: { stone: "Emerald", planet: "Mercury", benefit: "Improves intelligence, speech, and quick thinking." },
+    fortune: { stone: "Blue Sapphire", planet: "Saturn", benefit: "Brings profound luck, stability, and success." }
+  },
+  "Gemini": {
+    life: { stone: "Emerald", planet: "Mercury", benefit: "Boosts confidence, immunity, and communication." },
+    lucky: { stone: "Diamond / Opal", planet: "Venus", benefit: "Enhances creativity, romance, and artistic skills." },
+    fortune: { stone: "Blue Sapphire", planet: "Saturn", benefit: "Brings destiny support and spiritual growth." }
+  },
+  "Cancer": {
+    life: { stone: "Pearl", planet: "Moon", benefit: "Calms the mind, brings emotional stability and health." },
+    lucky: { stone: "Red Coral", planet: "Mars", benefit: "Grants academic success, focus, and energy." },
+    fortune: { stone: "Yellow Sapphire", planet: "Jupiter", benefit: "Brings immense fortune, wisdom, and protection." }
+  },
+  "Leo": {
+    life: { stone: "Ruby", planet: "Sun", benefit: "Enhances leadership, immunity, and authority." },
+    lucky: { stone: "Yellow Sapphire", planet: "Jupiter", benefit: "Boosts intellect, memory, and good karma." },
+    fortune: { stone: "Red Coral", planet: "Mars", benefit: "Brings courage, luck, and removes obstacles." }
+  },
+  "Virgo": {
+    life: { stone: "Emerald", planet: "Mercury", benefit: "Improves health, business, and analytical power." },
+    lucky: { stone: "Blue Sapphire", planet: "Saturn", benefit: "Grants deep focus, discipline, and creative success." },
+    fortune: { stone: "Diamond / Opal", planet: "Venus", benefit: "Brings overall fortune, luxury, and harmony." }
+  },
+  "Libra": {
+    life: { stone: "Diamond / Opal", planet: "Venus", benefit: "Enhances physical appeal, health, and luxury." },
+    lucky: { stone: "Blue Sapphire", planet: "Saturn", benefit: "Brings powerful success in education and investments." },
+    fortune: { stone: "Emerald", planet: "Mercury", benefit: "Grants luck, spiritual growth, and wisdom." }
+  },
+  "Scorpio": {
+    life: { stone: "Red Coral", planet: "Mars", benefit: "Boosts energy, protection, and confidence." },
+    lucky: { stone: "Yellow Sapphire", planet: "Jupiter", benefit: "Enhances wisdom, children, and prosperity." },
+    fortune: { stone: "Pearl", planet: "Moon", benefit: "Brings emotional balance and fortune." }
+  },
+  "Sagittarius": {
+    life: { stone: "Yellow Sapphire", planet: "Jupiter", benefit: "Grants wisdom, good health, and respect." },
+    lucky: { stone: "Red Coral", planet: "Mars", benefit: "Boosts courage, competitive edge, and intellect." },
+    fortune: { stone: "Ruby", planet: "Sun", benefit: "Brings luck, fame, and spiritual elevation." }
+  },
+  "Capricorn": {
+    life: { stone: "Blue Sapphire", planet: "Saturn", benefit: "Enhances discipline, health, and career stability." },
+    lucky: { stone: "Diamond / Opal", planet: "Venus", benefit: "Brings creativity, financial gains, and romance." },
+    fortune: { stone: "Emerald", planet: "Mercury", benefit: "Grants luck, higher education, and logic." }
+  },
+  "Aquarius": {
+    life: { stone: "Blue Sapphire", planet: "Saturn", benefit: "Improves focus, removes delays, and protects health." },
+    lucky: { stone: "Emerald", planet: "Mercury", benefit: "Enhances sharp intellect, writing, and speech." },
+    fortune: { stone: "Diamond / Opal", planet: "Venus", benefit: "Brings destiny support, luxury, and peace." }
+  },
+  "Pisces": {
+    life: { stone: "Yellow Sapphire", planet: "Jupiter", benefit: "Grants protection, wisdom, and health." },
+    lucky: { stone: "Pearl", planet: "Moon", benefit: "Brings mental peace, creativity, and emotional balance." },
+    fortune: { stone: "Red Coral", planet: "Mars", benefit: "Brings luck, energy, and overall fortune." }
+  }
+};
+
+export const getGemstoneGuide = async (req, res) => {
+  try {
+    const { name, dob, time, lat, lon, tz_offset, gender } = req.body;
+    
+    // Parse Date and Time for Python Engine
+    const [year, month, day] = dob.split('-');
+    const [hour, min] = time.split(':');
+
+    // 1. Fetch Numerology (For Radical & Destiny Stones)
+    const numPayload = { full_name: name, date_of_birth: dob, gender: gender || "male" };
+    const numResponse = await fetch(`${PYTHON_ENGINE_URL}/numerology/basic`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(numPayload)
+    });
+    const numData = await numResponse.json();
+
+    // 2. Fetch Kundli Lagna (For Astrological Ascendant Stones)
+    const kundliPayload = { 
+      day: parseInt(day), month: parseInt(month), year: parseInt(year), 
+      hour: parseInt(hour), min: parseInt(min), lat, lon, tzone: tz_offset 
+    };
+    const kundliResponse = await fetch(`${PYTHON_ENGINE_URL}/kundli/lagna`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(kundliPayload)
+    });
+    const kundliData = await kundliResponse.json();
+
+    // 3. Map Ascendant to Vedic Gems
+    const ascendantSign = kundliData.ascendant.sign || kundliData.ascendant; // Depends on your exact python output
+    const astrologyGems = vedicGemstoneMap[ascendantSign] || null;
+
+    res.json({
+      success: true,
+      data: {
+        astrology: {
+          ascendant: ascendantSign,
+          gems: astrologyGems
+        },
+        numerology: {
+          radical: {
+            number: numData.numbers.radical_number,
+            gemstone: numData.radical_profile.gemstone,
+            metal: numData.radical_profile.metal
+          },
+          destiny: {
+            number: numData.numbers.destiny_number,
+            gemstone: numData.destiny_profile.gemstone,
+            metal: numData.destiny_profile.metal
+          }
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("Gemstone API Error:", error);
+    res.status(500).json({ error: "Failed to generate Gemstone Guide" });
+  }
+};
