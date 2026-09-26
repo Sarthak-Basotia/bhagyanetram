@@ -74,23 +74,23 @@ export default function FestivalsPage() {
           
           {/* Month Navigation Controls */}
           <div className="flex items-center justify-center gap-6 mb-6">
-            <button 
+            {/* <button 
               onClick={handlePrev} 
               disabled={currentIndex === 0}
               className="p-2 rounded-full bg-slate-200 text-slate-700 disabled:opacity-30 hover:bg-[#D35400] hover:text-white transition-colors"
             >
               <ChevronLeft className="w-6 h-6" />
-            </button>
+            </button> */}
             <span className="text-xl font-bold text-slate-800 w-48 text-center">
               {currentMonthData.westernMonthName}
             </span>
-            <button 
+            {/* <button 
               onClick={handleNext} 
               disabled={currentIndex === calendars.length - 1}
               className="p-2 rounded-full bg-slate-200 text-slate-700 disabled:opacity-30 hover:bg-[#D35400] hover:text-white transition-colors"
             >
               <ChevronRight className="w-6 h-6" />
-            </button>
+            </button> */}
           </div>
         </div>
 
