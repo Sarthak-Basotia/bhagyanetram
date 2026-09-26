@@ -75,7 +75,7 @@ export default function GemstoneGuidePage() {
               <input required type="number" step="any" value={formData.lon} className="w-full border border-slate-200 p-3 rounded-xl bg-slate-50 outline-none" onChange={e => setFormData({...formData, lon: parseFloat(e.target.value)})} />
             </div>
           </div>
-          <button disabled={loading} className="w-full bg-teal-600 text-white p-4 rounded-xl font-bold text-lg hover:bg-teal-700 transition-colors shadow-lg shadow-teal-500/30 disabled:opacity-70">
+          <button disabled={loading} className="w-full bg-teal-600 text-white p-4 rounded-xl font-bold text-lg transition-colors shadow-lg shadow-teal-500/30 disabled:opacity-70" style={{background: '#d35400'}}>
             {loading ? 'Analyzing Celestial Alignments...' : 'Generate Gemstone Guide'}
           </button>
         </form>
