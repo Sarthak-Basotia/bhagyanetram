@@ -19,7 +19,7 @@ const daysOfWeek = [
   { hi: "बुध", en: "WED" }, { hi: "गुरु", en: "THU" }, { hi: "शुक्र", en: "FRI" }, { hi: "शनि", en: "SAT" }
 ];
 
-export function FestivalsPage() {
+export default function FestivalsPage() {
   const [calendarData, setCalendarData] = useState(mockFeb2026);
   
   // You would add useEffect here to fetch the real data from your backend
