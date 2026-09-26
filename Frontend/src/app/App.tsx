@@ -30,6 +30,7 @@ import NumerologyPage from './components/pages/NumerologyPage';
 import GemstoneGuidePage from './components/pages/GemstoneGuidePage';
 import FestivalsPage from './components/pages/FestivalsPage';
 import PlanetTransitPage from './components/pages/PlanetTransitPage';
+import ScrollToTop from './components/ScrollToTop';
 
 export default function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -50,6 +51,7 @@ export default function App() {
   return (
     <Router>
       <div className="min-h-screen">
+        <ScrollToTop />
         {/* Navigation component will also need to be updated to use <Link> inside it */}
         <Navigation />
 
