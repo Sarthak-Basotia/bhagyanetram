@@ -417,29 +417,34 @@ export const getFestivals = async (req, res) => {
 };
 
 // Helper to map full planet names to chart symbols and colors
+// Helper to map full planet names to chart symbols and colors
 const planetUIConfig = {
-  "Sun": { name: "Su", color: "#E83C3C" },       // Red
-  "Moon": { name: "Mo", color: "#0A0A9C" },      // Blue
-  "Mars": { name: "Ma", color: "#D32F2F" },      // Dark Red
-  "Mercury": { name: "Me", color: "#2E7D32" },   // Green
-  "Jupiter": { name: "Ju", color: "#F57F17" },   // Yellow-Orange
-  "Venus": { name: "Ve", color: "#D81B60" },     // Pink
-  "Saturn": { name: "Sa", color: "#424242" },    // Dark Gray
-  "Rahu": { name: "Ra", color: "#00838F" },      // Teal
-  "Ketu": { name: "Ke", color: "#8D6E63" },      // Brown
-  "Uranus": { name: "Ur", color: "#1976D2" },    // Light Blue
-  "Neptune": { name: "Ne", color: "#009688" },   // Sea Green
-  "Pluto": { name: "Pl", color: "#880E4F" }      // Deep Purple
+  "Sun": { name: "Su", color: "#E83C3C" },
+  "Moon": { name: "Mo", color: "#0A0A9C" },
+  "Mars": { name: "Ma", color: "#D32F2F" },
+  "Mercury": { name: "Me", color: "#2E7D32" },
+  "Jupiter": { name: "Ju", color: "#F57F17" },
+  "Venus": { name: "Ve", color: "#D81B60" },
+  "Saturn": { name: "Sa", color: "#424242" },
+  "Rahu": { name: "Ra", color: "#00838F" },
+  "Ketu": { name: "Ke", color: "#8D6E63" },
+  "Uranus": { name: "Ur", color: "#1976D2" },
+  "Neptune": { name: "Ne", color: "#009688" },
+  "Pluto": { name: "Pl", color: "#880E4F" }
 };
 
-// Vedic Math Helper: Calculates the House (1-12) based on Planet Sign and Ascendant Sign
+// Map Python string signs to Vedic 1-12 numeric system
+const zodiacToNum = {
+  "Aries": 1, "Taurus": 2, "Gemini": 3, "Cancer": 4,
+  "Leo": 5, "Virgo": 6, "Libra": 7, "Scorpio": 8,
+  "Sagittarius": 9, "Capricorn": 10, "Aquarius": 11, "Pisces": 12
+};
+
+// Vedic Math Helper: Calculates House (1-12)
 const calculateHouse = (planetSignNum, ascendantSignNum) => {
   return ((planetSignNum - ascendantSignNum + 12) % 12) + 1;
 };
 
-// ==========================================
-// 9. PLANET TRANSIT (Current Gochar & Chart Mapper)
-// ==========================================
 // ==========================================
 // 9. PLANET TRANSIT (Current Gochar & Chart Mapper)
 // ==========================================
@@ -461,39 +466,29 @@ export const getPlanetTransit = async (req, res) => {
     });
     
     const pyData = await response.json();
-    if (!response.ok) {
-      console.error("Python Engine Error:", pyData);
-      throw new Error("Failed to fetch from Astro Engine");
-    }
+    if (!response.ok) throw new Error("Failed to fetch from Astro Engine");
 
-    // Temporarily log the first planet so we can see the exact keys your Python engine uses
-    const rawPlanets = pyData.planets || pyData.data?.planets || [];
-    if (rawPlanets.length > 0) {
-      console.log("Sample Planet Object from Python:", rawPlanets[0]);
-    }
+    // 1. Convert Ascendant String (e.g. "Gemini") to Number (3)
+    const lagnaSignName = pyData.natal_lagna_sign || "Aries";
+    const ascendantNum = zodiacToNum[lagnaSignName] || 1;
 
-    // Safely extract Ascendant Sign Number (Fallback to 1 if missing)
-    const rawAscendant = pyData.ascendant?.sign_id || pyData.data?.ascendant?.sign_id || pyData.lagna?.sign_id || 1;
+    // 2. Map Planets accurately from Python JSON structure
+    const rawPlanets = pyData.planets || [];
+    const formattedPlanets = rawPlanets.map(p => {
+      
+      const pName = p.planet || "Unknown";
+      const ui = planetUIConfig[pName] || { name: pName.substring(0, 2), color: "#000000" };
 
-    // Map the data with safe fallbacks to prevent undefined crashes
-    const formattedPlanets = rawPlanets.map(planet => {
-      // Find the name, no matter what key the Python engine uses
-      const pName = planet.name || planet.planet_name || planet.body || "Unknown";
-
-      // Get UI config, fallback to first 2 letters safely
-      const ui = planetUIConfig[pName] || { 
-        name: pName !== "Unknown" ? pName.substring(0, 2) : "??", 
-        color: "#000000" 
-      };
-
-      // Safely grab the sign ID to calculate the house
-      const signId = planet.sign_id || planet.zodiac_sign || 1;
-      const housePlacement = calculateHouse(signId, rawAscendant);
+      // Convert 0-indexed sign (Virgo=5) to 1-indexed (Virgo=6)
+      const signNum = (p.sign_index !== undefined) ? (p.sign_index + 1) : 1;
+      
+      // Calculate final house placement
+      const housePlacement = calculateHouse(signNum, ascendantNum);
 
       return {
         name: ui.name,
         house: housePlacement,
-        isRetrograde: planet.isRetrograde || planet.is_retro || planet.retrograde || false,
+        isRetrograde: p.retrograde || false,
         color: ui.color
       };
     });
@@ -501,8 +496,9 @@ export const getPlanetTransit = async (req, res) => {
     res.json({ 
       success: true, 
       data: {
-        ascendant: rawAscendant,
-        planets: formattedPlanets
+        ascendant: ascendantNum,
+        planets: formattedPlanets,
+        rawDetails: rawPlanets 
       } 
     });
 
