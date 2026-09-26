@@ -1,6 +1,6 @@
 // import Festival from '../models/Festival.js';
 // import { openai } from '../app.js'; // Assumes openai is exported from your main file
-import Festival from '../models/Festival.js';
+import { Festival } from '../models/Festival.js';
 import OpenAI from 'openai';
 
 const openai = new OpenAI({
@@ -70,5 +70,27 @@ export const getFestivals = async (req, res) => {
     res.json({ success: true, data: festivals });
   } catch (error) {
     res.status(500).json({ error: "Database error" });
+  }
+};
+
+// controllers/festivalController.js
+
+
+export const getMonthFestivals = async (req, res) => {
+  try {
+    const { year, month } = req.query;
+    const calendarData = await Festival.findOne({ 
+      year: parseInt(year), 
+      month: parseInt(month) 
+    });
+
+    if (!calendarData) {
+      return res.status(404).json({ error: "Calendar data not found for this month" });
+    }
+
+    res.json({ success: true, data: calendarData });
+  } catch (error) {
+    console.error("Festival API Error:", error);
+    res.status(500).json({ error: "Failed to fetch calendar data" });
   }
 };

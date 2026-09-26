@@ -1,125 +1,100 @@
+// src/app/components/pages/FestivalsPage.tsx
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 
-export default function FestivalsPage() {
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 8, 1)); // Starts at Sept 2026
-  const [calendarData, setCalendarData] = useState([]);
-  const [loading, setLoading] = useState(false);
+// Example structured data (replace with a fetch call to your new endpoint)
+const mockFeb2026 = {
+  westernMonthName: "FEBRUARY 2026",
+  hinduMonthNames: "माघ           फाल्गुन",
+  days: [
+    { date: 1, dayOfWeek: "SUN", tithiHindi: "माघ पूर्णिमा", tithiEnglish: "Magh Punam / Full Moon", isMajorFestival: false },
+    { date: 2, dayOfWeek: "MON", tithiHindi: "फाल्गुन मास प्रारम्भ", tithiEnglish: "Falgun Month begins", isMajorFestival: false },
+    // ... skipping to the 15th for the example ...
+    { date: 15, dayOfWeek: "SUN", festivalHindi: "महाशिवरात्रि", festivalEnglish: "MAHA SHIVRATRI", isMajorFestival: true },
+    // ...
+  ]
+};
 
-  const fetchMonthData = async (year: number, month: number) => {
-    setLoading(true);
-    try {
-      // Adjust URL to your actual backend endpoint
-      const res = await fetch(`/api/astrology/festivals?year=${year}&month=${month}`);
-      const json = await res.json();
-      if (json.success) setCalendarData(json.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+const daysOfWeek = [
+  { hi: "रवि", en: "SUN" }, { hi: "सोम", en: "MON" }, { hi: "मंगल", en: "TUE" },
+  { hi: "बुध", en: "WED" }, { hi: "गुरु", en: "THU" }, { hi: "शुक्र", en: "FRI" }, { hi: "शनि", en: "SAT" }
+];
 
-  useEffect(() => {
-    fetchMonthData(currentDate.getFullYear(), currentDate.getMonth() + 1);
-  }, [currentDate]);
-
-  const handlePrevMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-  };
-
-  const handleNextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-  };
-
-  // Generate blank cells for days before the 1st of the month
-  const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
-  const blanks = Array(firstDayOfMonth).fill(null);
+export function FestivalsPage() {
+  const [calendarData, setCalendarData] = useState(mockFeb2026);
   
-  const daysOfWeek = [
-    { hi: 'रवि', en: 'SUN' }, { hi: 'सोम', en: 'MON' }, { hi: 'मंगल', en: 'TUE' }, 
-    { hi: 'बुध', en: 'WED' }, { hi: 'गुरु', en: 'THU' }, { hi: 'शुक्र', en: 'FRI' }, { hi: 'शनि', en: 'SAT' }
-  ];
+  // You would add useEffect here to fetch the real data from your backend
+  // based on the currently selected month.
 
-  const monthNamesEn = ["JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE", "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"];
-  const monthNamesHi = ["माघ", "फाल्गुन", "चैत्र", "वैशाख", "ज्येष्ठ", "आषाढ़", "श्रावण", "भाद्रपद", "आश्विन", "कार्तिक", "मार्गशीर्ष", "पौष"];
+  // Helper to calculate empty grid cells before the 1st of the month
+  const getEmptyCells = (firstDayOfWeek: string) => {
+    const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    const emptyCount = days.indexOf(firstDayOfWeek);
+    return Array.from({ length: emptyCount });
+  };
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] py-12 px-4">
+    <div className="min-h-screen bg-[#FFFDF2] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8">
+        <div className="text-center mb-10">
           <h1 className="text-4xl font-extrabold text-[#D35400] mb-2">Hindu Festival Calendar</h1>
-          <p className="text-slate-600">Auspicious timings and major festivals</p>
+          <p className="text-slate-600">Panchang timings and major auspicious days</p>
         </div>
 
-        {/* Traditional Calendar Wrapper */}
-        <div className="bg-[#1A1A8C] p-4 rounded-xl shadow-2xl">
-          <div className="bg-white border-[6px] border-[#E8C547] rounded p-1">
-            
-            {/* Header Section (Yellow & Red) */}
-            <div className="bg-[#FFF000] border-b-2 border-[#1A1A8C] py-3 px-4 flex justify-between items-center text-[#D31027]">
-              <button onClick={handlePrevMonth} className="px-4 py-1 bg-white/50 rounded hover:bg-white font-bold text-xl">{'<'}</button>
-              <div className="text-center flex gap-6 items-center">
-                <span className="text-2xl font-bold">{monthNamesHi[currentDate.getMonth()]}</span>
-                <span className="text-3xl font-black">{monthNamesEn[currentDate.getMonth()]} {currentDate.getFullYear()}</span>
-              </div>
-              <button onClick={handleNextMonth} className="px-4 py-1 bg-white/50 rounded hover:bg-white font-bold text-xl">{'>'}</button>
-            </div>
-
-            {/* Days of Week Row */}
-            <div className="grid grid-cols-7 border-b-2 border-[#1A1A8C]">
-              {daysOfWeek.map((day, i) => (
-                <div key={i} className={`py-2 text-center border-r border-[#1A1A8C] last:border-r-0 ${i === 0 ? 'text-[#D31027]' : 'text-[#D31027]'}`}>
-                  <div className="font-bold text-lg">{day.hi} {day.en}</div>
-                </div>
-              ))}
-            </div>
-
-            {/* Calendar Grid */}
-            <div className="grid grid-cols-7 bg-white">
-              {blanks.map((_, i) => (
-                <div key={`blank-${i}`} className="min-h-[120px] border-b border-r border-[#1A1A8C]/30 bg-slate-50"></div>
-              ))}
+        {/* The Calendar Container (styled like the image) */}
+        <div className="border-[12px] border-[#0A0A9C] bg-white rounded-md shadow-2xl p-1 relative">
+          
+          {/* Decorative Inner Border */}
+          <div className="border-[6px] border-[#F4C542] p-1">
+            <div className="border-[4px] border-[#E83C3C] p-2">
               
-              {loading ? (
-                <div className="col-span-7 py-20 text-center font-bold text-[#1A1A8C]">Loading Panchang Data...</div>
-              ) : (
-                calendarData.map((dayData: any, i) => (
-                  <div key={i} className="min-h-[120px] border-b border-r border-[#1A1A8C]/30 p-2 relative flex flex-col justify-between hover:bg-amber-50 transition-colors">
+              {/* Header: Month Names */}
+              <div className="bg-[#F9ED34] py-3 text-center mb-1">
+                <h2 className="text-[#D31F1F] text-3xl md:text-5xl font-black tracking-wider flex justify-around items-center">
+                  <span>माघ</span>
+                  <span className="font-sans">{calendarData.westernMonthName}</span>
+                  <span>फाल्गुन</span>
+                </h2>
+              </div>
+
+              {/* Grid System */}
+              <div className="grid grid-cols-7 border-l-2 border-t-2 border-[#0A0A9C]">
+                
+                {/* Days of Week Header */}
+                {daysOfWeek.map((day, idx) => (
+                  <div key={idx} className="border-r-2 border-b-2 border-[#0A0A9C] py-2 text-center bg-white flex justify-center items-center gap-1">
+                    <span className="text-[#D31F1F] font-bold text-lg md:text-xl">{day.hi}</span>
+                    <span className="text-[#D31F1F] font-bold text-lg md:text-xl">{day.en}</span>
+                  </div>
+                ))}
+
+                {/* Empty Cells for alignment */}
+                {getEmptyCells(calendarData.days[0].dayOfWeek).map((_, idx) => (
+                  <div key={`empty-${idx}`} className="border-r-2 border-b-2 border-[#0A0A9C] min-h-[120px] bg-slate-50/50"></div>
+                ))}
+
+                {/* Actual Calendar Days */}
+                {calendarData.days.map((day) => (
+                  <div key={day.date} className="border-r-2 border-b-2 border-[#0A0A9C] min-h-[120px] p-2 flex flex-col relative bg-white hover:bg-slate-50 transition-colors">
                     
                     {/* Date Number */}
-                    <span className={`text-xl font-bold ${new Date(dayData.year, dayData.month - 1, dayData.day).getDay() === 0 ? 'text-[#D31027]' : 'text-[#D31027]'}`}>
-                      {dayData.day}
-                    </span>
-
-                    {/* Major Festival Red Border Box */}
-                    {dayData.is_major ? (
-                      <div className="border-2 border-[#D31027] p-1 mt-1 text-center bg-red-50/50 rounded-sm">
-                        <div className="text-[#D31027] text-sm font-bold leading-tight">{dayData.festival_hi}</div>
-                        <div className="text-[#D31027] text-xs font-bold leading-tight mt-0.5">{dayData.festival_en}</div>
+                    <span className="text-[#D31F1F] font-black text-xl mb-1">{day.date}</span>
+                    
+                    {/* Conditional rendering for standard tithi vs Major Festival */}
+                    {day.isMajorFestival ? (
+                      <div className="border-2 border-[#D31F1F] p-1 mt-auto mb-1 text-center bg-white">
+                        <div className="text-[#8B008B] font-bold leading-tight mb-1">{day.festivalHindi}</div>
+                        <div className="text-[#D31F1F] font-bold text-sm leading-tight uppercase">{day.festivalEnglish}</div>
                       </div>
                     ) : (
-                      <div className="text-center mt-1">
-                        {dayData.festival_en && (
-                          <>
-                            <div className="text-[#1A1A8C] text-sm font-semibold leading-tight">{dayData.festival_hi}</div>
-                            <div className="text-[#1A1A8C] text-xs font-semibold leading-tight">{dayData.festival_en}</div>
-                          </>
-                        )}
+                      <div className="text-center mt-auto mb-2">
+                        <div className="text-[#8B008B] font-semibold text-sm leading-tight mb-1">{day.tithiHindi}</div>
+                        <div className="text-[#8B008B] text-xs leading-tight">{day.tithiEnglish}</div>
                       </div>
                     )}
-
-                    {/* Tithi at bottom */}
-                    <div className="text-center mt-2 pb-1">
-                      <div className="text-[#C42475] text-xs font-semibold">{dayData.tithi_hi}</div>
-                      <div className="text-[#C42475] text-[10px] font-bold">{dayData.tithi_en}</div>
-                    </div>
-
                   </div>
-                ))
-              )}
+                ))}
+              </div>
             </div>
-            
           </div>
         </div>
       </div>
