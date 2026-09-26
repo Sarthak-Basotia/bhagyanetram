@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchFestivals } from '../../api/astrologyApi';
+import { fetchFestivals } from '../../../api/astrologyApi';
 import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 
 const daysOfWeek = [
