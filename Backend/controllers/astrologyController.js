@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { Festival } from '../models/Festival.js';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -400,5 +401,17 @@ export const getGemstoneGuide = async (req, res) => {
   } catch (error) {
     console.error("Gemstone API Error:", error.message);
     res.status(500).json({ error: "Failed to generate Gemstone Guide. Please check server logs." });
+  }
+};
+
+export const getFestivals = async (req, res) => {
+  try {
+    // Fetch all available months, sorted chronologically
+    const calendars = await Festival.find({}).sort({ year: 1, month: 1 });
+    
+    res.json({ success: true, data: calendars });
+  } catch (error) {
+    console.error("Festival API Error:", error);
+    res.status(500).json({ error: "Failed to fetch festival calendar" });
   }
 };

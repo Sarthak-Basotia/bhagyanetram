@@ -2,6 +2,8 @@
 import express from "express";
 import cors from "cors";
 import Horoscope from "./models/Horoscope.js";
+import { initializeFestivalQueue } from './services/festivalCron.js';
+import { getFestivals } from "./controllers/astrologyController.js";
 import {
   generateHoroscope,
   updateAllSignsByTimeframe,
@@ -9,9 +11,10 @@ import {
 
 // Import the new AI Astrology controllers (Adjust the path if your controller is in a different folder)
 import { generateKundli, getAdvancedKundli, getGemstoneGuide, getNumerology, getPanchang, matchKundli } from "./controllers/astrologyController.js";
-import { getFestivals, seedFestivals } from "./controllers/festivalController.js";
+
 
 const app = express();
+initializeFestivalQueue();
 
 app.use(cors({ origin: "*", credentials: true }));
 app.use(express.json());
@@ -27,9 +30,7 @@ app.post("/api/astrology/matching", matchKundli);
 app.post("/api/astrology/advanced-kundli", getAdvancedKundli);
 app.post("/api/astrology/numerology", getNumerology);
 app.post("/api/astrology/gemstones", getGemstoneGuide);
-app.post("/api/astrology/seed-festivals", seedFestivals);
 app.get("/api/astrology/festivals", getFestivals);
-
 // ==========================================
 // EXISTING: BOOKING ROUTES (Assuming they are here)
 // ==========================================

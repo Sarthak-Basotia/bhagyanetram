@@ -66,3 +66,12 @@ export const fetchGemstones = async (data: { name: string, dob: string, time: st
   if (!response.ok) throw new Error('Failed to fetch Gemstones');
   return response.json();
 };
+
+export const fetchFestivals = async () => {
+  const response = await fetch(`${API_BASE}/festivals`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  if (!response.ok) throw new Error('Failed to fetch Festivals');
+  return response.json();
+};
