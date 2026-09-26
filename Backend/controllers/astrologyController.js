@@ -342,14 +342,11 @@ export const getGemstoneGuide = async (req, res) => {
     // 'latitude' instead of 'lat', or 'tz_offset' instead of 'tzone'.
     // 2. Fetch Kundli Lagna
     const kundliPayload = { 
-      day: parseInt(day), 
-      month: parseInt(month), 
-      year: parseInt(year), 
-      hour: parseInt(hour), 
-      min: parseInt(min), 
-      lat: parseFloat(lat), 
-      lon: parseFloat(lon), 
-      tzone: parseFloat(tz_offset) 
+      date: dob, // e.g. "2004-10-10"
+      time: time, // e.g. "14:30"
+      latitude: parseFloat(lat), 
+      longitude: parseFloat(lon), 
+      timezone: parseFloat(tz_offset) 
     };
     
     const kundliResponse = await fetch(`${PYTHON_ENGINE_URL}/kundli/lagna`, {
