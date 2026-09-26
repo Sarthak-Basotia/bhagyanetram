@@ -452,7 +452,7 @@ export const getPlanetTransit = async (req, res) => {
       timezone_offset: parseFloat(tz_offset || 5.5) 
     };
 
-    const response = await fetch(`${PYTHON_ENGINE_URL}/kundli`, {
+    const response = await fetch(`${PYTHON_ENGINE_URL}/kundli/planets`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
