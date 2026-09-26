@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import Horoscope from "./models/Horoscope.js";
 import { initializeFestivalQueue } from './services/festivalCron.js';
-import { getFestivals } from "./controllers/astrologyController.js";
+import { getFestivals, getPlanetTransit } from "./controllers/astrologyController.js";
 import {
   generateHoroscope,
   updateAllSignsByTimeframe,
@@ -31,6 +31,7 @@ app.post("/api/astrology/advanced-kundli", getAdvancedKundli);
 app.post("/api/astrology/numerology", getNumerology);
 app.post("/api/astrology/gemstones", getGemstoneGuide);
 app.get("/api/astrology/festivals", getFestivals);
+app.get("/api/astrology/transit", getPlanetTransit);
 // ==========================================
 // EXISTING: BOOKING ROUTES (Assuming they are here)
 // ==========================================
