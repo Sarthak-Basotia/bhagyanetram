@@ -182,7 +182,7 @@ export function ZodiacSignsPage() {
       </section>
 
       {/* Zodiac Cards */}
-      <section className="py-16">
+      <section className="py-16 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {zodiacDetails.map((zodiac, index) => (
@@ -192,67 +192,71 @@ export function ZodiacSignsPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="h-full flex"
               >
-                <Card className="h-full border-primary/20 hover:shadow-xl transition-shadow group">
-                  <CardHeader className="text-center bg-gradient-to-br from-primary/5 to-secondary/5">
-                    <div className="text-6xl mb-4 group-hover:scale-110 transition-transform">
+                <Card className="h-full w-full border-slate-200 hover:shadow-xl transition-all duration-300 group overflow-hidden flex flex-col">
+                  
+                  {/* Card Header matching screenshot */}
+                  <CardHeader className="text-center bg-[#FAF9F6] border-b border-slate-100 py-8 flex flex-col items-center">
+                    <div className="text-6xl mb-4 group-hover:scale-110 transition-transform drop-shadow-sm">
                       {zodiac.emoji}
                     </div>
-                    <CardTitle className="text-2xl text-primary">{zodiac.name}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{zodiac.dates}</p>
+                    <CardTitle className="text-2xl text-[#D35400] font-bold tracking-wide">
+                      {zodiac.name}
+                    </CardTitle>
+                    <p className="text-sm font-medium text-slate-500 mt-1">
+                      {zodiac.dates}
+                    </p>
                   </CardHeader>
-                  <CardContent className="pt-6">
-                    <p className="text-muted-foreground mb-4">{zodiac.description}</p>
+                  
+                  {/* Card Body matching screenshot */}
+                  <CardContent className="pt-6 px-6 pb-8 flex flex-col flex-grow">
+                    <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow">
+                      {zodiac.description}
+                    </p>
 
-                    <div className="space-y-3">
-                      {/* Element */}
-                      <div className="flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-primary" />
-                        <span className="text-sm">
-                          <strong>Element:</strong> {zodiac.element}
-                        </span>
+                    <div className="space-y-3 mb-6">
+                      <div className="flex items-center gap-3 text-sm">
+                        <Sparkles className="w-4 h-4 text-[#D35400] flex-shrink-0" />
+                        <span className="font-bold text-slate-700 w-24">Element:</span>
+                        <span className="text-slate-600">{zodiac.element}</span>
                       </div>
 
-                      {/* Ruling Planet */}
-                      <div className="flex items-center gap-2">
-                        <Star className="w-4 h-4 text-[#d4af37]" />
-                        <span className="text-sm">
-                          <strong>Ruling Planet:</strong> {zodiac.rulingPlanet}
-                        </span>
+                      <div className="flex items-center gap-3 text-sm">
+                        <Star className="w-4 h-4 text-yellow-500 flex-shrink-0" />
+                        <span className="font-bold text-slate-700 w-24">Ruling Planet:</span>
+                        <span className="text-slate-600">{zodiac.rulingPlanet}</span>
                       </div>
 
-                      {/* Lucky Color */}
-                      <div className="flex items-center gap-2">
-                        <Gem className="w-4 h-4 text-primary" />
-                        <span className="text-sm">
-                          <strong>Lucky Color:</strong> {zodiac.luckyColor}
-                        </span>
+                      <div className="flex items-center gap-3 text-sm">
+                        <Gem className="w-4 h-4 text-amber-700 flex-shrink-0" />
+                        <span className="font-bold text-slate-700 w-24">Lucky Color:</span>
+                        <span className="text-slate-600">{zodiac.luckyColor}</span>
                       </div>
 
-                      {/* Compatibility */}
-                      <div className="flex items-center gap-2">
-                        <Heart className="w-4 h-4 text-red-500" />
-                        <span className="text-sm">
-                          <strong>Best Match:</strong> {zodiac.compatibility}
-                        </span>
+                      <div className="flex items-center gap-3 text-sm">
+                        <Heart className="w-4 h-4 text-red-500 flex-shrink-0" />
+                        <span className="font-bold text-slate-700 w-24">Best Match:</span>
+                        <span className="text-slate-600">{zodiac.compatibility}</span>
                       </div>
+                    </div>
 
-                      {/* Traits */}
-                      <div className="mt-4">
-                        <p className="text-sm mb-2"><strong>Key Traits:</strong></p>
-                        <div className="flex flex-wrap gap-2">
-                          {zodiac.traits.map((trait) => (
-                            <span
-                              key={trait}
-                              className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs"
-                            >
-                              {trait}
-                            </span>
-                          ))}
-                        </div>
+                    {/* Traits Tags matching screenshot */}
+                    <div>
+                      <p className="text-sm font-bold text-slate-900 mb-3">Key Traits:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {zodiac.traits.map((trait) => (
+                          <span
+                            key={trait}
+                            className="px-3 py-1 bg-[#FFF4ED] text-[#D35400] border border-[#FFE4D6] rounded-full text-xs font-semibold"
+                          >
+                            {trait}
+                          </span>
+                        ))}
                       </div>
                     </div>
                   </CardContent>
+                  
                 </Card>
               </motion.div>
             ))}
