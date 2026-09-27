@@ -175,16 +175,23 @@ export function BlogPage() {
       
       {/* UPDATED Hero Section matching Zodiac & Horoscope Pages */}
 
-      <section className="py-20 celestial-gradient" style={{ color: '#C46D29' }}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="py-16 md:py-24 celestial-gradient border-b border-slate-100/50 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
+            className="flex flex-col items-center justify-center"
           >
-            <BookOpen className="w-10 h-10 md:w-12 md:h-12 text-[#D35400] mb-4 stroke-[1.5]" />
-            <h1 className="text-5xl mb-6">Daily Horoscope</h1>
-            <p className="text-xl max-w-3xl mx-auto" style={{ color: '#C46D29' }}>
+            {/* Added mx-auto and flex container rules to guarantee perfect centering */}
+            <BookOpen className="w-10 h-10 md:w-12 md:h-12 text-[#D35400] mb-4 stroke-[1.5] mx-auto" />
+            
+            {/* Restored the proper Blog title and elegant serif font */}
+            <h1 className="text-3xl md:text-4xl text-[#D35400] mb-4" style={{ fontFamily: 'Georgia, serif' }}>
+              Cosmic Wisdom Blog
+            </h1>
+            
+            <p className="text-sm md:text-base max-w-2xl mx-auto text-[#D35400]/90 font-medium">
               Explore our latest articles on astrology, Vastu Shastra, and spiritual living.
             </p>
           </motion.div>
