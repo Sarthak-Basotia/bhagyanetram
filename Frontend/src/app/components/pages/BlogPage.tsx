@@ -24,16 +24,43 @@ export function BlogPage() {
             At Bhagya Netram, one of the remedies we perform most often for clients is the embedding of natural gemstones, crystals, and sacred shells directly into the entrance threshold. Unlike temporary fixes such as a hanging toran or a bowl of crystals that can be moved or forgotten, this remedy becomes a permanent part of the entrance itself — quietly working every single time someone crosses the threshold. In this blog, we walk you through exactly what this remedy involves, the significance of each material used, and why it is considered one of the most powerful Vastu corrections for a main door.
           </p>
 
-          {/* Video Placeholders */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
-            <div className="bg-slate-100 p-8 rounded-xl border border-slate-200 flex flex-col items-center justify-center text-center aspect-video shadow-inner">
-              <span className="text-slate-500 font-bold mb-2">▶ Video 1</span>
-              <span className="text-slate-400 text-sm">Main Gate Video</span>
+          {/* Real Video Embeds */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+            
+            {/* Video 1: Main Gate */}
+            <div className="flex flex-col gap-2">
+              <div className="rounded-xl overflow-hidden shadow-md border border-slate-200 bg-black aspect-video">
+                <video 
+                  controls 
+                  playsInline
+                  preload="metadata"
+                  className="w-full h-full object-contain"
+                >
+                  {/* Pulls directly from public/videos/main-gate.mp4 */}
+                  <source src="/videos/main-gate.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <span className="text-center text-sm font-bold text-slate-500">Main Gate Vastu Assessment</span>
             </div>
-            <div className="bg-slate-100 p-8 rounded-xl border border-slate-200 flex flex-col items-center justify-center text-center aspect-video shadow-inner">
-              <span className="text-slate-500 font-bold mb-2">▶ Video 2</span>
-              <span className="text-slate-400 text-sm">Gomti Chakra & Gemstone Chip Embedding</span>
+
+            {/* Video 2: Gomti Chakra */}
+            <div className="flex flex-col gap-2">
+              <div className="rounded-xl overflow-hidden shadow-md border border-slate-200 bg-black aspect-video">
+                <video 
+                  controls 
+                  playsInline
+                  preload="metadata"
+                  className="w-full h-full object-contain"
+                >
+                  {/* Pulls directly from public/videos/gomti-chakra.mp4 */}
+                  <source src="/videos/gomti-chakra.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <span className="text-center text-sm font-bold text-slate-500">Gomti Chakra & Gemstone Embedding</span>
             </div>
+
           </div>
 
           <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mt-10 mb-4 border-b border-slate-200 pb-2">
