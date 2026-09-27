@@ -34,7 +34,10 @@ Match this exact format, headings, and length:
   }
 }`;
 
-  const userPrompt = `Generate a ${capPeriod} horoscope for ${capSign}. Keep the language encouraging, authentic, and grounded.`;
+  const currentYear = new Date().getFullYear();
+  const currentDate = new Date().toLocaleDateString();
+
+  const userPrompt = `Generate a ${capPeriod} horoscope for ${capSign}. The current date is ${currentDate} and the current year is ${currentYear}. If you mention a year, you MUST use ${currentYear}. Keep the language encouraging, authentic, and grounded.`;
 
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",

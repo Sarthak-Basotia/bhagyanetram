@@ -174,7 +174,7 @@ export function BlogPage() {
     <div className="min-h-screen bg-white">
       
       {/* UPDATED Hero Section matching Zodiac & Horoscope Pages */}
-      <section className="py-16 md:py-24 bg-[#FFFDF2] border-b border-slate-100/50 text-center">
+      <section className="py-16 md:py-24 bg-[#FFFDF2] border-b border-slate-100/50 text-center celestial-gradient" style={{ color: '#C46D29' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
