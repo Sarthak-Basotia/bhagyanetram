@@ -180,7 +180,7 @@ export function HomePage() {
                   <Phone className="mr-2 w-5 h-5" />
                   Get FREE Consultation
                 </Button>
-                <Button
+                {/* <Button
                   size="lg"
                   onClick={() => navigate('/about')}
                   variant="outline"
@@ -188,9 +188,9 @@ export function HomePage() {
                 >
                   <Play className="mr-2 w-5 h-5" />
                   Watch How It Works
-                </Button>
+                </Button> */}
               </div>
-              <div className="flex items-center gap-6 mt-8">
+              {/* <div className="flex items-center gap-6 mt-8">
                 <div className="flex items-center gap-2">
                   <div className="flex -space-x-2">
                     {[1, 2, 3, 4].map((i) => (
@@ -204,7 +204,7 @@ export function HomePage() {
                   <span className="text-lg">4.9/5</span>
                   <span className="text-sm text-muted-foreground">(5,847 reviews)</span>
                 </div>
-              </div>
+              </div> */}
             </motion.div>
 
             <motion.div
