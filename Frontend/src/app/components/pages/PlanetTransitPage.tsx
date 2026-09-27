@@ -2,6 +2,7 @@ import React, { useState, useEffect, FormEvent } from 'react';
 import { fetchPlanetTransit } from '../../../api/astrologyApi';
 import { NorthIndianChart } from '../NorthIndianChart';
 import { Loader2, Settings2, Table as TableIcon } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 // Helper to get local time formatted for the HTML datetime-local input
 const getLocalDatetimeString = (date: Date) => {
