@@ -105,7 +105,7 @@ export function BlogPage() {
             <p className="text-slate-700 mb-8 max-w-2xl mx-auto">
               If your main entrance is showing signs of Vastu imbalance — or if you're renovating and want to build this remedy in from the start — our team at Bhagya Netram can assess your specific threshold, direction, and doshas, and recommend the right combination of stones and shells for your home.
             </p>
-            <Button 
+            <Button
               className="bg-[#0A0A9C] hover:bg-blue-800 text-white px-8 py-6 text-lg font-bold rounded-lg shadow-md transition-all"
               onClick={() => window.location.href = '/contact'}
             >
@@ -124,25 +124,28 @@ export function BlogPage() {
     return (
       <div className="min-h-screen bg-white pt-12 pb-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          <Button
+
+          {/* <Button
             variant="ghost"
             onClick={() => setSelectedPost(null)}
             className="mb-8 text-[#0A0A9C] hover:gap-2 transition-all group px-0 font-bold"
           >
             <ArrowLeft className="w-5 h-5 mr-2 group-hover:mr-3 transition-all" />
             Back to Articles
-          </Button>
+          </Button> */}
 
-          <span className="inline-block px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-bold mb-6">
-            {selectedPost.category}
-          </span>
+
 
           <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
             {selectedPost.title}
           </h1>
 
           <div className="flex items-center gap-6 text-sm text-slate-500 mb-8 border-b border-slate-100 pb-8 font-medium">
+            <div className="flex items-center gap-2">
+              <span className="inline-block px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-bold mb-6">
+                {selectedPost.category}
+              </span>
+            </div>
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-[#D35400]" />
               {selectedPost.date}
@@ -162,7 +165,7 @@ export function BlogPage() {
           <div className="animate-fade-in">
             {selectedPost.content}
           </div>
-          
+
         </div>
       </div>
     );
@@ -216,7 +219,7 @@ export function BlogPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Card 
+                <Card
                   className="h-full border-slate-200 hover:shadow-xl transition-all overflow-hidden group cursor-pointer flex flex-col"
                   onClick={() => setSelectedPost(post)}
                 >
