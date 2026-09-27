@@ -1015,7 +1015,7 @@ export function HomePage() {
                 </Button>
                 <Button
                   size="lg"
-                  onClick={() => navigate('/contact')}
+                  onClick={() => window.open('https://wa.me/917905755326', '_blank')}
                   variant="outline"
                   className="border-primary text-primary hover:bg-primary/10"
                 >
