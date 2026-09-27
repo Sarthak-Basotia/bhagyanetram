@@ -12,8 +12,8 @@ export default function BirthChartPage() {
     name: '',
     dob: '',
     time: '',
-    lat: 28.6139,
-    lon: 77.2090,
+    lat: '',
+    lon: '',
     tz_offset: 5.5
   });
 
