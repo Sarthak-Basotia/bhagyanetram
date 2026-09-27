@@ -1,218 +1,265 @@
-import React, { useState } from 'react';
-import { fetchNumerology } from '../../../api/astrologyApi';
+import React, { useState, FormEvent } from 'react';
+import { 
+  Calculator, User, Star, Compass, AlertCircle, 
+  CheckCircle2, Sparkles, Gem, Heart, Brain 
+} from 'lucide-react';
+// Import your API function (Adjust path if needed)
+import { fetchNumerology } from '../../../api/astrologyApi'; 
 
 export default function NumerologyPage() {
+  // 1. Added State for Name and Gender
+  const [name, setName] = useState('');
+  const [dob, setDob] = useState('');
+  const [gender, setGender] = useState('');
+  
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
-  const [formData, setFormData] = useState({ name: '', dob: '', gender: 'male' });
   const [error, setError] = useState('');
+  const [data, setData] = useState<any>(null);
 
-  const handleCalculate = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+    
     try {
-      const res = await fetchNumerology(formData);
-      if (res.success) setResult(res.data);
-      else setError('Failed to calculate numerology.');
-    } catch (err: any) {
+      // 2. Updated to exactly match your TypeScript interface: { name, dob, gender }
+      const response = await fetchNumerology({ name, dob, gender });
+      
+      if (response.success && response.data) {
+        setData(response.data);
+      } else {
+        setError('Failed to calculate numerology profile.');
+      }
+    } catch (err) {
       console.error(err);
-      setError(err.message || 'An error occurred.');
+      setError('Engine connection failed.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen bg-slate-50">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl md:text-5xl font-extrabold text-indigo-950 mb-3 tracking-tight">Vedic Numerology</h1>
-        <p className="text-slate-600 max-w-2xl mx-auto text-lg">Discover your core numbers, ruling planets, and auspicious directions based on the Chaldean system.</p>
+    <div className="min-h-screen bg-[#FFFDF2] py-8 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-7xl mx-auto">
+        
+        {/* Header Section */}
+        <div className="text-center mb-10">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-[#D35400] mb-3 flex items-center justify-center gap-3">
+            <Calculator className="w-8 h-8 md:w-10 md:h-10" />
+            Vedic Numerology
+          </h1>
+          <p className="text-slate-600 max-w-2xl mx-auto">
+            Discover your core numbers, lucky elements, and auspicious directions based on the Chaldean system.
+          </p>
+        </div>
+
+        {/* 3. Expanded Input Form for Name, DOB, and Gender */}
+        <div className="max-w-4xl mx-auto bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-12">
+          <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4 items-end">
+            
+            <div className="flex-1 w-full">
+              <label className="block text-sm font-bold text-slate-700 mb-2">Full Name</label>
+              <input 
+                type="text" 
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your name"
+                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#D35400] outline-none"
+                required
+              />
+            </div>
+
+            <div className="flex-1 w-full">
+              <label className="block text-sm font-bold text-slate-700 mb-2">Date of Birth</label>
+              <input 
+                type="date" 
+                value={dob}
+                onChange={(e) => setDob(e.target.value)}
+                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#D35400] outline-none"
+                required
+              />
+            </div>
+
+            <div className="flex-1 w-full">
+              <label className="block text-sm font-bold text-slate-700 mb-2">Gender</label>
+              <select 
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#D35400] outline-none bg-white"
+              >
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+              </select>
+            </div>
+
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="bg-[#0A0A9C] text-white font-bold p-3 rounded-lg hover:bg-blue-800 transition-colors px-8 disabled:opacity-70 flex items-center justify-center w-full md:w-auto h-[50px]"
+            >
+              {loading ? 'Calculating...' : 'Reveal'}
+            </button>
+          </form>
+          {error && <p className="text-red-500 font-bold text-sm mt-3 text-center">{error}</p>}
+        </div>
+
+        {/* Results Dashboard */}
+        {data && (
+          <div className="space-y-8 animate-fade-in">
+            
+            {/* Core Numbers Overview */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <NumberCard title="Radical (Mulank)" number={data.numbers.radical_number} color="bg-amber-100 text-amber-700" />
+              <NumberCard title="Destiny (Bhagyank)" number={data.numbers.destiny_number} color="bg-blue-100 text-blue-700" />
+              <NumberCard title="Name Number" number={data.numbers.name_number} color="bg-emerald-100 text-emerald-700" />
+              <NumberCard title="Soul Urge" number={data.numbers.soul_urge_number} color="bg-purple-100 text-purple-700" />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Radical Profile (Nature) */}
+              <ProfileSection 
+                title="Radical Profile (Your Nature)" 
+                profile={data.radical_profile} 
+                icon={<User className="w-6 h-6 text-amber-600" />} 
+                accentColor="border-amber-200 bg-amber-50/30"
+              />
+              
+              {/* Destiny Profile (Life Path) */}
+              <ProfileSection 
+                title="Destiny Profile (Your Life Path)" 
+                profile={data.destiny_profile} 
+                icon={<Star className="w-6 h-6 text-blue-600" />} 
+                accentColor="border-blue-200 bg-blue-50/30"
+              />
+            </div>
+
+            {/* Favorable Elements Row */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <ElementCard title="Lucky Colors" items={data.radical_profile.favourable_colors} icon={<Sparkles />} />
+              <ElementCard title="Lucky Days" items={data.radical_profile.favourable_days} icon={<CheckCircle2 />} />
+              <ElementCard title="Recommended Gemstone" items={[data.radical_profile.gemstone, data.destiny_profile.gemstone]} icon={<Gem />} />
+            </div>
+
+            {/* Kua Directions (Feng Shui / Vastu) */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <div className="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
+                <Compass className="w-6 h-6 text-emerald-600" />
+                <h2 className="text-xl font-bold text-slate-800">Auspicious Directions (Kua Group: {data.directions.group})</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <DirectionCard title="Success & Wealth" data={data.directions.success} icon={<Star className="w-5 h-5" />} color="text-amber-600" />
+                <DirectionCard title="Health & Vitality" data={data.directions.health} icon={<Heart className="w-5 h-5" />} color="text-rose-600" />
+                <DirectionCard title="Relationships" data={data.directions.relationship} icon={<User className="w-5 h-5" />} color="text-pink-600" />
+                <DirectionCard title="Wisdom & Study" data={data.directions.wisdom} icon={<Brain className="w-5 h-5" />} color="text-blue-600" />
+              </div>
+              
+              <div className="mt-6 p-4 bg-red-50 rounded-lg flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                <div>
+                  <h4 className="font-bold text-red-900 text-sm mb-1">Inauspicious Directions to Avoid</h4>
+                  <p className="text-red-700 text-sm font-medium">{data.directions.inauspicious_directions.join(", ")}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Disclaimer */}
+            <p className="text-center text-xs text-slate-400 font-medium pb-8">{data.note}</p>
+
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// --- Subcomponents for clean code ---
+
+function NumberCard({ title, number, color }: { title: string, number: number, color: string }) {
+  return (
+    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col items-center justify-center text-center">
+      <span className="text-sm font-bold text-slate-500 mb-2">{title}</span>
+      <div className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl font-extrabold ${color}`}>
+        {number}
+      </div>
+    </div>
+  );
+}
+
+function ProfileSection({ title, profile, icon, accentColor }: { title: string, profile: any, icon: any, accentColor: string }) {
+  return (
+    <div className={`bg-white rounded-2xl p-6 shadow-sm border ${accentColor}`}>
+      <div className="flex items-center gap-3 mb-4">
+        {icon}
+        <h2 className="text-xl font-bold text-slate-800">{title}</h2>
       </div>
       
-      <form onSubmit={handleCalculate} className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-indigo-100 grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 max-w-4xl mx-auto">
-        {error && <div className="md:col-span-3 p-3 bg-red-50 text-red-700 rounded text-sm font-semibold">{error}</div>}
+      <p className="text-slate-700 italic mb-6 leading-relaxed bg-white/50 p-4 rounded-lg border border-white/60">
+        "{profile.personality.summary}"
+      </p>
+
+      <div className="space-y-4">
+        <div className="flex justify-between items-center py-2 border-b border-slate-100">
+          <span className="text-sm font-bold text-slate-500">Ruling Planet</span>
+          <span className="font-bold text-slate-800">{profile.ruling_planet}</span>
+        </div>
+        <div className="flex justify-between items-center py-2 border-b border-slate-100">
+          <span className="text-sm font-bold text-slate-500">Favourable God</span>
+          <span className="font-bold text-slate-800">{profile.favourable_god}</span>
+        </div>
         
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-slate-700">Full Name</label>
-          <input required type="text" placeholder="e.g. Sharad Bansal" className="w-full border border-slate-200 p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all" onChange={e => setFormData({...formData, name: e.target.value})} />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-slate-700">Date of Birth</label>
-          <input required type="date" className="w-full border border-slate-200 p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all" onChange={e => setFormData({...formData, dob: e.target.value})} />
-        </div>
-        <div className="space-y-2">
-          <label className="text-sm font-bold text-slate-700">Gender</label>
-          <select className="w-full border border-slate-200 p-3 rounded-xl bg-slate-50 focus:bg-white focus:ring-2 focus:ring-indigo-500 outline-none transition-all" onChange={e => setFormData({...formData, gender: e.target.value})} value={formData.gender}>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-        </div>
-        <button disabled={loading} className="md:col-span-3 bg-[#D35400] text-white p-4 rounded-xl font-bold text-lg hover:bg-[#B34700] transition-colors shadow-lg shadow-[#D35400]/30 disabled:opacity-70 flex justify-center items-center gap-2">
-          {loading ? 'Calculating Vibrations...' : 'Reveal My Numbers'}
-        </button>
-      </form>
-
-      {result && (
-        <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          
-          {/* Core Numbers Display */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <div className="bg-gradient-to-br from-orange-100 to-orange-50 p-6 rounded-2xl border border-orange-200 text-center shadow-sm">
-              <span className="text-xs font-bold text-orange-800 uppercase tracking-widest block mb-2">Radical (Life Path)</span>
-              <span className="text-5xl font-black text-orange-600">{result.numbers.radical_number}</span>
-            </div>
-            <div className="bg-gradient-to-br from-indigo-100 to-indigo-50 p-6 rounded-2xl border border-indigo-200 text-center shadow-sm">
-              <span className="text-xs font-bold text-indigo-800 uppercase tracking-widest block mb-2">Destiny</span>
-              <span className="text-5xl font-black text-indigo-600">{result.numbers.destiny_number}</span>
-            </div>
-            <div className="bg-gradient-to-br from-emerald-100 to-emerald-50 p-6 rounded-2xl border border-emerald-200 text-center shadow-sm">
-              <span className="text-xs font-bold text-emerald-800 uppercase tracking-widest block mb-2">Name</span>
-              <span className="text-5xl font-black text-emerald-600">{result.numbers.name_number}</span>
-            </div>
-            <div className="bg-gradient-to-br from-rose-100 to-rose-50 p-6 rounded-2xl border border-rose-200 text-center shadow-sm">
-              <span className="text-xs font-bold text-rose-800 uppercase tracking-widest block mb-2">Soul Urge</span>
-              <span className="text-5xl font-black text-rose-600">{result.numbers.soul_urge_number}</span>
-            </div>
-            <div className="bg-gradient-to-br from-violet-100 to-violet-50 p-6 rounded-2xl border border-violet-200 text-center shadow-sm md:col-span-1 col-span-2">
-              <span className="text-xs font-bold text-violet-800 uppercase tracking-widest block mb-2">Personality</span>
-              <span className="text-5xl font-black text-violet-600">{result.numbers.personality_number}</span>
-            </div>
+        <div className="pt-2">
+          <span className="block text-sm font-bold text-slate-500 mb-2">Strengths</span>
+          <div className="flex flex-wrap gap-2">
+            {profile.personality.strengths.map((s: string, i: number) => (
+              <span key={i} className="bg-emerald-100 text-emerald-800 text-xs font-bold px-2.5 py-1 rounded-full">{s}</span>
+            ))}
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Radical Profile */}
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="bg-orange-50 p-6 border-b border-orange-100">
-                <h3 className="text-2xl font-bold text-orange-900 mb-1">Radical Profile</h3>
-                <p className="text-sm font-semibold text-orange-700">Ruled by {result.radical_profile.ruling_planet} • Favorable God: {result.radical_profile.favourable_god}</p>
-              </div>
-              <div className="p-6 space-y-6">
-                <div>
-                  <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Personality Overview</h4>
-                  <p className="text-slate-700 leading-relaxed font-medium">{result.radical_profile.personality.summary}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-slate-50 p-4 rounded-xl">
-                    <h4 className="text-xs font-bold text-slate-500 uppercase mb-2">Strengths</h4>
-                    <ul className="text-sm text-slate-700 space-y-1 list-disc pl-4">
-                      {result.radical_profile.personality.strengths.map((s: string, i: number) => <li key={i}>{s}</li>)}
-                    </ul>
-                  </div>
-                  <div className="bg-slate-50 p-4 rounded-xl">
-                    <h4 className="text-xs font-bold text-slate-500 uppercase mb-2">Challenges</h4>
-                    <ul className="text-sm text-slate-700 space-y-1 list-disc pl-4">
-                      {result.radical_profile.personality.challenges.map((s: string, i: number) => <li key={i}>{s}</li>)}
-                    </ul>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Favorable Elements</h4>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-bold">Gem: {result.radical_profile.gemstone}</span>
-                    <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-bold">Metal: {result.radical_profile.metal}</span>
-                    <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-bold">Direction: {result.radical_profile.direction}</span>
-                    <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-bold">Days: {result.radical_profile.favourable_days.join(', ')}</span>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {result.radical_profile.favourable_colors.map((c: string, i: number) => (
-                      <span key={i} className="px-3 py-1 border border-slate-200 text-slate-600 rounded-full text-xs font-semibold">{c}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Destiny Profile */}
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-              <div className="bg-indigo-50 p-6 border-b border-indigo-100">
-                <h3 className="text-2xl font-bold text-indigo-900 mb-1">Destiny Profile</h3>
-                <p className="text-sm font-semibold text-indigo-700">Ruled by {result.destiny_profile.ruling_planet} • Favorable God: {result.destiny_profile.favourable_god}</p>
-              </div>
-              <div className="p-6 space-y-6">
-                <div>
-                  <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">Destiny Overview</h4>
-                  <p className="text-slate-700 leading-relaxed font-medium">{result.destiny_profile.personality.summary}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-slate-50 p-4 rounded-xl">
-                    <h4 className="text-xs font-bold text-slate-500 uppercase mb-2">Strengths</h4>
-                    <ul className="text-sm text-slate-700 space-y-1 list-disc pl-4">
-                      {result.destiny_profile.personality.strengths.map((s: string, i: number) => <li key={i}>{s}</li>)}
-                    </ul>
-                  </div>
-                  <div className="bg-slate-50 p-4 rounded-xl">
-                    <h4 className="text-xs font-bold text-slate-500 uppercase mb-2">Challenges</h4>
-                    <ul className="text-sm text-slate-700 space-y-1 list-disc pl-4">
-                      {result.destiny_profile.personality.challenges.map((s: string, i: number) => <li key={i}>{s}</li>)}
-                    </ul>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-3">Favorable Elements</h4>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-bold">Gem: {result.destiny_profile.gemstone}</span>
-                    <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-bold">Metal: {result.destiny_profile.metal}</span>
-                    <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-bold">Direction: {result.destiny_profile.direction}</span>
-                    <span className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-bold">Days: {result.destiny_profile.favourable_days.join(', ')}</span>
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {result.destiny_profile.favourable_colors.map((c: string, i: number) => (
-                      <span key={i} className="px-3 py-1 border border-slate-200 text-slate-600 rounded-full text-xs font-semibold">{c}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Feng Shui / Kua Directions */}
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between mb-6">
-              <div>
-                <h3 className="text-2xl font-bold text-slate-900">Auspicious Directions</h3>
-                <p className="text-slate-500 font-medium">Based on Kua Number {result.directions.kua_number} ({result.directions.group} Group)</p>
-              </div>
-              <div className="mt-4 md:mt-0 text-sm font-semibold text-rose-600 bg-rose-50 px-4 py-2 rounded-lg border border-rose-100">
-                Avoid Facing: {result.directions.inauspicious_directions.join(', ')}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 hover:border-emerald-200 hover:bg-emerald-50 transition-colors">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">{result.directions.success.direction}</span>
-                  <h4 className="font-bold text-slate-800">Success</h4>
-                </div>
-                <p className="text-sm text-slate-600 leading-relaxed">{result.directions.success.meaning}</p>
-              </div>
-              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 hover:border-blue-200 hover:bg-blue-50 transition-colors">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold">{result.directions.health.direction}</span>
-                  <h4 className="font-bold text-slate-800">Health</h4>
-                </div>
-                <p className="text-sm text-slate-600 leading-relaxed">{result.directions.health.meaning}</p>
-              </div>
-              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 hover:border-pink-200 hover:bg-pink-50 transition-colors">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="w-8 h-8 rounded-full bg-pink-100 text-pink-700 flex items-center justify-center font-bold">{result.directions.relationship.direction}</span>
-                  <h4 className="font-bold text-slate-800">Relationships</h4>
-                </div>
-                <p className="text-sm text-slate-600 leading-relaxed">{result.directions.relationship.meaning}</p>
-              </div>
-              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 hover:border-purple-200 hover:bg-purple-50 transition-colors">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold">{result.directions.wisdom.direction}</span>
-                  <h4 className="font-bold text-slate-800">Wisdom</h4>
-                </div>
-                <p className="text-sm text-slate-600 leading-relaxed">{result.directions.wisdom.meaning}</p>
-              </div>
-            </div>
-          </div>
-          
-          <p className="text-center text-xs text-slate-400 mt-4 italic">{result.note}</p>
         </div>
-      )}
+
+        <div className="pt-2">
+          <span className="block text-sm font-bold text-slate-500 mb-2">Challenges</span>
+          <div className="flex flex-wrap gap-2">
+            {profile.personality.challenges.map((c: string, i: number) => (
+              <span key={i} className="bg-rose-100 text-rose-800 text-xs font-bold px-2.5 py-1 rounded-full">{c}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ElementCard({ title, items, icon }: { title: string, items: string[], icon: any }) {
+  return (
+    <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-start gap-4">
+      <div className="p-3 bg-slate-50 rounded-xl text-[#0A0A9C]">
+        {icon}
+      </div>
+      <div>
+        <h3 className="font-bold text-slate-700 text-sm mb-2">{title}</h3>
+        <div className="flex flex-wrap gap-1">
+          {items.map((item, idx) => (
+            <span key={idx} className="text-sm font-medium text-slate-900 bg-slate-100 px-2 py-0.5 rounded">
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DirectionCard({ title, data, icon, color }: { title: string, data: any, icon: any, color: string }) {
+  return (
+    <div className="bg-slate-50 p-4 rounded-xl border border-slate-100">
+      <div className="flex items-center gap-2 mb-2">
+        <div className={color}>{icon}</div>
+        <h3 className="font-bold text-slate-800 text-sm">{title}</h3>
+      </div>
+      <div className="flex items-center gap-2 mb-2">
+        <span className={`text-lg font-black ${color}`}>{data.direction}</span>
+      </div>
+      <p className="text-xs text-slate-600 leading-relaxed">{data.meaning}</p>
     </div>
   );
 }
