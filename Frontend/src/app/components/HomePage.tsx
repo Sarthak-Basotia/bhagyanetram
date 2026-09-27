@@ -28,7 +28,6 @@ import { motion } from 'motion/react';
 import logoImage from '/src/app/components/figma/d5457f2df4c5864ece0203437258a94768a0cf00.png';
 import nidhiJi from '/src/assets/Nidhi-Ji.png';
 import panditPranav from '/src/assets/Pandit-Pranav.jpeg';
-import garrgiJi from 'gargiJi.jpeg';
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -57,7 +56,7 @@ export function HomePage() {
     },
     {
       name: 'Garrgi Ji',
-      image: garrgiJi,
+      image: "gargiJi.jpeg",
       specialization: 'Palmistry, Astro, Vastu',
       experience: '7 Years',
       languages: 'Hindi',
