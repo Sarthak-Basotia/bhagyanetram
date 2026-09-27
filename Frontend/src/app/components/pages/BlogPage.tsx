@@ -10,7 +10,7 @@ export function BlogPage() {
   const blogPosts = [
     {
       title: 'Vastu for the Main Entrance: Attracting Positive Energy with Sacred Stones and Shells',
-      excerpt: 'The main entrance of a home or office is more than just a doorway — in Vastu Shastra, it is considered the "mukhya dwar," the mouth through which all energy enters a space.',
+      excerpt: 'The main entrance of a home or office is more than just a doorway — in Vastu Shastra, it is considered the "mukhya dwar," the mouth through which all energy, opportunity, and prosperity enters a space.',
       category: 'Vastu Shastra',
       date: 'September 27, 2026',
       author: 'Bhagya Netram',
@@ -23,6 +23,7 @@ export function BlogPage() {
           <p>
             At Bhagya Netram, one of the remedies we perform most often for clients is the embedding of natural gemstones, crystals, and sacred shells directly into the entrance threshold. Unlike temporary fixes such as a hanging toran or a bowl of crystals that can be moved or forgotten, this remedy becomes a permanent part of the entrance itself — quietly working every single time someone crosses the threshold. In this blog, we walk you through exactly what this remedy involves, the significance of each material used, and why it is considered one of the most powerful Vastu corrections for a main door.
           </p>
+
           {/* Video Placeholders */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
             <div className="bg-slate-100 p-8 rounded-xl border border-slate-200 flex flex-col items-center justify-center text-center aspect-video shadow-inner">
@@ -31,43 +32,27 @@ export function BlogPage() {
             </div>
             <div className="bg-slate-100 p-8 rounded-xl border border-slate-200 flex flex-col items-center justify-center text-center aspect-video shadow-inner">
               <span className="text-slate-500 font-bold mb-2">▶ Video 2</span>
-              <span className="text-slate-400 text-sm">Gomti Chakra & Gemstone Chip Embedding Process</span>
+              <span className="text-slate-400 text-sm">Gomti Chakra & Gemstone Chip Embedding</span>
             </div>
           </div>
-        </div>
-      )
-    },
-    {
-      title: 'Why Smoky Quartz and Protective Beads Are Essential for Vastu',
-      excerpt: 'Smoky quartz is traditionally regarded in Vastu and crystal practice as a grounding and absorbing stone, pulling in negative energy before it travels into the home.',
-      category: 'Remedies',
-      date: 'September 26, 2026',
-      author: 'Bhagya Netram',
-      image: 'https://images.unsplash.com/photo-1587925358603-c2eea5305bbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      content: (
-        <div className="space-y-6 text-slate-700 text-lg leading-relaxed">
+
+          <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mt-10 mb-4 border-b border-slate-200 pb-2">
+            Why Smoky Quartz and Protective Beads
+          </h3>
           <p>
             Smoky quartz is traditionally regarded in Vastu and crystal practice as a grounding and absorbing stone. It is believed to pull in and neutralize negative, heavy, or stagnant energy before it can travel further into the home — much like a filter placed at the very first point of entry. Because the main door is the single busiest energy junction of any property (every visitor, every mood, every outside influence passes through it), placing an absorptive stone exactly at this point is considered far more effective than placing it deeper inside the home.
           </p>
           <p>
             The red, black, and white beads used alongside the crystal are a traditional protective combination associated with warding off nazar (evil eye) and negative intent. This combination is commonly used at entrances, in vehicles, and even for children — but embedding it permanently into the threshold ensures the protection is constant and cannot be misplaced, removed, or forgotten over time.
           </p>
-        </div>
-      )
-    },
-    {
-      title: 'The Power of Gomti Chakra and Gemstone Chips in Vastu',
-      excerpt: 'Found in the Gomti River, this sacred spiral shell resembles the Sudarshan Chakra and is closely associated with attracting wealth and uninterrupted prosperity.',
-      category: 'Spiritual Practices',
-      date: 'September 25, 2026',
-      author: 'Bhagya Netram',
-      image: 'https://images.unsplash.com/photo-1603533867307-b3fa43027871?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      content: (
-        <div className="space-y-6 text-slate-700 text-lg leading-relaxed">
+
+          <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mt-10 mb-4 border-b border-slate-200 pb-2">
+            Why Gomti Chakra and Gemstone Chips
+          </h3>
           <p>
             The Gomti Chakra is a naturally occurring spiral shell found in the Gomti River near Dwarka, and is one of the most revered objects in Vastu and Hindu tradition. Its spiral pattern is said to resemble the Sudarshan Chakra of Lord Vishnu, and it is closely associated with Goddess Lakshmi. Traditionally, Gomti Chakras placed at or near the main entrance are believed to:
           </p>
-          <ul className="list-disc pl-6 space-y-2 my-4 font-medium text-slate-800">
+          <ul className="list-disc pl-6 space-y-2 my-4">
             <li>Attract wealth and ensure a smooth, uninterrupted flow of prosperity into the home</li>
             <li>Protect the household from negative energy, evil eye, and unwanted influences</li>
             <li>Correct underlying Vastu doshas at the entrance without any structural demolition</li>
@@ -83,29 +68,21 @@ export function BlogPage() {
           <p>
             Together, this creates a layered remedy: the shells carry the primary prosperity and protection intent, while the surrounding gemstone bed reinforces and supports it from every angle.
           </p>
-        </div>
-      )
-    },
-    {
-      title: 'Why Embed Vastu Remedies Permanently Into the Threshold?',
-      excerpt: 'While loose gemstones in bowls work, embedding remedies directly into the floor ensures uninterrupted contact and permanent energetic alignment.',
-      category: 'Vastu Shastra',
-      date: 'September 24, 2026',
-      author: 'Bhagya Netram',
-      image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
-      content: (
-        <div className="space-y-6 text-slate-700 text-lg leading-relaxed">
+
+          <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mt-10 mb-4 border-b border-slate-200 pb-2">
+            Why Embed These Remedies Permanently Into the Threshold?
+          </h3>
           <p>
             Many people are familiar with placing loose gemstones in a bowl near the door, hanging a Gomti Chakra bundle above the frame, or keeping crystals on a side table. These methods work, but they depend on the object staying in place — and in daily life, objects get moved, cleaned away, lost, or simply forgotten.
           </p>
-          <p className="font-bold text-slate-900 mt-6 mb-2 text-xl">
+          <p className="font-semibold text-slate-900 mt-6 mb-2">
             Embedding the remedy directly into the floor of the threshold solves this problem permanently:
           </p>
-          <ul className="list-disc pl-6 space-y-3 my-4">
+          <ul className="list-disc pl-6 space-y-2 my-4">
             <li><strong>Uninterrupted contact</strong> — every single person, family member, or visitor physically crosses over the remedy every time they enter or exit, ensuring consistent energetic engagement.</li>
             <li><strong>Permanence</strong> — once set into cement/plaster, the remedy cannot be accidentally removed, misplaced, or forgotten during cleaning or renovation.</li>
             <li><strong>No compromise on aesthetics</strong> — because the stones are set flush into the threshold, the remedy is discreet and does not disrupt the interior design of the entrance.</li>
-            <li><strong>Classical Alignment</strong> — lines up with classical Vastu texts, which often prescribe burying or embedding specific materials at the foundation and entry points of a structure for lasting correction.</li>
+            <li>Alignment with classical Vastu texts, which often prescribe burying or embedding specific materials at the foundation and entry points of a structure for lasting correction — rather than surface-level, movable fixes.</li>
           </ul>
 
           <h3 className="text-2xl md:text-3xl font-bold text-slate-900 mt-10 mb-4 border-b border-slate-200 pb-2">
@@ -269,7 +246,7 @@ export function BlogPage() {
                       {post.excerpt}
                     </p>
                     <Button variant="ghost" className="text-[#0A0A9C] p-0 font-bold hover:gap-2 hover:bg-transparent transition-all group-hover:text-blue-800">
-                      Read Article
+                      Read Full Article
                       <ArrowRight className="w-4 h-4 ml-1 group-hover:ml-2 transition-all" />
                     </Button>
                   </CardContent>
