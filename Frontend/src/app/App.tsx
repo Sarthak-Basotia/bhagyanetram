@@ -31,6 +31,8 @@ import GemstoneGuidePage from './components/pages/GemstoneGuidePage';
 import FestivalsPage from './components/pages/FestivalsPage';
 import PlanetTransitPage from './components/pages/PlanetTransitPage';
 import ScrollToTop from './components/ScrollToTop';
+import PrivacyPolicyPage from './components/pages/PrivacyPolicyPage';
+import TermsConditionsPage from './components/pages/TermsConditionsPage';
 
 export default function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -82,6 +84,8 @@ export default function App() {
             <Route path="/gem-guide" element={<GemstoneGuidePage />} />
             <Route path="/festivals" element={<FestivalsPage />} />
             <Route path="/planet-chart" element={<PlanetTransitPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms-and-conditions" element={<TermsConditionsPage />} />
             {/* Catch-all route to redirect 404s to Home */}
             <Route path="*" element={<HomePage />} />
           </Routes>
@@ -189,9 +193,29 @@ export default function App() {
             </div>
 
             {/* Bottom Bar */}
-            <div className="border-t border-background/20 pt-8 text-center text-sm text-background/60">
-              <p>© 2026 Bhagyanetram. All rights reserved.</p>
-              <p className="mt-1 text-xs">Professional Vedic Astrology & Vastu Shastra Consultations</p>
+            <div className="border-t border-background/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-background/60">
+              <div className="text-center md:text-left">
+                <p>© 2026 Bhagyanetram. All rights reserved.</p>
+                <p className="mt-1 text-xs">Professional Vedic Astrology & Vastu Shastra Consultations</p>
+              </div>
+              
+              {/* New Legal Links */}
+              <div className="flex gap-6 text-xs font-medium">
+                <Link 
+                  to="/privacy-policy" 
+                  onClick={scrollToTop} 
+                  className="hover:text-background transition-colors underline underline-offset-2"
+                >
+                  Privacy Policy
+                </Link>
+                <Link 
+                  to="/terms-and-conditions" 
+                  onClick={scrollToTop} 
+                  className="hover:text-background transition-colors underline underline-offset-2"
+                >
+                  Terms & Conditions
+                </Link>
+              </div>
             </div>
           </div>
         </footer>
