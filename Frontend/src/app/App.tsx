@@ -50,12 +50,12 @@ export default function App() {
 
   return (
     <Router>
-      <div className="min-h-screen">
+      <div className="min-h-screen flex flex-col">
         <ScrollToTop />
         {/* Navigation component will also need to be updated to use <Link> inside it */}
         <Navigation />
 
-        <main>
+        <main className="flex-grow">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />

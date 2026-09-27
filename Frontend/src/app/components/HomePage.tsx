@@ -55,6 +55,16 @@ export function HomePage() {
       available: true,
     },
     {
+      name: 'Vaishnavi Ji',
+      image: nidhiJi,
+      specialization: 'Palmistry, Astro, Vastu',
+      experience: '7 Years',
+      languages: 'Hindi',
+      rating: 4.9,
+      reviews: 2011,
+      available: true,
+    },
+    {
       name: 'Nidhi Ji',
       image: nidhiJi,
       specialization: 'Vedic Astrology, Vastu',
