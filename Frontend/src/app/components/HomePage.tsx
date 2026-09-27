@@ -28,6 +28,7 @@ import { motion } from 'motion/react';
 import logoImage from '/src/app/components/figma/d5457f2df4c5864ece0203437258a94768a0cf00.png';
 import nidhiJi from '/src/assets/Nidhi-Ji.png';
 import panditPranav from '/src/assets/Pandit-Pranav.jpeg';
+import garrgiJi from 'gargiJi.jpeg';
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -55,8 +56,8 @@ export function HomePage() {
       available: true,
     },
     {
-      name: 'Vaishnavi Ji',
-      image: nidhiJi,
+      name: 'Garrgi Ji',
+      image: garrgiJi,
       specialization: 'Palmistry, Astro, Vastu',
       experience: '7 Years',
       languages: 'Hindi',
