@@ -546,7 +546,7 @@ export function HomePage() {
               <Card className="border-border h-full">
                 <div className="relative h-64 overflow-hidden">
                   <img
-                    src="https://images.unsplash.com/photo-1674936985746-1993297aad5d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
+                    src="astrology.png"
                     alt="Vedic Astrology"
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   />
