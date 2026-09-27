@@ -14,7 +14,7 @@ export function BlogPage() {
       category: 'Vastu Shastra',
       date: 'September 27, 2026',
       author: 'Bhagya Netram',
-      image: 'https://images.unsplash.com/photo-1515091943-9d5c0ad475af?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjcnlzdGFsc3xlbnwxfHx8fDE3MjY3NDIwMDB8MA&ixlib=rb-4.1.0&q=80&w=1080',
+      image: 'blog1.jpeg',
       content: (
         <div className="space-y-6 text-slate-700 text-lg leading-relaxed">
           <p>
