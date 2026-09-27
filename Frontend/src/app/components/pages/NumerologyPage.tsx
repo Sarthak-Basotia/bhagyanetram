@@ -142,13 +142,6 @@ export default function NumerologyPage() {
               <ElementCard title="Gemstones" items={[data.radical_profile.gemstone, data.destiny_profile.gemstone]} icon={<Gem />} />
             </div>
 
-            {/* Favorable Elements Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <ElementCard title="Lucky Colors" items={data.radical_profile.favourable_colors} icon={<Sparkles />} />
-              <ElementCard title="Lucky Days" items={data.radical_profile.favourable_days} icon={<CheckCircle2 />} />
-              <ElementCard title="Recommended Gemstone" items={[data.radical_profile.gemstone, data.destiny_profile.gemstone]} icon={<Gem />} />
-            </div>
-
             {/* Kua Directions (Feng Shui / Vastu) */}
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
               <div className="flex items-center gap-3 mb-6 border-b border-slate-100 pb-4">
