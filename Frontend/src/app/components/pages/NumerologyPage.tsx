@@ -107,12 +107,13 @@ export default function NumerologyPage() {
         {data && (
           <div className="space-y-8 animate-fade-in">
             
-            {/* Core Numbers Overview */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {/* Core Numbers Overview (Now 5 columns) */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               <NumberCard title="Radical (Mulank)" number={data.numbers.radical_number} color="bg-amber-100 text-amber-700" />
               <NumberCard title="Destiny (Bhagyank)" number={data.numbers.destiny_number} color="bg-blue-100 text-blue-700" />
               <NumberCard title="Name Number" number={data.numbers.name_number} color="bg-emerald-100 text-emerald-700" />
               <NumberCard title="Soul Urge" number={data.numbers.soul_urge_number} color="bg-purple-100 text-purple-700" />
+              <NumberCard title="Personality" number={data.numbers.personality_number} color="bg-rose-100 text-rose-700" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -131,6 +132,14 @@ export default function NumerologyPage() {
                 icon={<Star className="w-6 h-6 text-blue-600" />} 
                 accentColor="border-blue-200 bg-blue-50/30"
               />
+            </div>
+
+            {/* Favorable Elements Row (Expanded) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <ElementCard title="Lucky Colors" items={data.radical_profile.favourable_colors} icon={<Sparkles />} />
+              <ElementCard title="Lucky Days" items={data.radical_profile.favourable_days} icon={<CheckCircle2 />} />
+              <ElementCard title="Lucky Dates (This Month)" items={data.radical_profile.favourable_dates_this_month} icon={<Star />} />
+              <ElementCard title="Gemstones" items={[data.radical_profile.gemstone, data.destiny_profile.gemstone]} icon={<Gem />} />
             </div>
 
             {/* Favorable Elements Row */}
@@ -229,7 +238,7 @@ function ProfileSection({ title, profile, icon, accentColor }: { title: string, 
   );
 }
 
-function ElementCard({ title, items, icon }: { title: string, items: string[], icon: any }) {
+function ElementCard({ title, items, icon }: { title: string, items: (string | number)[], icon: any }) {
   return (
     <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-start gap-4">
       <div className="p-3 bg-slate-50 rounded-xl text-[#0A0A9C]">
