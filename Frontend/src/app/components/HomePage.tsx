@@ -51,7 +51,7 @@ export function HomePage() {
       experience: '10 Years',
       languages: 'Hindi, English',
       rating: 4.9,
-      reviews: 2847,
+      reviews: 10000,
       available: true,
     },
     {
