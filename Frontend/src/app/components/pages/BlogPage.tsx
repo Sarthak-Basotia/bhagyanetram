@@ -55,7 +55,7 @@ export function BlogPage() {
     },
   ];
 
-  const categories = ['All', 'Astrology', 'Vastu Shastra', 'Planetary Transits', 'Spiritual Practices', 'Remedies'];
+  const categories = ['Astrology', 'Vastu Shastra', 'Spiritual Practices', 'Remedies'];
 
   return (
     <div className="min-h-screen bg-white">
