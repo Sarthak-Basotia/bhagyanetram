@@ -152,7 +152,7 @@ export function BlogPage() {
       </section>
 
       {/* Newsletter Section */}
-      <section className="py-16 bg-gradient-to-r from-primary to-secondary text-white">
+      {/* <section className="py-16 bg-gradient-to-r from-primary to-secondary text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl mb-4">Stay Updated with Cosmic Insights</h2>
           <p className="text-xl mb-8 text-white/90">
@@ -170,7 +170,7 @@ export function BlogPage() {
             </Button>
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }
