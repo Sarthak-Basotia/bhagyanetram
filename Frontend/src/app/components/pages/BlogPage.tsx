@@ -142,7 +142,7 @@ export function BlogPage() {
 
           <div className="flex items-center gap-6 text-sm text-slate-500 mb-8 border-b border-slate-100 pb-8 font-medium">
             <div className="flex items-center gap-2">
-              <span className="inline-block px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-bold mb-6">
+              <span className="inline-block px-3 bg-amber-100 text-amber-800 rounded-full text-sm font-bold ">
                 {selectedPost.category}
               </span>
             </div>
