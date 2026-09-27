@@ -161,9 +161,9 @@ export function HomePage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
             >
-              <Badge className="mb-4 bg-primary text-white px-4 py-1.5">
+              {/* <Badge className="mb-4 bg-primary text-white px-4 py-1.5">
                 🎯 India's Most Trusted Astrology Platform
-              </Badge>
+              </Badge> */}
               <h1 className="text-4xl md:text-6xl mb-6 text-foreground leading-tight">
                 Confused About Your
                 <span className="text-primary block mt-2">Life Decisions?</span>
