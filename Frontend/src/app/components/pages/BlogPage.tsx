@@ -245,7 +245,7 @@ export function BlogPage() {
                     <p className="text-slate-600 mb-6 line-clamp-3 leading-relaxed">
                       {post.excerpt}
                     </p>
-                    <Button variant="ghost" className="text-[#0A0A9C] p-0 font-bold hover:gap-2 hover:bg-transparent transition-all group-hover:text-blue-800">
+                    <Button variant="ghost" className="text-[#D35400] p-0 font-bold hover:gap-2 transition-all group-hover:text-blue-800">
                       Read Full Article
                       <ArrowRight className="w-4 h-4 ml-1 group-hover:ml-2 transition-all" />
                     </Button>
