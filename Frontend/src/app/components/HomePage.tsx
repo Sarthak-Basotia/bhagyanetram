@@ -140,7 +140,7 @@ export function HomePage() {
   return (
     <div className="min-h-screen">
       <Helmet>
-        <title>Bhagyanetram | India's Most Trusted Astrology Platform</title>
+        <title>Bhagyanetram | All-Inclusive Astrology Services</title>
         <meta name="description" content="Get instant guidance from India's top astrologers. Talk to experts in Vedic Astrology, Tarot, Numerology, and Vastu Shastra for personalized life solutions." />
         <link rel="canonical" href="https://bhagyanetram.com/" />
       </Helmet>
