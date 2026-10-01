@@ -11,17 +11,17 @@ export default function YantraMeditationPage() {
     {
       name: 'Shri Yantra',
       description: 'The supreme Yantra of the Divine Mother. Used for spiritual evolution, material wealth, and manifesting desires. It aligns you with the cosmic energy of abundance.',
-      image: 'https://images.unsplash.com/photo-1515082159828-56df8a9a239c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600',
+      image: 'Shri_Yantra.png',
     },
     {
       name: 'Sri Chakra',
       description: 'A powerful tool for deep meditation and chakra alignment. It helps in purifying the mind, improving focus, and bringing inner tranquility.',
-      image: 'https://images.unsplash.com/photo-1545383569-8a39bc6bc9a0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600',
+      image: 'Sri_Chakra.png',
     },
     {
       name: 'Kuber Yantra',
       description: 'Dedicated to Lord Kuber, the god of wealth. Meditating on this Yantra removes financial blocks and attracts prosperity and stability in business.',
-      image: 'https://images.unsplash.com/photo-1605658607421-4f1cc0332f7a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600',
+      image: 'Kubera_Yantra.png',
     },
   ];
 
