@@ -1,10 +1,33 @@
 import { useState, useEffect } from 'react';
+import { format, startOfWeek, endOfWeek } from 'date-fns';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Tabs, TabsList, TabsTrigger } from '../ui/tabs';
 import { Star, TrendingUp, Heart, Briefcase, Loader2 } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const API_BASE_URL = "https://api.bhagyanetram.com"; // Adjust if testing locally
+
+const getPeriodDateString = (period: string) => {
+  const now = new Date();
+  switch (period) {
+    case 'daily':
+      return format(now, 'MMMM d, yyyy');
+    case 'weekly': {
+      const start = startOfWeek(now, { weekStartsOn: 1 });
+      const end = endOfWeek(now, { weekStartsOn: 1 });
+      if (start.getMonth() === end.getMonth()) {
+         return `${format(start, 'MMM d')} - ${format(end, 'd, yyyy')}`;
+      }
+      return `${format(start, 'MMM d')} - ${format(end, 'MMM d, yyyy')}`;
+    }
+    case 'monthly':
+      return format(now, 'MMMM yyyy');
+    case 'yearly':
+      return format(now, 'yyyy');
+    default:
+      return '';
+  }
+};
 
 export function HoroscopePage() {
   const [selectedZodiac, setSelectedZodiac] = useState('aries');
@@ -133,7 +156,7 @@ export function HoroscopePage() {
                 <CardTitle className="text-3xl text-primary">
                   {selectedSign.name} - {selectedPeriod.charAt(0).toUpperCase() + selectedPeriod.slice(1)} Horoscope
                 </CardTitle>
-                <p className="text-muted-foreground">{selectedSign.dates}</p>
+                <p className="text-muted-foreground">{getPeriodDateString(selectedPeriod)}</p>
               </CardHeader>
               <CardContent className="pt-6">
                 <div className="space-y-6">
