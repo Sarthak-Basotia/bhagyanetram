@@ -11,15 +11,30 @@ import {
 
 // Import the new AI Astrology controllers (Adjust the path if your controller is in a different folder)
 import { generateKundli, getAdvancedKundli, getGemstoneGuide, getNumerology, getPanchang, matchKundli } from "./controllers/astrologyController.js";
-
+import { sendOTP, verifyOTP, getUserDetails } from './controllers/authController.js';
+import { analyzePalm } from './controllers/palmistryController.js';
+import { requireAuth } from './middleware/authMiddleware.js';
 
 const app = express();
+// Increased JSON limit for base64 images
+app.use(express.json({ limit: '10mb' }));
 initializeFestivalQueue();
 
 app.use(cors({ origin: "*", credentials: true }));
-app.use(express.json());
 
 const VALID_TIMEFRAMES = ["daily", "weekly", "monthly", "yearly"];
+
+// ==========================================
+// AUTHENTICATION ROUTES
+// ==========================================
+app.post("/api/auth/send-otp", sendOTP);
+app.post("/api/auth/verify-otp", verifyOTP);
+app.get("/api/auth/me", requireAuth, getUserDetails);
+
+// ==========================================
+// PALMISTRY ROUTES
+// ==========================================
+app.post("/api/palmistry/analyze", requireAuth, analyzePalm);
 
 // ==========================================
 // NEW: AI ASTROLOGY ROUTES

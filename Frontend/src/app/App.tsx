@@ -35,6 +35,7 @@ import PrivacyPolicyPage from './components/pages/PrivacyPolicyPage';
 import TermsConditionsPage from './components/pages/TermsConditionsPage';
 import TarotReadingPage from './components/pages/TarotReadingPage';
 import YantraMeditationPage from './components/pages/YantraMeditationPage';
+import PalmistryPage from './components/pages/PalmistryPage';
 
 export default function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -90,6 +91,7 @@ export default function App() {
             <Route path="/terms-and-conditions" element={<TermsConditionsPage />} />
             <Route path="/tarot" element={<TarotReadingPage />} />
             <Route path="/yantra-meditation" element={<YantraMeditationPage />} />
+            <Route path="/palmistry" element={<PalmistryPage />} />
             {/* Catch-all route to redirect 404s to Home */}
             <Route path="*" element={<HomePage />} />
           </Routes>

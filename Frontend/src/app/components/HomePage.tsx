@@ -112,7 +112,7 @@ export function HomePage() {
     { title: 'Panchang', route: '/panchang',image: 'https://images.unsplash.com/photo-1701520985505-5ebb240c58cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Daily auspicious timings' },
     { title: 'Tarot Reading', route: '/tarot', image: 'https://images.unsplash.com/photo-1624274579716-8eeba7da39bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Card-based predictions' },
     { title: 'Birth Chart', route: '/birth-chart', image: 'https://images.unsplash.com/photo-1646208714721-ebce8335cc88?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Complete natal chart analysis' },
-    { title: 'Palmistry', image: 'https://images.unsplash.com/photo-1759406066833-d361c4f76bf2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Hand reading insights' },
+    { title: 'Palmistry', route: '/palmistry', image: 'https://images.unsplash.com/photo-1759406066833-d361c4f76bf2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Hand reading insights' },
     { title: 'Numerology', route: '/numerology', image: 'https://images.unsplash.com/photo-1617086286680-12fa90d99f48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Number-based predictions' },
     { title: 'Gemstone Guide', route: '/gem-guide', image: 'https://images.unsplash.com/photo-1594997987903-1d322eae8ba8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Lucky stones for you' },
     { title: 'Planet Transit', route: '/planet-chart',image: 'https://images.unsplash.com/photo-1676236285859-a2907b80f927?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Current planetary positions' },
