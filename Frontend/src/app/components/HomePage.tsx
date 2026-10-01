@@ -110,7 +110,7 @@ export function HomePage() {
   const freeServices = [
     { title: 'Match Making', route: '/kundli-matching', image: 'https://images.unsplash.com/photo-1756376748107-12c98ec6b969?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Check compatibility for marriage' },
     { title: 'Panchang', route: '/panchang',image: 'https://images.unsplash.com/photo-1701520985505-5ebb240c58cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Daily auspicious timings' },
-    { title: 'Tarot Reading', image: 'https://images.unsplash.com/photo-1624274579716-8eeba7da39bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Card-based predictions' },
+    { title: 'Tarot Reading', route: '/tarot', image: 'https://images.unsplash.com/photo-1624274579716-8eeba7da39bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Card-based predictions' },
     { title: 'Birth Chart', route: '/birth-chart', image: 'https://images.unsplash.com/photo-1646208714721-ebce8335cc88?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Complete natal chart analysis' },
     { title: 'Palmistry', image: 'https://images.unsplash.com/photo-1759406066833-d361c4f76bf2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Hand reading insights' },
     { title: 'Numerology', route: '/numerology', image: 'https://images.unsplash.com/photo-1617086286680-12fa90d99f48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Number-based predictions' },

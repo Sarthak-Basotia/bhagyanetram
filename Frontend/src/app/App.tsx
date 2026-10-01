@@ -33,6 +33,7 @@ import PlanetTransitPage from './components/pages/PlanetTransitPage';
 import ScrollToTop from './components/ScrollToTop';
 import PrivacyPolicyPage from './components/pages/PrivacyPolicyPage';
 import TermsConditionsPage from './components/pages/TermsConditionsPage';
+import TarotReadingPage from './components/pages/TarotReadingPage';
 
 export default function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -86,6 +87,7 @@ export default function App() {
             <Route path="/planet-chart" element={<PlanetTransitPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/terms-and-conditions" element={<TermsConditionsPage />} />
+            <Route path="/tarot" element={<TarotReadingPage />} />
             {/* Catch-all route to redirect 404s to Home */}
             <Route path="*" element={<HomePage />} />
           </Routes>
