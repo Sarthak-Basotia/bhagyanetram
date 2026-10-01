@@ -119,7 +119,7 @@ export function HomePage() {
     { title: 'Vastu Tips', route: '/vastu-main-door', image: 'https://images.unsplash.com/photo-1711011476848-7bad9f04379c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Home harmony solutions' },
     { title: 'Zodiac Signs', route: '/zodiac', image: 'https://images.unsplash.com/photo-1614089254151-676cc373b01e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Know your sun sign traits' },
     { title: 'Festivals', route: '/festivals',image: 'festivals.png', description: 'Upcoming Hindu festivals' },
-    { title: 'Yantra Meditation', image: 'https://images.unsplash.com/photo-1758466870973-14bfedd22e1a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Sacred geometry for peace' },
+    { title: 'Yantra Meditation', route: '/yantra-meditation', image: 'https://images.unsplash.com/photo-1758466870973-14bfedd22e1a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', description: 'Sacred geometry for peace' },
   ];
 
   const categories = [
