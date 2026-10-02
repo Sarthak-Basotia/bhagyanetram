@@ -43,11 +43,12 @@ export const sendOTP = async (req, res) => {
         termsAccepted: termsAccepted || false
       });
     }
-
+    
+    
     // Attempt to send email, but don't fail the request if it fails (for development)
     try {
       await transporter.sendMail({
-        from: '"BhagyaNetram" <noreply@bhagyanetram.com>',
+        from: '"BhagyaNetram" <contact@bhagyanetram.com>',
         to: email,
         subject: 'Your OTP for BhagyaNetram',
         text: `Your OTP for login is: ${otp}. It is valid for 10 minutes.`
