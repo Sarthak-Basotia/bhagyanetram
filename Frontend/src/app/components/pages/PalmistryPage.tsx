@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Hand, Camera, Upload, LogIn, CheckCircle2, Lock, Loader2, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "https://api.bhagyanetram.com";
 
@@ -282,13 +283,8 @@ export default function PalmistryPage() {
                   {reading && (
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-10 bg-slate-50 rounded-2xl p-6 md:p-8 border border-slate-200">
                       <h3 className="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">Your Palm Reading</h3>
-                      <div className="prose prose-slate max-w-none prose-p:leading-relaxed">
-                        {reading.split('\n').map((line, i) => (
-                          <span key={i}>
-                            {line}
-                            <br />
-                          </span>
-                        ))}
+                      <div className="prose prose-slate prose-headings:text-slate-800 prose-headings:font-bold prose-p:leading-relaxed max-w-none text-slate-700">
+                        <ReactMarkdown>{reading}</ReactMarkdown>
                       </div>
                     </motion.div>
                   )}
