@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Hand, Camera, Upload, LogIn, CheckCircle2, Lock, Loader2 } from 'lucide-react';
+import { Hand, Camera, Upload, LogIn, CheckCircle2, Lock, Loader2, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || "https://api.bhagyanetram.com";
