@@ -69,7 +69,7 @@ export const generateKundli = async (req, res) => {
     }`;
 
     const aiResponse = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo-1106",
+      model: "gpt-4o-mini",
       response_format: { type: "json_object" },
       messages: [{ role: "system", content: prompt }]
     });
