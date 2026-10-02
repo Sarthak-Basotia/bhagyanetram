@@ -6,10 +6,12 @@ const JWT_SECRET = process.env.JWT_SECRET || 'bhagyanetram_secret_key_123';
 
 // Configure nodemailer transporter
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // Fallback config, ideally use env vars
+  host: process.env.SMTP_SERVER || 'smtpout.secureserver.net',
+  port: parseInt(process.env.SMTP_PORT || '465'),
+  secure: true, // true for 465, false for other ports
   auth: {
-    user: process.env.EMAIL_USER || 'test@example.com',
-    pass: process.env.EMAIL_PASS || 'password'
+    user: process.env.EMAIL_USER || process.env.SENDER_EMAIL,
+    pass: process.env.EMAIL_PASS || process.env.SENDER_PASSWORD
   }
 });
 
