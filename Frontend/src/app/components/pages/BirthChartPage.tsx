@@ -158,7 +158,7 @@ export default function BirthChartPage() {
               <form onSubmit={handleCalculate} className="space-y-4">
                 <div>
                   <label className="block text-xs font-semibold uppercase tracking-wider text-cosmic-800 mb-1 font-display">Full Name *</label>
-                  <input required type="text" placeholder="e.g. Sharad Bansal" className="w-full px-4 py-2.5 rounded-xl border border-gold-500/30 bg-ivory-50/70 text-cosmic-900 text-sm focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20" onChange={e => setFormData({...formData, name: e.target.value})} />
+                  <input required type="text" placeholder="e.g. John Doe" className="w-full px-4 py-2.5 rounded-xl border border-gold-500/30 bg-ivory-50/70 text-cosmic-900 text-sm focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20" onChange={e => setFormData({...formData, name: e.target.value})} />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">

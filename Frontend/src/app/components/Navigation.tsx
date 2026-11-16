@@ -25,10 +25,10 @@ export function Navigation() {
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current);
     }
-    // Hold menu open for 3 seconds after mouse leaves
+    // Hold menu open for 1 seconds after mouse leaves
     closeTimeoutRef.current = setTimeout(() => {
       setVastuDropdownOpen(false);
-    }, 1200);
+    }, 1000);
   };
 
   const handleCloseVastuImmediate = () => {
