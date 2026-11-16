@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, ChevronDown, Sparkles } from 'lucide-react';
 import { BookingModal } from './BookingModal';
@@ -8,9 +8,44 @@ export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [vastuDropdownOpen, setVastuDropdownOpen] = useState(false);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const location = useLocation();
   const navigate = useNavigate();
+
+  const handleVastuMouseEnter = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setVastuDropdownOpen(true);
+  };
+
+  const handleVastuMouseLeave = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
+    // Hold menu open for 3 seconds after mouse leaves
+    closeTimeoutRef.current = setTimeout(() => {
+      setVastuDropdownOpen(false);
+    }, 3000);
+  };
+
+  const handleCloseVastuImmediate = () => {
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = null;
+    }
+    setVastuDropdownOpen(false);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const vastuPages = [
     { id: 'vastu-main-door', label: 'Main Door' },
@@ -79,11 +114,18 @@ export function Navigation() {
               {/* Vastu Shastra Dropdown */}
               <div 
                 className="relative"
-                onMouseEnter={() => setVastuDropdownOpen(true)}
-                onMouseLeave={() => setVastuDropdownOpen(false)}
+                onMouseEnter={handleVastuMouseEnter}
+                onMouseLeave={handleVastuMouseLeave}
               >
                 <button
                   type="button"
+                  onClick={() => {
+                    if (vastuDropdownOpen) {
+                      handleCloseVastuImmediate();
+                    } else {
+                      handleVastuMouseEnter();
+                    }
+                  }}
                   className={`flex items-center gap-1.5 py-2 transition-colors cursor-pointer ${
                     location.pathname.includes('/vastu')
                       ? 'text-gold-300 font-semibold'
@@ -95,7 +137,11 @@ export function Navigation() {
                 </button>
 
                 {vastuDropdownOpen && (
-                  <div className="absolute top-full left-0 w-72 bg-cosmic-900/95 backdrop-blur-md rounded-2xl shadow-cosmic-card border border-gold-500/30 py-3 mt-1 z-50 animate-in fade-in slide-in-from-top-2">
+                  <div 
+                    className="absolute top-full left-0 w-72 bg-cosmic-900/95 backdrop-blur-md rounded-2xl shadow-cosmic-card border border-gold-500/30 py-3 mt-1 z-50 animate-in fade-in slide-in-from-top-2 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3 before:content-['']"
+                    onMouseEnter={handleVastuMouseEnter}
+                    onMouseLeave={handleVastuMouseLeave}
+                  >
                     <div className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gold-400/80 border-b border-gold-500/20 mb-2">
                       Vastu Categories
                     </div>
@@ -105,7 +151,7 @@ export function Navigation() {
                         <Link
                           key={page.id}
                           to={`/${page.id}`}
-                          onClick={() => setVastuDropdownOpen(false)}
+                          onClick={handleCloseVastuImmediate}
                           className={`block px-4 py-2 text-sm transition-colors ${
                             isPageActive
                               ? 'bg-gold-500/15 text-gold-300 font-semibold border-l-2 border-gold-400'
