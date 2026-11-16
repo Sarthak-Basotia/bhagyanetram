@@ -1,0 +1,1884 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import {
+  clearAdminSession,
+  getAdminUser,
+  fetchAdminStats,
+  fetchAdminAstrologers,
+  createAstrologerApi,
+  updateAstrologerApi,
+  deleteAstrologerApi,
+  fetchAdminBlogs,
+  createBlogApi,
+  updateBlogApi,
+  deleteBlogApi,
+  fetchAdminQueries,
+  updateQueryStatusApi,
+  deleteQueryApi,
+  fetchAdminUsers,
+  updateUserApi,
+  deleteUserApi,
+} from '../../../api/adminApi';
+import {
+  LayoutDashboard,
+  Users,
+  Sparkles,
+  BookOpen,
+  MessageSquare,
+  LogOut,
+  Plus,
+  Pencil,
+  Trash2,
+  CheckCircle,
+  Clock,
+  ExternalLink,
+  Search,
+  Filter,
+  Eye,
+  CheckCircle2,
+  AlertCircle,
+  X,
+  Phone,
+  Mail,
+  Calendar,
+  Star,
+  RefreshCw,
+  ShieldAlert,
+  Loader2,
+  Award,
+  Globe
+} from 'lucide-react';
+import logoImage from 'figma:asset/d5457f2df4c5864ece0203437258a94768a0cf00.png';
+
+type ActiveTab = 'overview' | 'astrologers' | 'blogs' | 'queries' | 'users';
+
+export default function AdminDashboard() {
+  const navigate = useNavigate();
+  const adminUser = getAdminUser() || { name: 'Master Administrator', email: 'admin@bhagyanetram.com' };
+
+  const [activeTab, setActiveTab] = useState<ActiveTab>('overview');
+  const [stats, setStats] = useState<any>({
+    totalAstrologers: 0,
+    totalBlogs: 0,
+    totalQueries: 0,
+    pendingQueries: 0,
+    resolvedQueries: 0,
+    totalUsers: 0,
+  });
+  const [loading, setLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Data states
+  const [astrologers, setAstrologers] = useState<any[]>([]);
+  const [blogs, setBlogs] = useState<any[]>([]);
+  const [queries, setQueries] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
+
+  // Search & Filter states
+  const [queryStatusFilter, setQueryStatusFilter] = useState('all');
+  const [querySearch, setQuerySearch] = useState('');
+  const [userSearch, setUserSearch] = useState('');
+  const [blogSearch, setBlogSearch] = useState('');
+
+  // Modals state
+  const [astrologerModalOpen, setAstrologerModalOpen] = useState(false);
+  const [editingAstrologer, setEditingAstrologer] = useState<any | null>(null);
+  const [astrologerForm, setAstrologerForm] = useState({
+    name: '',
+    title: 'Senior Vedic Astrologer',
+    specialization: 'Vedic Astrology, Vastu',
+    experience: '10 Years Experience',
+    languages: 'Hindi, English',
+    rating: 4.9,
+    reviews: '100+',
+    image: '',
+    available: true,
+    price: '₹25/min',
+    bio: '',
+    order: 0,
+  });
+
+  const [blogModalOpen, setBlogModalOpen] = useState(false);
+  const [editingBlog, setEditingBlog] = useState<any | null>(null);
+  const [blogForm, setBlogForm] = useState({
+    title: '',
+    slug: '',
+    category: 'Astrology',
+    excerpt: '',
+    content: '',
+    author: 'Bhagya Netram',
+    image: 'blog1.jpeg',
+    published: true,
+    tags: '',
+  });
+
+  const [queryModalOpen, setQueryModalOpen] = useState(false);
+  const [selectedQuery, setSelectedQuery] = useState<any | null>(null);
+  const [queryStatusUpdate, setQueryStatusUpdate] = useState('pending');
+  const [queryAdminNotes, setQueryAdminNotes] = useState('');
+
+  const [userModalOpen, setUserModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
+  const [userCredits, setUserCredits] = useState(3);
+  const [userAccountStatus, setUserAccountStatus] = useState('active');
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 4000);
+  };
+
+  const handleLogout = () => {
+    clearAdminSession();
+    navigate('/admin/login');
+  };
+
+  // Load Initial Data
+  const loadStats = async () => {
+    try {
+      const res = await fetchAdminStats();
+      if (res.success) {
+        setStats(res.stats);
+      }
+    } catch (err: any) {
+      console.warn('Stats fetch error:', err.message);
+    }
+  };
+
+  const loadAstrologers = async () => {
+    setLoading(true);
+    try {
+      const res = await fetchAdminAstrologers();
+      if (res.success) {
+        setAstrologers(res.data || []);
+      }
+    } catch (err: any) {
+      showToast('Error loading astrologers: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadBlogs = async () => {
+    setLoading(true);
+    try {
+      const res = await fetchAdminBlogs();
+      if (res.success) {
+        setBlogs(res.data || []);
+      }
+    } catch (err: any) {
+      showToast('Error loading blogs: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadQueries = async () => {
+    setLoading(true);
+    try {
+      const res = await fetchAdminQueries({ status: queryStatusFilter, search: querySearch });
+      if (res.success) {
+        setQueries(res.data || []);
+      }
+    } catch (err: any) {
+      showToast('Error loading queries: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await fetchAdminUsers(userSearch);
+      if (res.success) {
+        setUsers(res.data || []);
+      }
+    } catch (err: any) {
+      showToast('Error loading users: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadStats();
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === 'astrologers') loadAstrologers();
+    if (activeTab === 'blogs') loadBlogs();
+    if (activeTab === 'queries') loadQueries();
+    if (activeTab === 'users') loadUsers();
+    if (activeTab === 'overview') {
+      loadStats();
+      loadQueries();
+    }
+  }, [activeTab, queryStatusFilter]);
+
+  // ==========================================
+  // ASTROLOGER ACTIONS
+  // ==========================================
+  const handleOpenAddAstrologer = () => {
+    setEditingAstrologer(null);
+    setAstrologerForm({
+      name: '',
+      title: 'Senior Vedic Astrologer',
+      specialization: 'Vedic Astrology, Vastu',
+      experience: '10 Years Experience',
+      languages: 'Hindi, English',
+      rating: 4.9,
+      reviews: '100+',
+      image: '',
+      available: true,
+      price: '₹25/min',
+      bio: '',
+      order: astrologers.length + 1,
+    });
+    setAstrologerModalOpen(true);
+  };
+
+  const handleOpenEditAstrologer = (astrologer: any) => {
+    setEditingAstrologer(astrologer);
+    setAstrologerForm({
+      name: astrologer.name || '',
+      title: astrologer.title || '',
+      specialization: astrologer.specialization || '',
+      experience: astrologer.experience || '',
+      languages: astrologer.languages || '',
+      rating: astrologer.rating || 4.9,
+      reviews: astrologer.reviews || '',
+      image: astrologer.image || '',
+      available: astrologer.available !== undefined ? astrologer.available : true,
+      price: astrologer.price || '',
+      bio: astrologer.bio || '',
+      order: astrologer.order || 0,
+    });
+    setAstrologerModalOpen(true);
+  };
+
+  const handleSaveAstrologer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setActionLoading(true);
+    try {
+      if (editingAstrologer) {
+        const res = await updateAstrologerApi(editingAstrologer._id || editingAstrologer.id, astrologerForm);
+        showToast(res.message || 'Astrologer updated successfully!');
+      } else {
+        const res = await createAstrologerApi(astrologerForm);
+        showToast(res.message || 'New astrologer added to website!');
+      }
+      setAstrologerModalOpen(false);
+      loadAstrologers();
+      loadStats();
+    } catch (err: any) {
+      showToast('Error saving astrologer: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteAstrologer = async (id: string, name: string) => {
+    if (!window.confirm(`Are you sure you want to remove astrologer "${name}" from the website?`)) {
+      return;
+    }
+    setActionLoading(true);
+    try {
+      await deleteAstrologerApi(id);
+      showToast(`Astrologer "${name}" removed successfully.`);
+      loadAstrologers();
+      loadStats();
+    } catch (err: any) {
+      showToast('Error deleting astrologer: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleToggleAstrologerAvailability = async (astrologer: any) => {
+    try {
+      const updatedStatus = !astrologer.available;
+      await updateAstrologerApi(astrologer._id || astrologer.id, { available: updatedStatus });
+      setAstrologers((prev) =>
+        prev.map((a) => (a._id === astrologer._id ? { ...a, available: updatedStatus } : a))
+      );
+      showToast(`${astrologer.name} marked as ${updatedStatus ? 'Available' : 'Unavailable'}.`);
+    } catch (err: any) {
+      showToast('Error updating status: ' + err.message);
+    }
+  };
+
+  // ==========================================
+  // BLOG ACTIONS
+  // ==========================================
+  const handleOpenAddBlog = () => {
+    setEditingBlog(null);
+    setBlogForm({
+      title: '',
+      slug: '',
+      category: 'Astrology',
+      excerpt: '',
+      content: '',
+      author: 'Bhagya Netram',
+      image: 'blog1.jpeg',
+      published: true,
+      tags: 'Astrology, Remedies, Vastu',
+    });
+    setBlogModalOpen(true);
+  };
+
+  const handleOpenEditBlog = (blog: any) => {
+    setEditingBlog(blog);
+    setBlogForm({
+      title: blog.title || '',
+      slug: blog.slug || '',
+      category: blog.category || 'Astrology',
+      excerpt: blog.excerpt || '',
+      content: blog.content || '',
+      author: blog.author || 'Bhagya Netram',
+      image: blog.image || 'blog1.jpeg',
+      published: blog.published !== undefined ? blog.published : true,
+      tags: Array.isArray(blog.tags) ? blog.tags.join(', ') : blog.tags || '',
+    });
+    setBlogModalOpen(true);
+  };
+
+  const handleSaveBlog = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setActionLoading(true);
+    try {
+      const payload = {
+        ...blogForm,
+        tags: blogForm.tags
+          .split(',')
+          .map((t) => t.trim())
+          .filter(Boolean),
+      };
+
+      if (editingBlog) {
+        const res = await updateBlogApi(editingBlog._id || editingBlog.id, payload);
+        showToast(res.message || 'Blog updated successfully!');
+      } else {
+        const res = await createBlogApi(payload);
+        showToast(res.message || 'Blog article published successfully!');
+      }
+      setBlogModalOpen(false);
+      loadBlogs();
+      loadStats();
+    } catch (err: any) {
+      showToast('Error saving blog: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteBlog = async (id: string, title: string) => {
+    if (!window.confirm(`Are you sure you want to delete blog "${title}"?`)) {
+      return;
+    }
+    setActionLoading(true);
+    try {
+      await deleteBlogApi(id);
+      showToast(`Blog post deleted successfully.`);
+      loadBlogs();
+      loadStats();
+    } catch (err: any) {
+      showToast('Error deleting blog: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // ==========================================
+  // QUERY / INQUIRY ACTIONS
+  // ==========================================
+  const handleOpenQueryDetails = (query: any) => {
+    setSelectedQuery(query);
+    setQueryStatusUpdate(query.status || 'pending');
+    setQueryAdminNotes(query.adminNotes || '');
+    setQueryModalOpen(true);
+  };
+
+  const handleUpdateQueryStatus = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedQuery) return;
+    setActionLoading(true);
+    try {
+      await updateQueryStatusApi(selectedQuery._id || selectedQuery.id, {
+        status: queryStatusUpdate,
+        adminNotes: queryAdminNotes,
+      });
+      showToast('Inquiry status updated successfully.');
+      setQueryModalOpen(false);
+      loadQueries();
+      loadStats();
+    } catch (err: any) {
+      showToast('Error updating query: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteQuery = async (id: string) => {
+    if (!window.confirm('Are you sure you want to permanently delete this inquiry record?')) {
+      return;
+    }
+    setActionLoading(true);
+    try {
+      await deleteQueryApi(id);
+      showToast('Inquiry deleted.');
+      loadQueries();
+      loadStats();
+    } catch (err: any) {
+      showToast('Error deleting inquiry: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // ==========================================
+  // USER ACTIONS
+  // ==========================================
+  const handleOpenEditUser = (user: any) => {
+    setSelectedUser(user);
+    setUserCredits(user.palmistryCredits !== undefined ? user.palmistryCredits : 3);
+    setUserAccountStatus(user.status || 'active');
+    setUserModalOpen(true);
+  };
+
+  const handleSaveUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedUser) return;
+    setActionLoading(true);
+    try {
+      await updateUserApi(selectedUser._id || selectedUser.id, {
+        palmistryCredits: userCredits,
+        status: userAccountStatus,
+      });
+      showToast('User account updated successfully.');
+      setUserModalOpen(false);
+      loadUsers();
+      loadStats();
+    } catch (err: any) {
+      showToast('Error updating user: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async (id: string, name: string) => {
+    if (!window.confirm(`Permanently remove user "${name}"?`)) {
+      return;
+    }
+    setActionLoading(true);
+    try {
+      await deleteUserApi(id);
+      showToast(`User account removed.`);
+      loadUsers();
+      loadStats();
+    } catch (err: any) {
+      showToast('Error deleting user: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-cosmic-950 text-white flex flex-col md:flex-row font-sans">
+      
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed top-5 right-5 z-50 bg-gold-500 text-cosmic-950 font-bold px-5 py-3 rounded-2xl shadow-gold-glow flex items-center gap-3 animate-bounce">
+          <Sparkles className="w-5 h-5 text-cosmic-950 shrink-0" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Sidebar Navigation */}
+      <aside className="w-full md:w-64 bg-cosmic-900 border-r border-gold-500/20 flex flex-col justify-between shrink-0">
+        <div>
+          {/* Brand Logo & Title */}
+          <div className="p-5 border-b border-gold-500/15 flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-white p-1 border border-gold-500/40 shadow-xs flex items-center justify-center overflow-hidden">
+                <img src={logoImage} alt="BhagyaNetram" className="w-full h-full object-contain" />
+              </div>
+              <div>
+                <span className="font-display font-bold text-sm tracking-wide text-white block">
+                  BhagyaNetram
+                </span>
+                <span className="text-[10px] text-gold-400 font-semibold uppercase tracking-wider block">
+                  Admin Command
+                </span>
+              </div>
+            </Link>
+          </div>
+
+          {/* Navigation Links */}
+          <nav className="p-3 space-y-1">
+            <button
+              onClick={() => setActiveTab('overview')}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'overview'
+                  ? 'bg-gold-500 text-cosmic-950 shadow-gold-glow font-bold'
+                  : 'text-ivory-200/80 hover:bg-cosmic-800 hover:text-gold-300'
+              }`}
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              <span>Dashboard Overview</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('astrologers')}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'astrologers'
+                  ? 'bg-gold-500 text-cosmic-950 shadow-gold-glow font-bold'
+                  : 'text-ivory-200/80 hover:bg-cosmic-800 hover:text-gold-300'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Sparkles className="w-4 h-4" />
+                <span>Astrologers</span>
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20">
+                {stats.totalAstrologers || astrologers.length}
+              </span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('blogs')}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'blogs'
+                  ? 'bg-gold-500 text-cosmic-950 shadow-gold-glow font-bold'
+                  : 'text-ivory-200/80 hover:bg-cosmic-800 hover:text-gold-300'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <BookOpen className="w-4 h-4" />
+                <span>Blogs & Wisdom</span>
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20">
+                {stats.totalBlogs || blogs.length}
+              </span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('queries')}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'queries'
+                  ? 'bg-gold-500 text-cosmic-950 shadow-gold-glow font-bold'
+                  : 'text-ivory-200/80 hover:bg-cosmic-800 hover:text-gold-300'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <MessageSquare className="w-4 h-4" />
+                <span>Queries & Inquiries</span>
+              </div>
+              {stats.pendingQueries > 0 && (
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500 text-cosmic-950 animate-pulse">
+                  {stats.pendingQueries} new
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'users'
+                  ? 'bg-gold-500 text-cosmic-950 shadow-gold-glow font-bold'
+                  : 'text-ivory-200/80 hover:bg-cosmic-800 hover:text-gold-300'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Users className="w-4 h-4" />
+                <span>User Accounts</span>
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20">
+                {stats.totalUsers || users.length}
+              </span>
+            </button>
+          </nav>
+        </div>
+
+        {/* Admin Footer & Logout */}
+        <div className="p-4 border-t border-gold-500/15 space-y-2">
+          <Link
+            to="/"
+            target="_blank"
+            className="flex items-center justify-between px-3 py-2 rounded-xl text-xs text-gold-300 hover:bg-cosmic-800 transition"
+          >
+            <div className="flex items-center gap-2">
+              <Globe className="w-3.5 h-3.5" />
+              <span>View Live Website</span>
+            </div>
+            <ExternalLink className="w-3 h-3 opacity-70" />
+          </Link>
+
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 transition cursor-pointer"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
+        {/* Top Header Bar */}
+        <header className="h-16 border-b border-gold-500/20 bg-cosmic-900/60 backdrop-blur-md px-6 flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-display font-bold text-white capitalize">
+              {activeTab === 'overview' && 'Dashboard Overview'}
+              {activeTab === 'astrologers' && 'Manage Astrologers'}
+              {activeTab === 'blogs' && 'Manage Blogs & Wisdom Library'}
+              {activeTab === 'queries' && 'Customer Inquiries & Consultations'}
+              {activeTab === 'users' && 'Registered User Accounts'}
+            </h2>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <div className="text-right hidden sm:block">
+              <span className="text-xs font-bold text-gold-300 block leading-tight">{adminUser.name}</span>
+              <span className="text-[10px] text-ivory-200/60 block">{adminUser.email}</span>
+            </div>
+            <div className="w-8 h-8 rounded-full bg-gold-500/20 border border-gold-500/40 text-gold-300 flex items-center justify-center font-bold text-xs">
+              AD
+            </div>
+          </div>
+        </header>
+
+        {/* Content Container */}
+        <div className="p-4 sm:p-8 space-y-6">
+
+          {/* =========================================================
+              TAB 1: DASHBOARD OVERVIEW
+          ========================================================= */}
+          {activeTab === 'overview' && (
+            <div className="space-y-6">
+              {/* Stat Cards */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div 
+                  onClick={() => setActiveTab('astrologers')}
+                  className="bg-cosmic-900/80 border border-gold-500/30 p-5 rounded-2xl shadow-md hover:border-gold-400 transition cursor-pointer"
+                >
+                  <div className="flex items-center justify-between text-gold-400 mb-2">
+                    <span className="text-xs font-semibold uppercase tracking-wider">Astrologers</span>
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-display font-bold text-white">
+                    {stats.totalAstrologers}
+                  </div>
+                  <span className="text-[11px] text-ivory-200/60 mt-1 block">Live on homepage</span>
+                </div>
+
+                <div 
+                  onClick={() => setActiveTab('blogs')}
+                  className="bg-cosmic-900/80 border border-gold-500/30 p-5 rounded-2xl shadow-md hover:border-gold-400 transition cursor-pointer"
+                >
+                  <div className="flex items-center justify-between text-gold-400 mb-2">
+                    <span className="text-xs font-semibold uppercase tracking-wider">Blogs</span>
+                    <BookOpen className="w-4 h-4" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-display font-bold text-white">
+                    {stats.totalBlogs}
+                  </div>
+                  <span className="text-[11px] text-ivory-200/60 mt-1 block">Published articles</span>
+                </div>
+
+                <div 
+                  onClick={() => setActiveTab('queries')}
+                  className="bg-cosmic-900/80 border border-gold-500/30 p-5 rounded-2xl shadow-md hover:border-gold-400 transition cursor-pointer"
+                >
+                  <div className="flex items-center justify-between text-amber-400 mb-2">
+                    <span className="text-xs font-semibold uppercase tracking-wider">Pending Inquiries</span>
+                    <Clock className="w-4 h-4" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-display font-bold text-amber-300">
+                    {stats.pendingQueries}
+                  </div>
+                  <span className="text-[11px] text-ivory-200/60 mt-1 block">Awaiting follow-up</span>
+                </div>
+
+                <div 
+                  onClick={() => setActiveTab('users')}
+                  className="bg-cosmic-900/80 border border-gold-500/30 p-5 rounded-2xl shadow-md hover:border-gold-400 transition cursor-pointer"
+                >
+                  <div className="flex items-center justify-between text-gold-400 mb-2">
+                    <span className="text-xs font-semibold uppercase tracking-wider">User Accounts</span>
+                    <Users className="w-4 h-4" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-display font-bold text-white">
+                    {stats.totalUsers}
+                  </div>
+                  <span className="text-[11px] text-ivory-200/60 mt-1 block">Registered clients</span>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="bg-cosmic-900/60 border border-gold-500/20 rounded-2xl p-5">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-gold-400 mb-3">
+                  Quick Actions
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={handleOpenAddAstrologer}
+                    className="px-4 py-2.5 rounded-xl gold-btn text-cosmic-950 font-bold text-xs flex items-center gap-1.5 shadow-sm cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add New Astrologer</span>
+                  </button>
+
+                  <button
+                    onClick={handleOpenAddBlog}
+                    className="px-4 py-2.5 rounded-xl bg-cosmic-800 border border-gold-500/40 text-gold-300 font-bold text-xs flex items-center gap-1.5 hover:bg-cosmic-700 transition cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Create Blog Post</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setQueryStatusFilter('pending');
+                      setActiveTab('queries');
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold text-xs flex items-center gap-1.5 hover:bg-amber-500/30 transition cursor-pointer"
+                  >
+                    <AlertCircle className="w-4 h-4" />
+                    <span>Review Pending Queries ({stats.pendingQueries})</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Recent Inquiries Preview */}
+              <div className="bg-cosmic-900/80 border border-gold-500/25 rounded-2xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-display font-bold text-base text-white flex items-center gap-2">
+                    <MessageSquare className="w-4 h-4 text-gold-400" />
+                    <span>Recent Customer Consultation Requests</span>
+                  </h3>
+                  <button
+                    onClick={() => setActiveTab('queries')}
+                    className="text-xs text-gold-400 hover:text-gold-300 font-semibold"
+                  >
+                    View All Inquiries →
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="border-b border-gold-500/20 text-gold-400">
+                        <th className="pb-3 font-semibold">Client Name</th>
+                        <th className="pb-3 font-semibold">Contact Info</th>
+                        <th className="pb-3 font-semibold">Service</th>
+                        <th className="pb-3 font-semibold">Status</th>
+                        <th className="pb-3 font-semibold text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gold-500/10">
+                      {queries.slice(0, 5).map((q: any) => (
+                        <tr key={q._id || q.id} className="hover:bg-cosmic-800/40">
+                          <td className="py-3 font-bold text-white">{q.name}</td>
+                          <td className="py-3 text-ivory-200/80">
+                            <div>{q.phone}</div>
+                            <div className="text-[10px] text-ivory-200/50">{q.email}</div>
+                          </td>
+                          <td className="py-3 text-gold-300">
+                            {Array.isArray(q.services) ? q.services.join(', ') : q.services || 'General'}
+                          </td>
+                          <td className="py-3">
+                            <span
+                              className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                                q.status === 'pending'
+                                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                                  : q.status === 'resolved'
+                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                  : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                              }`}
+                            >
+                              {q.status || 'pending'}
+                            </span>
+                          </td>
+                          <td className="py-3 text-right">
+                            <button
+                              onClick={() => handleOpenQueryDetails(q)}
+                              className="px-2.5 py-1 rounded-lg bg-cosmic-800 hover:bg-gold-500 hover:text-cosmic-950 text-gold-300 transition text-[11px] font-semibold cursor-pointer"
+                            >
+                              Inspect
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                      {queries.length === 0 && (
+                        <tr>
+                          <td colSpan={5} className="py-6 text-center text-ivory-200/50">
+                            No recent customer queries found.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* =========================================================
+              TAB 2: ASTROLOGERS MANAGEMENT
+          ========================================================= */}
+          {activeTab === 'astrologers' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="font-display font-bold text-xl text-white">Astrologers Directory</h3>
+                  <p className="text-xs text-ivory-200/60 mt-0.5">
+                    Profiles added or edited here reflect live in the "Our Esteemed Astrologers" carousel on the website.
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={loadAstrologers}
+                    className="p-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-gold-400 hover:bg-cosmic-800 transition cursor-pointer"
+                    title="Refresh List"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={handleOpenAddAstrologer}
+                    className="px-4 py-2.5 rounded-xl gold-btn text-cosmic-950 font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add New Astrologer</span>
+                  </button>
+                </div>
+              </div>
+
+              {loading ? (
+                <div className="py-20 text-center text-gold-400 flex flex-col items-center justify-center">
+                  <Loader2 className="w-8 h-8 animate-spin mb-2" />
+                  <span className="text-xs font-semibold">Loading Astrologers...</span>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                  {astrologers.map((astro: any) => (
+                    <div
+                      key={astro._id || astro.id}
+                      className="bg-cosmic-900 border border-gold-500/30 rounded-2xl p-5 shadow-gold-card flex flex-col justify-between relative overflow-hidden"
+                    >
+                      <div className="flex items-start justify-between gap-3 mb-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-14 h-14 rounded-xl overflow-hidden border border-gold-500/40 bg-cosmic-950 shrink-0 flex items-center justify-center">
+                            {astro.image ? (
+                              <img src={astro.image} alt={astro.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <Sparkles className="w-6 h-6 text-gold-400" />
+                            )}
+                          </div>
+                          <div>
+                            <h4 className="font-display font-bold text-base text-white">{astro.name}</h4>
+                            <span className="text-xs text-gold-400 font-semibold block">{astro.specialization}</span>
+                            <span className="text-[11px] text-ivory-200/60 block">{astro.experience}</span>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => handleToggleAstrologerAvailability(astro)}
+                          title="Click to toggle availability"
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase transition cursor-pointer ${
+                            astro.available
+                              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                              : 'bg-red-500/20 text-red-300 border border-red-500/30'
+                          }`}
+                        >
+                          {astro.available ? '● Active' : '○ Offline'}
+                        </button>
+                      </div>
+
+                      <div className="space-y-1.5 text-xs text-ivory-200/70 border-t border-gold-500/15 pt-3 mb-4">
+                        <div className="flex justify-between">
+                          <span>Languages:</span>
+                          <span className="text-white font-medium">{astro.languages || 'Hindi, English'}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Rating:</span>
+                          <span className="text-gold-300 font-bold flex items-center gap-1">
+                            <Star className="w-3 h-3 fill-gold-400 text-gold-400" />
+                            {astro.rating} ({astro.reviews})
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Consultation Rate:</span>
+                          <span className="text-white font-bold">{astro.price || '₹25/min'}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 pt-2 border-t border-gold-500/10">
+                        <button
+                          onClick={() => handleOpenEditAstrologer(astro)}
+                          className="flex-1 py-2 px-3 rounded-xl bg-cosmic-800 hover:bg-gold-500 hover:text-cosmic-950 text-gold-300 font-semibold text-xs flex items-center justify-center gap-1.5 transition cursor-pointer border border-gold-500/20"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                          <span>Edit</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleDeleteAstrologer(astro._id || astro.id, astro.name)}
+                          className="py-2 px-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-500/30 transition cursor-pointer text-xs"
+                          title="Remove Astrologer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  {astrologers.length === 0 && (
+                    <div className="col-span-full py-16 text-center text-ivory-200/60 bg-cosmic-900/40 rounded-2xl border border-gold-500/20">
+                      No astrologers found. Click "+ Add New Astrologer" above to create your first profile.
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* =========================================================
+              TAB 3: BLOGS MANAGEMENT
+          ========================================================= */}
+          {activeTab === 'blogs' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="font-display font-bold text-xl text-white">Vedic Wisdom & Blog Library</h3>
+                  <p className="text-xs text-ivory-200/60 mt-0.5">
+                    Articles created or edited here appear live in the `/blog` wisdom library.
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={loadBlogs}
+                    className="p-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-gold-400 hover:bg-cosmic-800 transition cursor-pointer"
+                    title="Refresh List"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={handleOpenAddBlog}
+                    className="px-4 py-2.5 rounded-xl gold-btn text-cosmic-950 font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Create Blog Post</span>
+                  </button>
+                </div>
+              </div>
+
+              {loading ? (
+                <div className="py-20 text-center text-gold-400 flex flex-col items-center justify-center">
+                  <Loader2 className="w-8 h-8 animate-spin mb-2" />
+                  <span className="text-xs font-semibold">Loading Articles...</span>
+                </div>
+              ) : (
+                <div className="bg-cosmic-900 border border-gold-500/30 rounded-2xl overflow-hidden shadow-gold-card">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="border-b border-gold-500/20 bg-cosmic-950/60 text-gold-400">
+                          <th className="p-4 font-semibold">Article Title</th>
+                          <th className="p-4 font-semibold">Category</th>
+                          <th className="p-4 font-semibold">Author</th>
+                          <th className="p-4 font-semibold">Date</th>
+                          <th className="p-4 font-semibold">Views</th>
+                          <th className="p-4 font-semibold">Status</th>
+                          <th className="p-4 font-semibold text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gold-500/10">
+                        {blogs.map((b: any) => (
+                          <tr key={b._id || b.id} className="hover:bg-cosmic-800/40">
+                            <td className="p-4">
+                              <span className="font-bold text-white text-sm block max-w-sm truncate">
+                                {b.title}
+                              </span>
+                              <span className="text-[10px] text-ivory-200/50 block font-mono">
+                                /{b.slug}
+                              </span>
+                            </td>
+                            <td className="p-4">
+                              <span className="px-2.5 py-1 rounded-full bg-gold-500/15 text-gold-300 font-semibold text-[10px]">
+                                {b.category || 'General'}
+                              </span>
+                            </td>
+                            <td className="p-4 text-ivory-200/80">{b.author || 'Bhagya Netram'}</td>
+                            <td className="p-4 text-ivory-200/60">{b.date}</td>
+                            <td className="p-4 font-mono text-gold-300">{b.views || 0}</td>
+                            <td className="p-4">
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                                  b.published
+                                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                    : 'bg-zinc-500/20 text-zinc-300 border border-zinc-500/30'
+                                }`}
+                              >
+                                {b.published ? 'Published' : 'Draft'}
+                              </span>
+                            </td>
+                            <td className="p-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <Link
+                                  to="/blog"
+                                  target="_blank"
+                                  className="p-1.5 rounded-lg bg-cosmic-800 hover:bg-cosmic-700 text-ivory-200 transition"
+                                  title="View on site"
+                                >
+                                  <Eye className="w-3.5 h-3.5" />
+                                </Link>
+                                <button
+                                  onClick={() => handleOpenEditBlog(b)}
+                                  className="p-1.5 rounded-lg bg-cosmic-800 hover:bg-gold-500 hover:text-cosmic-950 text-gold-300 transition cursor-pointer"
+                                  title="Edit"
+                                >
+                                  <Pencil className="w-3.5 h-3.5" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteBlog(b._id || b.id, b.title)}
+                                  className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-300 transition cursor-pointer"
+                                  title="Delete"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                        {blogs.length === 0 && (
+                          <tr>
+                            <td colSpan={7} className="p-8 text-center text-ivory-200/50">
+                              No blog articles found. Click "+ Create Blog Post" above to write an article.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* =========================================================
+              TAB 4: QUERIES & INQUIRIES
+          ========================================================= */}
+          {activeTab === 'queries' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="font-display font-bold text-xl text-white">Customer Inquiries</h3>
+                  <p className="text-xs text-ivory-200/60 mt-0.5">
+                    Real-time leads from booking modal, contact forms, and Vastu consultations.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={loadQueries}
+                    className="p-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-gold-400 hover:bg-cosmic-800 transition cursor-pointer"
+                    title="Refresh List"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Filter Tabs & Search */}
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                  {['all', 'pending', 'contacted', 'in_progress', 'resolved'].map((st) => (
+                    <button
+                      key={st}
+                      onClick={() => setQueryStatusFilter(st)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold capitalize whitespace-nowrap transition cursor-pointer border ${
+                        queryStatusFilter === st
+                          ? 'bg-gold-500 text-cosmic-950 border-gold-500 font-bold shadow-xs'
+                          : 'bg-cosmic-900 text-ivory-200/70 border-gold-500/20 hover:bg-cosmic-800'
+                      }`}
+                    >
+                      {st.replace('_', ' ')}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="relative min-w-[240px]">
+                  <Search className="w-3.5 h-3.5 text-gold-500/60 absolute left-3 top-3" />
+                  <input
+                    type="text"
+                    value={querySearch}
+                    onChange={(e) => setQuerySearch(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && loadQueries()}
+                    placeholder="Search name, phone, email..."
+                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-white placeholder-cosmic-600 text-xs focus:outline-none focus:border-gold-400"
+                  />
+                </div>
+              </div>
+
+              {loading ? (
+                <div className="py-20 text-center text-gold-400 flex flex-col items-center justify-center">
+                  <Loader2 className="w-8 h-8 animate-spin mb-2" />
+                  <span className="text-xs font-semibold">Loading Inquiries...</span>
+                </div>
+              ) : (
+                <div className="bg-cosmic-900 border border-gold-500/30 rounded-2xl overflow-hidden shadow-gold-card">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="border-b border-gold-500/20 bg-cosmic-950/60 text-gold-400">
+                          <th className="p-4 font-semibold">Received</th>
+                          <th className="p-4 font-semibold">Client Name</th>
+                          <th className="p-4 font-semibold">Contact</th>
+                          <th className="p-4 font-semibold">Service Requested</th>
+                          <th className="p-4 font-semibold">Astrologer</th>
+                          <th className="p-4 font-semibold">Status</th>
+                          <th className="p-4 font-semibold text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gold-500/10">
+                        {queries.map((q: any) => (
+                          <tr key={q._id || q.id} className="hover:bg-cosmic-800/40">
+                            <td className="p-4 text-ivory-200/60 whitespace-nowrap">
+                              {new Date(q.createdAt).toLocaleDateString('en-IN', {
+                                month: 'short',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </td>
+                            <td className="p-4 font-bold text-white whitespace-nowrap">{q.name}</td>
+                            <td className="p-4 text-ivory-200/90 whitespace-nowrap">
+                              <div className="flex items-center gap-1.5 font-medium">
+                                <Phone className="w-3 h-3 text-gold-400" />
+                                <span>{q.phone}</span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-[10px] text-ivory-200/50 mt-0.5">
+                                <Mail className="w-3 h-3 text-gold-500/60" />
+                                <span>{q.email}</span>
+                              </div>
+                            </td>
+                            <td className="p-4 text-gold-300 font-medium">
+                              {Array.isArray(q.services) ? q.services.join(', ') : q.services || 'General'}
+                            </td>
+                            <td className="p-4 text-ivory-200/80">{q.astrologerName || 'Any Available'}</td>
+                            <td className="p-4 whitespace-nowrap">
+                              <span
+                                className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                                  q.status === 'pending'
+                                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                                    : q.status === 'resolved'
+                                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                    : q.status === 'contacted'
+                                    ? 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                                    : 'bg-zinc-500/20 text-zinc-300 border border-zinc-500/30'
+                                }`}
+                              >
+                                {q.status || 'pending'}
+                              </span>
+                            </td>
+                            <td className="p-4 text-right whitespace-nowrap">
+                              <div className="flex items-center justify-end gap-2">
+                                <button
+                                  onClick={() => handleOpenQueryDetails(q)}
+                                  className="px-3 py-1.5 rounded-lg bg-cosmic-800 hover:bg-gold-500 hover:text-cosmic-950 text-gold-300 font-semibold text-xs transition cursor-pointer"
+                                >
+                                  View Details
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteQuery(q._id || q.id)}
+                                  className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-300 transition cursor-pointer"
+                                  title="Delete record"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                        {queries.length === 0 && (
+                          <tr>
+                            <td colSpan={7} className="p-8 text-center text-ivory-200/50">
+                              No inquiries found matching this criteria.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* =========================================================
+              TAB 5: USER ACCOUNTS
+          ========================================================= */}
+          {activeTab === 'users' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="font-display font-bold text-xl text-white">Registered User Accounts</h3>
+                  <p className="text-xs text-ivory-200/60 mt-0.5">
+                    Manage client profiles, palmistry AI scanning credits, and active permissions.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="relative min-w-[240px]">
+                    <Search className="w-3.5 h-3.5 text-gold-500/60 absolute left-3 top-3" />
+                    <input
+                      type="text"
+                      value={userSearch}
+                      onChange={(e) => setUserSearch(e.target.value)}
+                      onKeyDown={(e) => e.key === 'Enter' && loadUsers()}
+                      placeholder="Search user name or phone..."
+                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-white placeholder-cosmic-600 text-xs focus:outline-none focus:border-gold-400"
+                    />
+                  </div>
+                  <button
+                    onClick={loadUsers}
+                    className="p-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-gold-400 hover:bg-cosmic-800 transition cursor-pointer"
+                    title="Refresh"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {loading ? (
+                <div className="py-20 text-center text-gold-400 flex flex-col items-center justify-center">
+                  <Loader2 className="w-8 h-8 animate-spin mb-2" />
+                  <span className="text-xs font-semibold">Loading User Accounts...</span>
+                </div>
+              ) : (
+                <div className="bg-cosmic-900 border border-gold-500/30 rounded-2xl overflow-hidden shadow-gold-card">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="border-b border-gold-500/20 bg-cosmic-950/60 text-gold-400">
+                          <th className="p-4 font-semibold">Name</th>
+                          <th className="p-4 font-semibold">Email</th>
+                          <th className="p-4 font-semibold">Phone</th>
+                          <th className="p-4 font-semibold">Palmistry Credits</th>
+                          <th className="p-4 font-semibold">Status</th>
+                          <th className="p-4 font-semibold">Joined Date</th>
+                          <th className="p-4 font-semibold text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gold-500/10">
+                        {users.map((u: any) => (
+                          <tr key={u._id || u.id} className="hover:bg-cosmic-800/40">
+                            <td className="p-4 font-bold text-white">{u.name}</td>
+                            <td className="p-4 text-ivory-200/80">{u.email}</td>
+                            <td className="p-4 text-ivory-200/90 font-mono">{u.phone}</td>
+                            <td className="p-4">
+                              <span className="px-2.5 py-1 rounded-full bg-gold-500/20 text-gold-300 font-bold text-xs">
+                                {u.palmistryCredits ?? 3} Credits
+                              </span>
+                            </td>
+                            <td className="p-4">
+                              <span
+                                className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                                  u.status === 'suspended'
+                                    ? 'bg-red-500/20 text-red-300 border border-red-500/30'
+                                    : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                }`}
+                              >
+                                {u.status || 'active'}
+                              </span>
+                            </td>
+                            <td className="p-4 text-ivory-200/60">
+                              {new Date(u.createdAt).toLocaleDateString('en-IN', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                              })}
+                            </td>
+                            <td className="p-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button
+                                  onClick={() => handleOpenEditUser(u)}
+                                  className="px-3 py-1.5 rounded-lg bg-cosmic-800 hover:bg-gold-500 hover:text-cosmic-950 text-gold-300 transition text-xs font-semibold cursor-pointer"
+                                >
+                                  Adjust
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteUser(u._id || u.id, u.name)}
+                                  className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-300 transition cursor-pointer"
+                                  title="Delete Account"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                        {users.length === 0 && (
+                          <tr>
+                            <td colSpan={7} className="p-8 text-center text-ivory-200/50">
+                              No user accounts registered yet.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+        </div>
+      </main>
+
+      {/* =========================================================
+          MODAL: ADD / EDIT ASTROLOGER
+      ========================================================= */}
+      {astrologerModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="w-full max-w-xl bg-cosmic-900 border border-gold-500/40 rounded-3xl p-6 shadow-2xl relative my-8">
+            <div className="flex items-center justify-between pb-4 border-b border-gold-500/20 mb-5">
+              <h3 className="font-display font-bold text-lg text-white">
+                {editingAstrologer ? 'Edit Astrologer Profile' : 'Add New Astrologer'}
+              </h3>
+              <button
+                onClick={() => setAstrologerModalOpen(false)}
+                className="p-1.5 rounded-full hover:bg-cosmic-800 text-ivory-200/70 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveAstrologer} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1">Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={astrologerForm.name}
+                    onChange={(e) => setAstrologerForm({ ...astrologerForm, name: e.target.value })}
+                    placeholder="e.g. Pandit Pranav Sharma"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1">Title / Designation</label>
+                  <input
+                    type="text"
+                    value={astrologerForm.title}
+                    onChange={(e) => setAstrologerForm({ ...astrologerForm, title: e.target.value })}
+                    placeholder="e.g. Senior Vedic Astrologer"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1">Specialization *</label>
+                  <input
+                    type="text"
+                    required
+                    value={astrologerForm.specialization}
+                    onChange={(e) => setAstrologerForm({ ...astrologerForm, specialization: e.target.value })}
+                    placeholder="e.g. Vedic Astrology, Vastu, Palmistry"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1">Experience *</label>
+                  <input
+                    type="text"
+                    required
+                    value={astrologerForm.experience}
+                    onChange={(e) => setAstrologerForm({ ...astrologerForm, experience: e.target.value })}
+                    placeholder="e.g. 10 Years Experience"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1">Languages</label>
+                  <input
+                    type="text"
+                    value={astrologerForm.languages}
+                    onChange={(e) => setAstrologerForm({ ...astrologerForm, languages: e.target.value })}
+                    placeholder="Hindi, English"
+                    className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1">Rating (1-5)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="1"
+                    max="5"
+                    value={astrologerForm.rating}
+                    onChange={(e) => setAstrologerForm({ ...astrologerForm, rating: parseFloat(e.target.value) || 4.9 })}
+                    className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1">Reviews Count</label>
+                  <input
+                    type="text"
+                    value={astrologerForm.reviews}
+                    onChange={(e) => setAstrologerForm({ ...astrologerForm, reviews: e.target.value })}
+                    placeholder="e.g. 5K+"
+                    className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1">Photo Image URL / Path</label>
+                  <input
+                    type="text"
+                    value={astrologerForm.image}
+                    onChange={(e) => setAstrologerForm({ ...astrologerForm, image: e.target.value })}
+                    placeholder="e.g. /src/assets/Pandit-Pranav_2.jpeg or web URL"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1">Consultation Charge</label>
+                  <input
+                    type="text"
+                    value={astrologerForm.price}
+                    onChange={(e) => setAstrologerForm({ ...astrologerForm, price: e.target.value })}
+                    placeholder="e.g. ₹25/min or ₹1100/visit"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1">Short Biography & Expertise</label>
+                <textarea
+                  rows={3}
+                  value={astrologerForm.bio}
+                  onChange={(e) => setAstrologerForm({ ...astrologerForm, bio: e.target.value })}
+                  placeholder="Highlights of Vedic lineage, specializations, remedies..."
+                  className="w-full px-3.5 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                />
+              </div>
+
+              <div className="flex items-center gap-3 pt-2">
+                <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-white">
+                  <input
+                    type="checkbox"
+                    checked={astrologerForm.available}
+                    onChange={(e) => setAstrologerForm({ ...astrologerForm, available: e.target.checked })}
+                    className="w-4 h-4 rounded text-gold-500 focus:ring-gold-400 bg-cosmic-950"
+                  />
+                  <span>Active & Available for Consultation</span>
+                </label>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gold-500/20">
+                <button
+                  type="button"
+                  onClick={() => setAstrologerModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl bg-cosmic-800 text-ivory-200 text-xs font-semibold hover:bg-cosmic-700 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={actionLoading}
+                  className="px-6 py-2.5 rounded-xl gold-btn text-cosmic-950 text-xs font-bold shadow-md cursor-pointer disabled:opacity-50"
+                >
+                  {actionLoading ? 'Saving...' : editingAstrologer ? 'Update Astrologer' : 'Add Astrologer'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: ADD / EDIT BLOG
+      ========================================================= */}
+      {blogModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="w-full max-w-2xl bg-cosmic-900 border border-gold-500/40 rounded-3xl p-6 shadow-2xl relative my-8">
+            <div className="flex items-center justify-between pb-4 border-b border-gold-500/20 mb-5">
+              <h3 className="font-display font-bold text-lg text-white">
+                {editingBlog ? 'Edit Blog Article' : 'Write New Wisdom Blog Post'}
+              </h3>
+              <button
+                onClick={() => setBlogModalOpen(false)}
+                className="p-1.5 rounded-full hover:bg-cosmic-800 text-ivory-200/70 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveBlog} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1">Article Title *</label>
+                <input
+                  type="text"
+                  required
+                  value={blogForm.title}
+                  onChange={(e) => setBlogForm({ ...blogForm, title: e.target.value })}
+                  placeholder="e.g. Vastu Guidelines for Auspicious Home Entrances"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1">Category</label>
+                  <select
+                    value={blogForm.category}
+                    onChange={(e) => setBlogForm({ ...blogForm, category: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  >
+                    <option value="Astrology">Astrology</option>
+                    <option value="Vastu Shastra">Vastu Shastra</option>
+                    <option value="Spiritual Practices">Spiritual Practices</option>
+                    <option value="Remedies">Remedies & Gemstones</option>
+                    <option value="Kundli">Kundli & Planets</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1">Author Name</label>
+                  <input
+                    type="text"
+                    value={blogForm.author}
+                    onChange={(e) => setBlogForm({ ...blogForm, author: e.target.value })}
+                    placeholder="e.g. Pandit Pranav / Bhagya Netram"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1">Short Excerpt *</label>
+                <textarea
+                  rows={2}
+                  required
+                  value={blogForm.excerpt}
+                  onChange={(e) => setBlogForm({ ...blogForm, excerpt: e.target.value })}
+                  placeholder="1-2 sentences summarizing the article for the cards..."
+                  className="w-full px-3.5 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1">Full Article Content *</label>
+                <textarea
+                  rows={8}
+                  required
+                  value={blogForm.content}
+                  onChange={(e) => setBlogForm({ ...blogForm, content: e.target.value })}
+                  placeholder="Full text of the blog. Markdown / paragraphs are supported..."
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs font-mono leading-relaxed focus:border-gold-400 focus:outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1">Cover Image</label>
+                  <input
+                    type="text"
+                    value={blogForm.image}
+                    onChange={(e) => setBlogForm({ ...blogForm, image: e.target.value })}
+                    placeholder="blog1.jpeg or image URL"
+                    className="w-full px-3.5 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1">Tags (comma separated)</label>
+                  <input
+                    type="text"
+                    value={blogForm.tags}
+                    onChange={(e) => setBlogForm({ ...blogForm, tags: e.target.value })}
+                    placeholder="Vastu, Entrance, Crystals"
+                    className="w-full px-3.5 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 pt-2">
+                <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-white">
+                  <input
+                    type="checkbox"
+                    checked={blogForm.published}
+                    onChange={(e) => setBlogForm({ ...blogForm, published: e.target.checked })}
+                    className="w-4 h-4 rounded text-gold-500 focus:ring-gold-400 bg-cosmic-950"
+                  />
+                  <span>Publish Immediately (Visible to readers)</span>
+                </label>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gold-500/20">
+                <button
+                  type="button"
+                  onClick={() => setBlogModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl bg-cosmic-800 text-ivory-200 text-xs font-semibold hover:bg-cosmic-700 transition"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={actionLoading}
+                  className="px-6 py-2.5 rounded-xl gold-btn text-cosmic-950 text-xs font-bold shadow-md cursor-pointer disabled:opacity-50"
+                >
+                  {actionLoading ? 'Saving...' : editingBlog ? 'Update Post' : 'Publish Article'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: QUERY DETAILS & STATUS INSPECTOR
+      ========================================================= */}
+      {queryModalOpen && selectedQuery && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="w-full max-w-lg bg-cosmic-900 border border-gold-500/40 rounded-3xl p-6 shadow-2xl relative my-8">
+            <div className="flex items-center justify-between pb-4 border-b border-gold-500/20 mb-5">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-gold-400 tracking-wider block">
+                  Customer Consultation Inquiry
+                </span>
+                <h3 className="font-display font-bold text-lg text-white">
+                  {selectedQuery.name}
+                </h3>
+              </div>
+              <button
+                onClick={() => setQueryModalOpen(false)}
+                className="p-1.5 rounded-full hover:bg-cosmic-800 text-ivory-200/70 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateQueryStatus} className="space-y-4">
+              <div className="bg-cosmic-950 p-4 rounded-2xl border border-gold-500/20 space-y-2 text-xs">
+                <div className="flex justify-between items-center py-1 border-b border-gold-500/10">
+                  <span className="text-ivory-200/60">Phone:</span>
+                  <a href={`tel:${selectedQuery.phone}`} className="font-mono text-gold-300 font-bold hover:underline">
+                    {selectedQuery.phone}
+                  </a>
+                </div>
+
+                <div className="flex justify-between items-center py-1 border-b border-gold-500/10">
+                  <span className="text-ivory-200/60">Email:</span>
+                  <a href={`mailto:${selectedQuery.email}`} className="text-white hover:underline">
+                    {selectedQuery.email}
+                  </a>
+                </div>
+
+                <div className="flex justify-between items-center py-1 border-b border-gold-500/10">
+                  <span className="text-ivory-200/60">Service(s):</span>
+                  <span className="text-gold-400 font-semibold text-right">
+                    {Array.isArray(selectedQuery.services) ? selectedQuery.services.join(', ') : selectedQuery.services}
+                  </span>
+                </div>
+
+                <div className="flex justify-between items-center py-1 border-b border-gold-500/10">
+                  <span className="text-ivory-200/60">Requested Astrologer:</span>
+                  <span className="text-white">{selectedQuery.astrologerName || 'Any Available'}</span>
+                </div>
+
+                {selectedQuery.date && (
+                  <div className="flex justify-between items-center py-1 border-b border-gold-500/10">
+                    <span className="text-ivory-200/60">Preferred Appointment:</span>
+                    <span className="text-white">
+                      {new Date(selectedQuery.date).toLocaleDateString()} at {selectedQuery.time || 'Flexible'}
+                    </span>
+                  </div>
+                )}
+
+                <div className="pt-2">
+                  <span className="text-ivory-200/60 block mb-1">Client Message:</span>
+                  <p className="bg-cosmic-900/90 p-3 rounded-xl border border-gold-500/15 text-ivory-100 text-xs leading-relaxed italic">
+                    "{selectedQuery.message || 'No additional note provided by client.'}"
+                  </p>
+                </div>
+              </div>
+
+              {/* Status Update */}
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                  Update Lead Follow-up Status
+                </label>
+                <select
+                  value={queryStatusUpdate}
+                  onChange={(e) => setQueryStatusUpdate(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                >
+                  <option value="pending">Pending (New)</option>
+                  <option value="contacted">Contacted (In Discussion)</option>
+                  <option value="in_progress">In Progress (Audit Scheduled)</option>
+                  <option value="resolved">Resolved (Consultation Done)</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              {/* Admin Internal Notes */}
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                  Admin Follow-up Notes
+                </label>
+                <textarea
+                  rows={3}
+                  value={queryAdminNotes}
+                  onChange={(e) => setQueryAdminNotes(e.target.value)}
+                  placeholder="Record outcome of WhatsApp/Call discussion or next steps..."
+                  className="w-full px-3.5 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-gold-500/20">
+                <a
+                  href={`https://wa.me/${selectedQuery.phone.replace(/[^0-9]/g, '')}?text=Namaste%20${encodeURIComponent(
+                    selectedQuery.name
+                  )},%20this%20is%20from%20BhagyaNetram%20regarding%20your%20consultation%20request.`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center gap-1.5 transition"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>WhatsApp Client</span>
+                </a>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setQueryModalOpen(false)}
+                    className="px-4 py-2 rounded-xl bg-cosmic-800 text-ivory-200 text-xs font-semibold hover:bg-cosmic-700"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={actionLoading}
+                    className="px-5 py-2 rounded-xl gold-btn text-cosmic-950 text-xs font-bold shadow-md cursor-pointer"
+                  >
+                    {actionLoading ? 'Updating...' : 'Save Changes'}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: USER CREDITS & STATUS ADJUSTER
+      ========================================================= */}
+      {userModalOpen && selectedUser && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-cosmic-900 border border-gold-500/40 rounded-3xl p-6 shadow-2xl relative">
+            <div className="flex items-center justify-between pb-4 border-b border-gold-500/20 mb-4">
+              <div>
+                <span className="text-[10px] uppercase font-bold text-gold-400 tracking-wider block">
+                  User Account Controls
+                </span>
+                <h3 className="font-display font-bold text-lg text-white">
+                  {selectedUser.name}
+                </h3>
+              </div>
+              <button
+                onClick={() => setUserModalOpen(false)}
+                className="p-1.5 rounded-full hover:bg-cosmic-800 text-ivory-200/70 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveUser} className="space-y-4 text-xs">
+              <div className="bg-cosmic-950 p-3.5 rounded-xl border border-gold-500/20 space-y-1.5">
+                <div className="flex justify-between">
+                  <span className="text-ivory-200/60">Email:</span>
+                  <span className="text-white font-mono">{selectedUser.email}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-ivory-200/60">Phone:</span>
+                  <span className="text-white font-mono">{selectedUser.phone}</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                  Palmistry AI Scan Credits
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    min="0"
+                    value={userCredits}
+                    onChange={(e) => setUserCredits(parseInt(e.target.value) || 0)}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white font-bold text-sm focus:border-gold-400 focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setUserCredits((prev) => prev + 5)}
+                    className="px-3 py-2.5 rounded-xl bg-cosmic-800 border border-gold-500/30 text-gold-300 font-bold whitespace-nowrap hover:bg-cosmic-700 transition"
+                  >
+                    +5 Bonus
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                  Account Status
+                </label>
+                <select
+                  value={userAccountStatus}
+                  onChange={(e) => setUserAccountStatus(e.target.value)}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white focus:border-gold-400 focus:outline-none"
+                >
+                  <option value="active">Active (Normal Access)</option>
+                  <option value="suspended">Suspended (Blocked)</option>
+                </select>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gold-500/20">
+                <button
+                  type="button"
+                  onClick={() => setUserModalOpen(false)}
+                  className="px-4 py-2 rounded-xl bg-cosmic-800 text-ivory-200 font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={actionLoading}
+                  className="px-5 py-2 rounded-xl gold-btn text-cosmic-950 font-bold shadow-md cursor-pointer"
+                >
+                  {actionLoading ? 'Saving...' : 'Save User Settings'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}

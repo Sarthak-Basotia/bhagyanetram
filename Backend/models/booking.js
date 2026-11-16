@@ -24,7 +24,7 @@ const consultationBookingSchema = new mongoose.Schema(
     },
     services: {
       type: [String],
-      required: true,
+      default: ["General Consultation"],
     },
     otherService: {
       type: String,
@@ -43,6 +43,25 @@ const consultationBookingSchema = new mongoose.Schema(
     message: {
       type: String,
       default: null,
+    },
+    astrologerName: {
+      type: String,
+      default: "Any Available Astrologer",
+      trim: true,
+    },
+    source: {
+      type: String,
+      default: "website", // 'booking_modal', 'contact_page', 'vastu_audit', 'voucher_inquiry'
+      trim: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "contacted", "in_progress", "resolved", "cancelled"],
+      default: "pending",
+    },
+    adminNotes: {
+      type: String,
+      default: "",
     },
   },
   {

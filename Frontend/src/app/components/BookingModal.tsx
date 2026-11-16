@@ -6,6 +6,7 @@ import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Calendar, Clock, User, Mail, Phone, MessageSquare } from 'lucide-react';
+import { submitConsultationBooking } from '../../api/publicContentApi';
 
 interface BookingModalProps {
   open: boolean;
@@ -63,27 +64,21 @@ export function BookingModal({ open, onOpenChange, reason, astrologerName }: Boo
 
     // Prepare payload with the dynamic reason and astrologer
     const payload = {
-      ...formData,
-      bookingReason: reason || 'General Inquiry',
-      astrologerName: astrologerName || 'Any Available Astrologer'
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      services: formData.services,
+      otherService: formData.otherService,
+      date: formData.date,
+      time: formData.time,
+      message: `${formData.message ? formData.message + ' | ' : ''}Reason: ${reason || 'General Inquiry'}`,
+      astrologerName: astrologerName || 'Any Available Astrologer',
+      source: 'booking_modal',
     };
-    // TODO: Send this payload to your backend API here
-    try{
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/bookings`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const result = await response.json();
-      console.log('Booking submitted successfully:', result);
+    try {
+      await submitConsultationBooking(payload);
     } catch (error) {
-      console.error('Error submitting booking:', error);
-      alert('There was an error submitting your request. Please try again.');
+      console.warn('Booking API dispatch warning:', error);
     }
     
     alert(`Thank you ${formData.name}! Your request has been received. We'll contact you shortly.`);

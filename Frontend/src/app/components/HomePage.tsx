@@ -27,6 +27,7 @@ import { motion } from 'motion/react';
 import nidhiJi from '/src/assets/Nidhi-Ji.png';
 import panditPranav from '/src/assets/Pandit-Pranav_2.jpeg';
 import gargiJi from '/src/assets/Gargi_Ji.jpeg';
+import { fetchPublicAstrologers } from '../../api/publicContentApi';
 
 
 export function HomePage() {
@@ -122,6 +123,28 @@ export function HomePage() {
       available: true,
     },
   ];
+
+  const [astrologersList, setAstrologersList] = useState(topAstrologers);
+
+  useEffect(() => {
+    fetchPublicAstrologers()
+      .then((res) => {
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const mapped = res.data.map((a: any) => {
+            let resolvedImg = a.image;
+            if (!resolvedImg || resolvedImg.includes('Pandit-Pranav') || a.name?.includes('Pranav')) resolvedImg = panditPranav;
+            else if (resolvedImg.includes('Gargi_Ji') || resolvedImg.includes('gargi') || a.name?.includes('Gargi')) resolvedImg = gargiJi;
+            else if (resolvedImg.includes('Nidhi-Ji') || resolvedImg.includes('nidhi') || a.name?.includes('Nidhi')) resolvedImg = nidhiJi;
+            return {
+              ...a,
+              image: resolvedImg,
+            };
+          });
+          setAstrologersList(mapped);
+        }
+      })
+      .catch((err) => console.warn('Could not fetch dynamic astrologers:', err));
+  }, []);
 
   const quickActions = [
     {
@@ -560,7 +583,7 @@ export function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-7 lg:gap-8">
-            {topAstrologers.map((astrologer, idx) => (
+            {astrologersList.map((astrologer, idx) => (
               <motion.article
                 key={idx}
                 initial={{ opacity: 0, y: 20 }}

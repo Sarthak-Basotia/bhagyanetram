@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Calendar, User, ArrowRight, ArrowLeft, BookOpen } from 'lucide-react';
 import { motion } from 'motion/react';
+import { fetchPublicBlogs } from '../../../api/publicContentApi';
 
 export function BlogPage() {
   const [selectedPost, setSelectedPost] = useState<any>(null);
@@ -144,6 +145,27 @@ export function BlogPage() {
     }
   ];
 
+  const [posts, setPosts] = useState<any[]>(blogPosts);
+
+  useEffect(() => {
+    fetchPublicBlogs()
+      .then((res) => {
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const merged = res.data.map((apiBlog: any) => {
+            if (apiBlog.slug === 'vastu-for-the-main-entrance' || apiBlog.title?.includes('Entrance')) {
+              return {
+                ...apiBlog,
+                content: blogPosts[0].content,
+              };
+            }
+            return apiBlog;
+          });
+          setPosts(merged);
+        }
+      })
+      .catch((err) => console.warn('Blogs fetch error:', err));
+  }, []);
+
   const categories = ['Astrology', 'Vastu Shastra', 'Spiritual Practices', 'Remedies'];
 
   // --- FULL ARTICLE READING VIEW ---
@@ -188,7 +210,13 @@ export function BlogPage() {
             </div>
 
             <div className="font-sans text-cosmic-800 text-base sm:text-lg leading-relaxed space-y-6">
-              {selectedPost.content}
+              {typeof selectedPost.content === 'string' ? (
+                <div className="space-y-4 text-slate-700 text-base sm:text-lg leading-relaxed whitespace-pre-line">
+                  {selectedPost.content}
+                </div>
+              ) : (
+                selectedPost.content
+              )}
             </div>
           </div>
 
@@ -249,7 +277,7 @@ export function BlogPage() {
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((post, index) => (
+            {posts.map((post, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}

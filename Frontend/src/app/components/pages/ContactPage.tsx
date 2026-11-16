@@ -7,6 +7,7 @@ import {
 import { motion } from 'motion/react';
 import { Helmet } from 'react-helmet-async';
 import logoImage from 'figma:asset/d5457f2df4c5864ece0203437258a94768a0cf00.png';
+import { submitConsultationBooking } from '../../../api/publicContentApi';
 
 export function ContactPage() {
   const [formData, setFormData] = useState({
@@ -42,8 +43,21 @@ export function ContactPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      await submitConsultationBooking({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        services: [formData.service || 'Vastu Site Visit'],
+        date: formData.preferredDate || undefined,
+        message: `Property: ${formData.propertyType} in ${formData.city}. Code: ${formData.couponCode}. Notes: ${formData.message || 'None'}`,
+        source: 'contact_page',
+      });
+    } catch (err) {
+      console.warn('Inquiry submission fallback warning:', err);
+    }
     setSubmitted(true);
   };
 

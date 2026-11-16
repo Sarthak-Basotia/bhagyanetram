@@ -9,11 +9,40 @@ import {
   updateAllSignsByTimeframe,
 } from "./services/horoscopeService.js";
 
-// Import the new AI Astrology controllers (Adjust the path if your controller is in a different folder)
-import { generateKundli, getAdvancedKundli, getGemstoneGuide, getNumerology, getPanchang, matchKundli } from "./controllers/astrologyController.js";
+// AI Astrology controllers
+import { 
+  generateKundli, 
+  getAdvancedKundli, 
+  getGemstoneGuide, 
+  getNumerology, 
+  getPanchang, 
+  matchKundli 
+} from "./controllers/astrologyController.js";
 import { sendOTP, verifyOTP, getUserDetails } from './controllers/authController.js';
 import { analyzePalm } from './controllers/palmistryController.js';
-import { requireAuth } from './middleware/authMiddleware.js';
+import { requireAuth, requireAdmin } from './middleware/authMiddleware.js';
+
+// Admin and Public Content Controllers
+import {
+  adminLogin,
+  getAdminStats,
+  createAstrologer,
+  updateAstrologer,
+  deleteAstrologer,
+  getAllBlogsAdmin,
+  createBlog,
+  updateBlog,
+  deleteBlog,
+  getAllQueries,
+  updateQueryStatus,
+  deleteQuery,
+  getAllUsers,
+  updateUser,
+  deleteUser,
+} from './controllers/adminController.js';
+import { getPublicAstrologers } from './controllers/astrologerController.js';
+import { getPublicBlogs, getPublicBlogBySlug } from './controllers/blogController.js';
+import { createPublicBooking } from './controllers/bookingController.js';
 
 const app = express();
 // Increased JSON limit for base64 images
@@ -37,7 +66,7 @@ app.get("/api/auth/me", requireAuth, getUserDetails);
 app.post("/api/palmistry/analyze", requireAuth, analyzePalm);
 
 // ==========================================
-// NEW: AI ASTROLOGY ROUTES
+// AI ASTROLOGY ROUTES
 // ==========================================
 app.post("/api/astrology/kundli", generateKundli);
 app.post("/api/astrology/panchang", getPanchang);
@@ -47,16 +76,45 @@ app.post("/api/astrology/numerology", getNumerology);
 app.post("/api/astrology/gemstones", getGemstoneGuide);
 app.get("/api/astrology/festivals", getFestivals);
 app.post("/api/astrology/transit", getPlanetTransit);
-// ==========================================
-// EXISTING: BOOKING ROUTES (Assuming they are here)
-// ==========================================
-// ... Booking endpoints stay as they are ...
-
 
 // ==========================================
-// EXISTING: HOROSCOPE ROUTES
+// PUBLIC: ASTROLOGERS, BLOGS & BOOKINGS
 // ==========================================
-// GET Horoscope endpoint - Fetches from MongoDB
+app.get("/api/astrologers", getPublicAstrologers);
+app.get("/api/blogs", getPublicBlogs);
+app.get("/api/blogs/:slug", getPublicBlogBySlug);
+app.post("/api/bookings", createPublicBooking);
+
+// ==========================================
+// ADMIN PORTAL ROUTES
+// ==========================================
+app.post("/api/admin/login", adminLogin);
+app.get("/api/admin/stats", requireAdmin, getAdminStats);
+
+// Admin Astrologers
+app.post("/api/admin/astrologers", requireAdmin, createAstrologer);
+app.put("/api/admin/astrologers/:id", requireAdmin, updateAstrologer);
+app.delete("/api/admin/astrologers/:id", requireAdmin, deleteAstrologer);
+
+// Admin Blogs
+app.get("/api/admin/blogs", requireAdmin, getAllBlogsAdmin);
+app.post("/api/admin/blogs", requireAdmin, createBlog);
+app.put("/api/admin/blogs/:id", requireAdmin, updateBlog);
+app.delete("/api/admin/blogs/:id", requireAdmin, deleteBlog);
+
+// Admin Queries & Inquiries
+app.get("/api/admin/queries", requireAdmin, getAllQueries);
+app.patch("/api/admin/queries/:id", requireAdmin, updateQueryStatus);
+app.delete("/api/admin/queries/:id", requireAdmin, deleteQuery);
+
+// Admin User Accounts
+app.get("/api/admin/users", requireAdmin, getAllUsers);
+app.patch("/api/admin/users/:id", requireAdmin, updateUser);
+app.delete("/api/admin/users/:id", requireAdmin, deleteUser);
+
+// ==========================================
+// HOROSCOPE ROUTES
+// ==========================================
 app.get("/api/horoscope", async (req, res) => {
   try {
     const { sign, timeframe = "daily" } = req.query;
@@ -72,10 +130,8 @@ app.get("/api/horoscope", async (req, res) => {
       return res.status(400).json({ detail: `Invalid timeframe. Choose from: ${VALID_TIMEFRAMES.join(", ")}` });
     }
 
-    // 1. Read directly from MongoDB
     let horoscope = await Horoscope.findOne({ sign: cleanSign, timeframe: cleanTimeframe });
 
-    // 2. Fallback: If DB is empty for this sign, generate once & save
     if (!horoscope) {
       console.log(`[DB Miss] Generating initial horoscope for ${cleanSign} (${cleanTimeframe})`);
       horoscope = await generateHoroscope(cleanSign, cleanTimeframe);
@@ -95,7 +151,7 @@ app.get("/api/horoscope", async (req, res) => {
   }
 });
 
-// Admin endpoint to manually trigger a batch generation without waiting for 3:00 AM
+// Admin endpoint to trigger horoscope seeding
 app.post("/api/admin/seed-horoscopes", async (req, res) => {
   const { timeframe = "daily" } = req.body;
   if (!VALID_TIMEFRAMES.includes(timeframe.toLowerCase())) {
