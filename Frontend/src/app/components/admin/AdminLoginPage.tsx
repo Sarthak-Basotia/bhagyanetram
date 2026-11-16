@@ -123,19 +123,7 @@ export default function AdminLoginPage() {
                 </button>
               </div>
             </div>
-
-            {/* Default credentials tip */}
-            <div className="p-3 rounded-xl bg-gold-500/10 border border-gold-500/20 text-gold-200/90 text-xs">
-              <div className="flex items-center gap-1.5 font-bold text-gold-400 mb-0.5">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Authorized Credentials:</span>
-              </div>
-              <p className="font-mono text-[11px] text-ivory-100/90">
-                Email: <span className="text-gold-300 font-semibold">admin@bhagyanetram.com</span>
-                <br />
-                Password: <span className="text-gold-300 font-semibold">Admin@2026</span>
-              </p>
-            </div>
+           
 
             {/* Submit Button */}
             <button
