@@ -42,7 +42,7 @@ import {
   deleteUser,
 } from './controllers/adminController.js';
 import { getPublicAstrologers } from './controllers/astrologerController.js';
-import { getPublicBlogs, getPublicBlogBySlug } from './controllers/blogController.js';
+import { getPublicBlogs, getPublicBlogBySlug, ensureDefaultBlogs } from './controllers/blogController.js';
 import { createPublicBooking } from './controllers/bookingController.js';
 
 const app = express();
@@ -50,6 +50,7 @@ const app = express();
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 initializeFestivalQueue();
+ensureDefaultBlogs();
 
 app.use(cors({ origin: "*", credentials: true }));
 

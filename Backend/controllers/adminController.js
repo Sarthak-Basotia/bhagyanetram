@@ -3,6 +3,7 @@ import Astrologer from '../models/Astrologer.js';
 import Blog from '../models/Blog.js';
 import Booking from '../models/booking.js';
 import User from '../models/User.js';
+import { ensureDefaultBlogs } from './blogController.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'bhagyanetram_secret_key_123';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@bhagyanetram.com';
@@ -66,6 +67,8 @@ export const adminLogin = async (req, res) => {
 // ==========================================
 export const getAdminStats = async (req, res) => {
   try {
+    await ensureDefaultBlogs();
+
     const [
       totalAstrologers,
       totalBlogs,
@@ -217,6 +220,7 @@ export const deleteAstrologer = async (req, res) => {
 // ==========================================
 export const getAllBlogsAdmin = async (req, res) => {
   try {
+    await ensureDefaultBlogs();
     const blogs = await Blog.find({}).sort({ createdAt: -1 });
     return res.status(200).json({ success: true, data: blogs });
   } catch (error) {

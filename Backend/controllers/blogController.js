@@ -1,6 +1,6 @@
 import Blog from '../models/Blog.js';
 
-const defaultBlogs = [
+export const defaultBlogs = [
   {
     title: 'Vastu for the Main Entrance: Attracting Positive Energy with Stones and Shells',
     slug: 'vastu-for-the-main-entrance',
@@ -24,36 +24,24 @@ The Gomti Chakra is a naturally occurring spiral shell found in the Gomti River 
     views: 420,
     tags: ['Vastu Shastra', 'Main Entrance', 'Gomti Chakra', 'Home Remedies'],
   },
-  {
-    title: 'Planetary Transits in 2026: Understanding Saturn and Jupiter Movements',
-    slug: 'planetary-transits-2026-saturn-jupiter',
-    category: 'Astrology',
-    excerpt: 'Explore how the major celestial shifts of Shani Dev (Saturn) and Guru Brihaspati (Jupiter) shape collective karma, economic prosperity, and individual zodiac destinies in 2026.',
-    content: `In Vedic astrology (Jyotish), the slow-moving heavy planets — specifically Saturn (Shani Dev) and Jupiter (Guru Brihaspati) — set the overarching karmic backdrop for years at a time. While the Moon and Sun trigger daily and monthly emotional cycles, Jupiter bestows divine grace and expansion, while Saturn enforces discipline, structure, and accountability.
-
-### The Influence of Jupiter in 2026
-Jupiter's transit activates houses of fortune, higher spiritual knowledge, and dharmic righteousness. Individuals running Jupiter Mahadasha or Antardasha will feel an awakening towards ethical enterprise and personal growth.
-
-### The Steady Gaze of Shani Dev
-Saturn's transit tests the integrity of your foundational systems. It strips away illusions and rewards sincere, steady labor. Remedial measures such as daily Hanuman Chalisa recitation and lighting mustard oil lamps on Saturdays offer immense spiritual balance during Sade Sati periods.`,
-    author: 'Pandit Pranav',
-    image: 'blog1.jpeg',
-    date: 'October 14, 2026',
-    published: true,
-    views: 285,
-    tags: ['Astrology', 'Planetary Transit', 'Saturn', 'Jupiter'],
-  },
 ];
+
+export const ensureDefaultBlogs = async () => {
+  try {
+    const count = await Blog.countDocuments({});
+    if (count === 0) {
+      console.log('No blogs found in MongoDB. Auto-seeding default website blog...');
+      await Blog.insertMany(defaultBlogs);
+    }
+  } catch (err) {
+    console.warn('ensureDefaultBlogs error:', err.message);
+  }
+};
 
 export const getPublicBlogs = async (req, res) => {
   try {
-    let blogs = await Blog.find({ published: true }).sort({ createdAt: -1 });
-
-    if (!blogs || blogs.length === 0) {
-      await Blog.insertMany(defaultBlogs);
-      blogs = await Blog.find({ published: true }).sort({ createdAt: -1 });
-    }
-
+    await ensureDefaultBlogs();
+    const blogs = await Blog.find({ published: true }).sort({ createdAt: -1 });
     return res.status(200).json({ success: true, data: blogs });
   } catch (error) {
     console.error('Fetch Blogs Error:', error);
