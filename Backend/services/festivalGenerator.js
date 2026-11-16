@@ -12,8 +12,8 @@ export const verifiedYearFestivals2026 = {
       10: { hi: 'स्वामी विवेकानंद जयंती', en: 'Swami Vivekananda Jayanti', major: false },
       14: { hi: 'मकर संक्रांति / पोंगल / लोहड़ी', en: 'Makar Sankranti / Pongal', major: true },
       18: { hi: 'मौनी अमावस्या', en: 'Mauni Amavasya', major: true, isNewMoon: true },
-      23: { hi: 'षटतिला एकादशी व्रत', en: 'Shattila Ekadashi', major: false },
-      26: { hi: 'गणतंत्र दिवस / वसंत पंचमी, सरस्वती पूजा', en: 'Republic Day / Vasant Panchami', major: true },
+      23: { hi: 'वसंत पंचमी / सरस्वती पूजा', en: 'Vasant Panchami / Saraswati Puja', major: true },
+      26: { hi: 'गणतंत्र दिवस', en: 'Republic Day', major: false },
     }
   },
   2: {
@@ -51,11 +51,11 @@ export const verifiedYearFestivals2026 = {
     hinduMonths: 'चैत्र / वैशाख',
     startTithi: 15,
     festivals: {
-      1: { hi: 'हनुमान जयंती / चैत्र पूर्णिमा', en: 'Hanuman Jayanti', major: true, isFullMoon: true },
+      2: { hi: 'हनुमान जयंती / चैत्र पूर्णिमा', en: 'Hanuman Jayanti', major: true, isFullMoon: true },
       13: { hi: 'वरूथिनी एकादशी', en: 'Varuthini Ekadashi', major: false },
       14: { hi: 'बैसाखी / मेष संक्रांति / अंबेडकर जयंती', en: 'Baisakhi / Mesha Sankranti', major: true },
       17: { hi: 'वैशाख अमावस्या', en: 'Vaishakh Amavasya', major: false, isNewMoon: true },
-      20: { hi: 'अक्षय तृतीया', en: 'Akshaya Tritiya', major: true },
+      19: { hi: 'अक्षय तृतीया', en: 'Akshaya Tritiya', major: true },
       21: { hi: 'परशुराम जयंती', en: 'Parashurama Jayanti', major: false },
       24: { hi: 'गंगा सप्तमी', en: 'Ganga Saptami', major: false },
       27: { hi: 'मोहिनी एकादशी', en: 'Mohini Ekadashi', major: false },
@@ -70,9 +70,8 @@ export const verifiedYearFestivals2026 = {
       1: { hi: 'बुद्ध पूर्णिमा / वैशाख पूर्णिमा', en: 'Buddha Purnima', major: true, isFullMoon: true },
       4: { hi: 'नारद जयंती', en: 'Narada Jayanti', major: false },
       12: { hi: 'अपरा एकादशी', en: 'Apara Ekadashi', major: false },
-      16: { hi: 'वट सावित्री व्रत (अमावस्या)', en: 'Vat Savitri Vrat', major: true },
-      17: { hi: 'शनि जयंती / ज्येष्ठ अमावस्या', en: 'Shani Jayanti', major: true, isNewMoon: true },
-      26: { hi: 'गंगा दशहरा / निर्जला एकादशी', en: 'Ganga Dussehra / Nirjala Ekadashi', major: true },
+      16: { hi: 'वट सावित्री व्रत / शनि जयंती (अमावस्या)', en: 'Vat Savitri Vrat / Shani Jayanti', major: true, isNewMoon: true },
+      25: { hi: 'गंगा दशहरा', en: 'Ganga Dussehra', major: true },
       31: { hi: 'ज्येष्ठ पूर्णिमा / वट पूर्णिमा', en: 'Vat Purnima', major: false, isFullMoon: true },
     }
   },
@@ -84,10 +83,8 @@ export const verifiedYearFestivals2026 = {
       1: { hi: 'कबीर दास जयंती', en: 'Kabir Jayanti', major: false },
       10: { hi: 'योगिनी एकादशी', en: 'Yogini Ekadashi', major: false },
       15: { hi: 'आषाढ अमावस्या', en: 'Ashadha Amavasya', major: false, isNewMoon: true },
-      17: { hi: 'जगन्नाथ पुरी रथ यात्रा', en: 'Jagannath Puri Rath Yatra', major: true },
       21: { hi: 'अंतरराष्ट्रीय योग दिवस', en: 'International Yoga Day', major: false },
-      25: { hi: 'देवशयनी एकादशी / आषाढ़ी एकादशी', en: 'Devshayani Ekadashi', major: true },
-      29: { hi: 'गुरु पूर्णिमा / व्यास पूजा', en: 'Guru Purnima', major: true, isFullMoon: true },
+      25: { hi: 'निर्जला एकादशी', en: 'Nirjala Ekadashi', major: true },
     }
   },
   7: {
@@ -95,16 +92,11 @@ export const verifiedYearFestivals2026 = {
     hinduMonths: 'आषाढ / श्रावण',
     startTithi: 2,
     festivals: {
-      6: { hi: 'सावन प्रथम सोमवार व्रत', en: 'First Sawan Somwar', major: true },
       9: { hi: 'कामिका एकादशी', en: 'Kamika Ekadashi', major: false },
-      13: { hi: 'सावन द्वितीय सोमवार व्रत', en: 'Second Sawan Somwar', major: false },
       14: { hi: 'हरियाली अमावस्या', en: 'Hariyali Amavasya', major: false, isNewMoon: true },
-      17: { hi: 'हरियाली तीज', en: 'Hariyali Teej', major: true },
-      19: { hi: 'नाग पंचमी', en: 'Nag Panchami', major: true },
-      20: { hi: 'सावन तृतीय सोमवार व्रत', en: 'Third Sawan Somwar', major: false },
-      25: { hi: 'श्रावण पुत्रदा एकादशी', en: 'Shravana Putrada Ekadashi', major: false },
-      27: { hi: 'सावन चतुर्थ सोमवार व्रत', en: 'Fourth Sawan Somwar', major: false },
-      28: { hi: 'वरलक्ष्मी व्रतम्', en: 'Varalakshmi Vratam', major: false },
+      16: { hi: 'जगन्नाथ पुरी रथ यात्रा', en: 'Jagannath Puri Rath Yatra', major: true },
+      20: { hi: 'देवशयनी एकादशी / आषाढ़ी एकादशी', en: 'Devshayani Ekadashi', major: true },
+      29: { hi: 'गुरु पूर्णिमा / व्यास पूजा', en: 'Guru Purnima', major: true, isFullMoon: true },
     }
   },
   8: {
