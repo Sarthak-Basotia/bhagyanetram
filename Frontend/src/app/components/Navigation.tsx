@@ -28,7 +28,7 @@ export function Navigation() {
     // Hold menu open for 3 seconds after mouse leaves
     closeTimeoutRef.current = setTimeout(() => {
       setVastuDropdownOpen(false);
-    }, 3000);
+    }, 1200);
   };
 
   const handleCloseVastuImmediate = () => {
