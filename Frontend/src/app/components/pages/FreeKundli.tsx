@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { Sparkles, Compass, AlertTriangle, CheckCircle2, Loader2, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function FreeKundli() {
   const [loading, setLoading] = useState(false);
@@ -26,47 +29,221 @@ export default function FreeKundli() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-[#D35400] mb-6 text-center">Free AI Kundli Reading</h1>
-      
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-md border border-orange-100 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input className="border p-2 rounded" required placeholder="Full Name" onChange={e => setFormData({...formData, name: e.target.value})} />
-        <input className="border p-2 rounded" required type="date" onChange={e => setFormData({...formData, dob: e.target.value})} />
-        <input className="border p-2 rounded" required type="time" onChange={e => setFormData({...formData, time: e.target.value})} />
-        {/* For production, replace lat/lon inputs with a City Autocomplete API */}
-        <input className="border p-2 rounded" type="number" step="any" placeholder="Latitude (e.g. 28.61)" onChange={e => setFormData({...formData, lat: parseFloat(e.target.value)})} />
-        <input className="border p-2 rounded" type="number" step="any" placeholder="Longitude (e.g. 77.20)" onChange={e => setFormData({...formData, lon: parseFloat(e.target.value)})} />
-        <button disabled={loading} className="md:col-span-2 bg-[#D35400] text-white p-3 rounded-lg font-bold hover:bg-orange-700 transition">
-          {loading ? 'Consulting the Stars...' : 'Generate Kundli'}
-        </button>
-      </form>
+    <div className="min-h-screen bg-ivory-50 text-cosmic-900">
+      <Helmet>
+        <title>Free Online Janma Kundli Generator | Bhagyanetram</title>
+        <meta name="description" content="Generate your complete Vedic Janma Kundli birth chart online with planetary positions, ascendant, and Manglik Dosha report." />
+        <link rel="canonical" href="https://bhagyanetram.com/free-kundli" />
+      </Helmet>
 
-      {result && (
-        <div className="mt-8 space-y-6">
-          <div className="bg-orange-50 p-6 rounded-xl border border-orange-200">
-            <h2 className="text-xl font-bold mb-4 text-orange-800">Astrological Profile</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-white p-3 rounded shadow-sm"><span className="text-sm text-gray-500 block">Ascendant</span><span className="font-bold">{result.basicDetails.ascendant}</span></div>
-              <div className="bg-white p-3 rounded shadow-sm"><span className="text-sm text-gray-500 block">Moon Sign</span><span className="font-bold">{result.basicDetails.moonSign}</span></div>
-              <div className="bg-white p-3 rounded shadow-sm"><span className="text-sm text-gray-500 block">Sun Sign</span><span className="font-bold">{result.basicDetails.sunSign}</span></div>
-              <div className="bg-white p-3 rounded shadow-sm"><span className="text-sm text-gray-500 block">Nakshatra</span><span className="font-bold">{result.basicDetails.nakshatra}</span></div>
+      {/* Hero Section */}
+      <section className="relative py-20 lg:py-28 bg-cosmic-900 celestial-grid-bg text-white text-center overflow-hidden">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-10 w-80 h-80 bg-saffron-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 text-gold-300 text-xs font-medium uppercase tracking-wider mb-6">
+              <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+              <span>Accurate Vedic Ephemeris</span>
             </div>
-          </div>
 
-          <div className="bg-red-50 p-6 rounded-xl border border-red-200">
-            <h2 className="text-xl font-bold mb-2 text-red-800">Manglik Dosha Check</h2>
-            <p className="font-semibold">{result.doshaCheck.mangalDosha ? "⚠️ Manglik Dosha Present" : "✅ No Manglik Dosha"}</p>
-            <p className="text-gray-700 text-sm mt-1">{result.doshaCheck.description}</p>
-          </div>
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-gold-500/20 to-cosmic-800 border border-gold-500/40 shadow-gold-glow flex items-center justify-center mx-auto mb-6 text-gold-300">
+              <Compass className="w-10 h-10" />
+            </div>
 
-          <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-            <h2 className="text-xl font-bold mb-4 text-gray-800">Life Predictions</h2>
-            <p className="mb-3"><strong>Personality:</strong> {result.lifePredictions.personality}</p>
-            <p className="mb-3"><strong>Career:</strong> {result.lifePredictions.career}</p>
-            <p><strong>Relationships:</strong> {result.lifePredictions.relationships}</p>
-          </div>
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">
+              Free Janma <span className="gold-gradient-text">Kundli Analysis</span>
+            </h1>
+            <p className="font-editorial text-xl sm:text-2xl text-ivory-200/90 max-w-3xl mx-auto italic leading-relaxed">
+              Calculate your precise planetary houses, Lagna ascendant, Moon Nakshatra, and Mangal Dosha using classical Parashari algorithms.
+            </p>
+          </motion.div>
         </div>
-      )}
+      </section>
+
+      {/* Main Form Section */}
+      <div className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          
+          <div className="bg-white p-8 sm:p-10 rounded-3xl border border-gold-500/30 shadow-gold-card">
+            <div className="text-center mb-8 pb-6 border-b border-gold-500/20">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gold-700 mb-1 font-display">Birth Coordinates</p>
+              <h2 className="font-display text-2xl font-bold text-cosmic-900">Enter Your Natal Birth Details</h2>
+            </div>
+
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-cosmic-800 mb-1.5 font-display">
+                  Full Name *
+                </label>
+                <input 
+                  className="w-full px-4 py-3 rounded-xl border border-gold-500/30 bg-ivory-50/70 text-cosmic-900 text-sm focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20" 
+                  required 
+                  placeholder="e.g. Aditi Sharma" 
+                  onChange={e => setFormData({...formData, name: e.target.value})} 
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-cosmic-800 mb-1.5 font-display">
+                  Date of Birth *
+                </label>
+                <input 
+                  className="w-full px-4 py-3 rounded-xl border border-gold-500/30 bg-ivory-50/70 text-cosmic-900 text-sm focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20" 
+                  required 
+                  type="date" 
+                  onChange={e => setFormData({...formData, dob: e.target.value})} 
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-cosmic-800 mb-1.5 font-display">
+                  Time of Birth (Exact) *
+                </label>
+                <input 
+                  className="w-full px-4 py-3 rounded-xl border border-gold-500/30 bg-ivory-50/70 text-cosmic-900 text-sm focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20" 
+                  required 
+                  type="time" 
+                  onChange={e => setFormData({...formData, time: e.target.value})} 
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-cosmic-800 mb-1.5 font-display">
+                  Birth City Coordinates (Default: Delhi)
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <input 
+                    className="w-full px-3 py-3 rounded-xl border border-gold-500/30 bg-ivory-50/70 text-cosmic-900 text-xs focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20" 
+                    type="number" 
+                    step="any" 
+                    placeholder="Lat (28.61)" 
+                    onChange={e => setFormData({...formData, lat: parseFloat(e.target.value)})} 
+                  />
+                  <input 
+                    className="w-full px-3 py-3 rounded-xl border border-gold-500/30 bg-ivory-50/70 text-cosmic-900 text-xs focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20" 
+                    type="number" 
+                    step="any" 
+                    placeholder="Lon (77.20)" 
+                    onChange={e => setFormData({...formData, lon: parseFloat(e.target.value)})} 
+                  />
+                </div>
+              </div>
+
+              <div className="md:col-span-2 pt-3">
+                <button 
+                  disabled={loading} 
+                  type="submit"
+                  className="gold-btn w-full py-4 rounded-full font-display font-semibold text-sm shadow-gold-glow flex items-center justify-center gap-2"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Aligning Nava Grahas & Ephemeris...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4" />
+                      <span>Generate Kundli Chart</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {result && (
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-12 space-y-6"
+            >
+              {/* Profile Card */}
+              <div className="bg-white p-8 rounded-3xl border border-gold-500/30 shadow-gold-card">
+                <div className="flex items-center gap-2.5 pb-4 mb-6 border-b border-gold-500/20">
+                  <Sparkles className="w-5 h-5 text-gold-600" />
+                  <h3 className="font-display text-xl font-bold text-cosmic-900">Astrological Profile</h3>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="bg-ivory-100/70 p-4 rounded-2xl border border-gold-500/20 text-center">
+                    <span className="text-xs uppercase tracking-wider text-cosmic-500 font-semibold block mb-1">Ascendant</span>
+                    <span className="font-display font-bold text-cosmic-900 text-base">{result.basicDetails?.ascendant || 'Aries'}</span>
+                  </div>
+                  <div className="bg-ivory-100/70 p-4 rounded-2xl border border-gold-500/20 text-center">
+                    <span className="text-xs uppercase tracking-wider text-cosmic-500 font-semibold block mb-1">Moon Sign</span>
+                    <span className="font-display font-bold text-cosmic-900 text-base">{result.basicDetails?.moonSign || 'Taurus'}</span>
+                  </div>
+                  <div className="bg-ivory-100/70 p-4 rounded-2xl border border-gold-500/20 text-center">
+                    <span className="text-xs uppercase tracking-wider text-cosmic-500 font-semibold block mb-1">Sun Sign</span>
+                    <span className="font-display font-bold text-cosmic-900 text-base">{result.basicDetails?.sunSign || 'Leo'}</span>
+                  </div>
+                  <div className="bg-ivory-100/70 p-4 rounded-2xl border border-gold-500/20 text-center">
+                    <span className="text-xs uppercase tracking-wider text-cosmic-500 font-semibold block mb-1">Nakshatra</span>
+                    <span className="font-display font-bold text-cosmic-900 text-base">{result.basicDetails?.nakshatra || 'Rohini'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Manglik Check */}
+              <div className={`p-8 rounded-3xl border shadow-gold-card ${
+                result.doshaCheck?.mangalDosha 
+                  ? 'bg-rose-50/70 border-rose-300' 
+                  : 'bg-emerald-50/70 border-emerald-300'
+              }`}>
+                <div className="flex items-center gap-2 mb-2">
+                  {result.doshaCheck?.mangalDosha ? (
+                    <AlertTriangle className="w-6 h-6 text-rose-600" />
+                  ) : (
+                    <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                  )}
+                  <h3 className="font-display text-xl font-bold text-cosmic-900">
+                    Manglik Dosha Assessment
+                  </h3>
+                </div>
+                <p className="font-display font-semibold text-base mb-2">
+                  {result.doshaCheck?.mangalDosha ? "⚠️ Manglik Dosha Present in Chart" : "✅ No Afflictive Manglik Dosha Detected"}
+                </p>
+                <p className="text-cosmic-700 text-sm leading-relaxed">{result.doshaCheck?.description}</p>
+              </div>
+
+              {/* Predictions */}
+              <div className="bg-white p-8 rounded-3xl border border-gold-500/30 shadow-gold-card space-y-5">
+                <div className="pb-4 border-b border-gold-500/20">
+                  <h3 className="font-display text-xl font-bold text-cosmic-900">Key Planetary Insights</h3>
+                </div>
+                <div className="p-4 rounded-2xl bg-ivory-100/60 border border-gold-500/20">
+                  <h4 className="font-display font-bold text-cosmic-900 text-sm mb-1 text-gold-800">Personality & Swabhava</h4>
+                  <p className="text-cosmic-700 text-sm leading-relaxed">{result.lifePredictions?.personality}</p>
+                </div>
+                <div className="p-4 rounded-2xl bg-ivory-100/60 border border-gold-500/20">
+                  <h4 className="font-display font-bold text-cosmic-900 text-sm mb-1 text-gold-800">Career & Karma Kshetra</h4>
+                  <p className="text-cosmic-700 text-sm leading-relaxed">{result.lifePredictions?.career}</p>
+                </div>
+                <div className="p-4 rounded-2xl bg-ivory-100/60 border border-gold-500/20">
+                  <h4 className="font-display font-bold text-cosmic-900 text-sm mb-1 text-gold-800">Relationships & Vivah</h4>
+                  <p className="text-cosmic-700 text-sm leading-relaxed">{result.lifePredictions?.relationships}</p>
+                </div>
+
+                <div className="pt-4 text-center">
+                  <a
+                    href="/contact"
+                    className="gold-btn px-8 py-3.5 rounded-full font-display font-semibold text-xs shadow-gold-glow inline-flex items-center gap-2"
+                  >
+                    <span>Request In-Depth Consultation with Pandit Pranav</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+        </div>
+      </div>
     </div>
   );
 }

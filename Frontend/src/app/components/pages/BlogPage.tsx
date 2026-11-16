@@ -9,7 +9,7 @@ export function BlogPage() {
 
   const blogPosts = [
     {
-      title: 'Vastu for the Main Entrance: Attracting Positive Energy with Sacred Stones and Shells',
+      title: 'Vastu for the Main Entrance: Attracting Positive Energy with  Stones and Shells',
       excerpt: 'The main entrance of a home or office is more than just a doorway — in Vastu Shastra, it is considered the "mukhya dwar," the mouth through which all energy, opportunity, and prosperity enters a space.',
       category: 'Vastu Shastra',
       date: 'September 27, 2026',
@@ -21,7 +21,7 @@ export function BlogPage() {
             The main entrance of a home or office is more than just a doorway — in Vastu Shastra, it is considered the "mukhya dwar," the mouth through which all energy, opportunity, and prosperity enters a space. A weak or imbalanced entrance is believed to restrict the flow of positive energy, while a correctly energized one is said to invite abundance, protection, and harmony into everything that lies beyond it.
           </p>
           <p>
-            At Bhagya Netram, one of the remedies we perform most often for clients is the embedding of natural gemstones, crystals, and sacred shells directly into the entrance threshold. Unlike temporary fixes such as a hanging toran or a bowl of crystals that can be moved or forgotten, this remedy becomes a permanent part of the entrance itself — quietly working every single time someone crosses the threshold. In this blog, we walk you through exactly what this remedy involves, the significance of each material used, and why it is considered one of the most powerful Vastu corrections for a main door.
+            At Bhagya Netram, one of the remedies we perform most often for clients is the embedding of natural gemstones, crystals, and  shells directly into the entrance threshold. Unlike temporary fixes such as a hanging toran or a bowl of crystals that can be moved or forgotten, this remedy becomes a permanent part of the entrance itself — quietly working every single time someone crosses the threshold. In this blog, we walk you through exactly what this remedy involves, the significance of each material used, and why it is considered one of the most powerful Vastu corrections for a main door.
           </p>
 
           {/* Real Video Embeds */}
@@ -149,46 +149,47 @@ export function BlogPage() {
   // --- FULL ARTICLE READING VIEW ---
   if (selectedPost) {
     return (
-      <div className="min-h-screen bg-white pt-12 pb-16">
+      <div className="min-h-screen bg-ivory-50 text-cosmic-900 pt-12 pb-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          <Button
-            variant="ghost"
+          <button
             onClick={() => setSelectedPost(null)}
-            className="mb-8 text-[#0A0A9C] hover:gap-2 transition-all group px-0 font-bold"
+            className="mb-8 inline-flex items-center gap-2 text-cosmic-800 hover:text-gold-700 font-display font-semibold text-sm transition-colors py-2 px-4 rounded-full bg-white border border-gold-500/30 shadow-xs"
           >
-            <ArrowLeft className="w-5 h-5 mr-2 group-hover:mr-3 transition-all" />
-            Back to Articles
-          </Button>
+            <ArrowLeft className="w-4 h-4 text-gold-600" />
+            <span>Return to Cosmic Wisdom Library</span>
+          </button>
 
-          <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
-            {selectedPost.title}
-          </h1>
-
-          <div className="flex items-center gap-6 text-sm text-slate-500 mb-8 border-b border-slate-100 pb-8 font-medium">
-            <div className="flex items-center gap-2">
-              <span className="inline-block px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-sm font-bold">
+          <div className="bg-white rounded-3xl p-8 sm:p-12 border border-gold-500/30 shadow-gold-card">
+            <div className="flex flex-wrap items-center gap-4 text-xs font-semibold mb-6 pb-6 border-b border-gold-500/20">
+              <span className="px-3.5 py-1 bg-gold-500/15 text-gold-800 border border-gold-500/30 rounded-full font-display uppercase tracking-wider">
                 {selectedPost.category}
               </span>
+              <div className="flex items-center gap-1.5 text-cosmic-600">
+                <Calendar className="w-4 h-4 text-gold-600" />
+                <span>{selectedPost.date}</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-cosmic-600">
+                <User className="w-4 h-4 text-gold-600" />
+                <span>{selectedPost.author}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5 text-[#D35400]" />
-              {selectedPost.date}
-            </div>
-            <div className="flex items-center gap-2">
-              <User className="w-5 h-5 text-[#D35400]" />
-              {selectedPost.author}
-            </div>
-          </div>
 
-          <img
-            src={selectedPost.image}
-            alt={selectedPost.title}
-            className="w-full aspect-[21/9] object-cover rounded-2xl mb-12 shadow-sm border border-slate-100"
-          />
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-cosmic-900 mb-8 leading-tight">
+              {selectedPost.title}
+            </h1>
 
-          <div className="animate-fade-in">
-            {selectedPost.content}
+            <div className="rounded-2xl overflow-hidden mb-10 border border-gold-500/30 shadow-md">
+              <img
+                src={selectedPost.image}
+                alt={selectedPost.title}
+                className="w-full aspect-[21/9] object-cover"
+              />
+            </div>
+
+            <div className="font-sans text-cosmic-800 text-base sm:text-lg leading-relaxed space-y-6">
+              {selectedPost.content}
+            </div>
           </div>
 
         </div>
@@ -198,45 +199,47 @@ export function BlogPage() {
 
   // --- BLOG LISTING VIEW ---
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-ivory-50 text-cosmic-900">
       
-      {/* UPDATED Hero Section matching Zodiac & Horoscope Pages */}
+      {/* Hero Section */}
+      <section className="relative py-20 lg:py-28 bg-cosmic-900 celestial-grid-bg text-white text-center overflow-hidden">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-10 w-80 h-80 bg-saffron-500/10 rounded-full blur-3xl pointer-events-none" />
 
-      <section className="py-16 md:py-24 celestial-gradient border-b border-slate-100/50 text-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             className="flex flex-col items-center justify-center"
           >
-            {/* Added mx-auto and flex container rules to guarantee perfect centering */}
-            <BookOpen className="w-10 h-10 md:w-12 md:h-12 text-[#D35400] mb-4 stroke-[1.5] mx-auto" />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 text-gold-300 text-xs font-medium uppercase tracking-wider mb-6">
+              <BookOpen className="w-3.5 h-3.5 text-gold-400" />
+              <span>Vedic Knowledge Journal</span>
+            </div>
             
-            {/* Restored the proper Blog title and elegant serif font */}
-            <h1 className="text-3xl md:text-4xl text-[#D35400] mb-4" style={{ fontFamily: 'Georgia, serif' }}>
-              Cosmic Wisdom Blog
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">
+              Cosmic Wisdom <span className="gold-gradient-text">Articles</span>
             </h1>
             
-            <p className="text-sm md:text-base max-w-2xl mx-auto text-[#D35400]/90 font-medium">
-              Explore our latest articles on astrology, Vastu Shastra, and spiritual living.
+            <p className="font-editorial text-xl sm:text-2xl text-ivory-200/90 max-w-2xl mx-auto italic leading-relaxed">
+              Timeless treatises on Vastu Shastra, planetary alchemy, gemstone energies, and dharmic living.
             </p>
           </motion.div>
         </div>
       </section>
 
       {/* Categories */}
-      <section className="py-8 bg-white border-b">
+      <section className="py-8 bg-ivory-100/70 border-b border-gold-500/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap gap-3 justify-center">
+          <div className="flex flex-wrap gap-2.5 justify-center">
             {categories.map((category) => (
-              <Button
+              <button
                 key={category}
-                variant="outline"
-                className="border-slate-200 text-slate-600 hover:bg-[#0A0A9C] hover:text-white hover:border-[#0A0A9C]"
+                className="px-5 py-2 rounded-full font-display text-xs font-semibold tracking-wider uppercase transition-all bg-white hover:bg-cosmic-900 hover:text-gold-300 text-cosmic-800 border border-gold-500/30 shadow-xs"
               >
                 {category}
-              </Button>
+              </button>
             ))}
           </div>
         </div>
@@ -254,41 +257,41 @@ export function BlogPage() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <Card
-                  className="h-full border-slate-200 hover:shadow-xl transition-all overflow-hidden group cursor-pointer flex flex-col"
+                <div
+                  className="h-full bg-white rounded-3xl border border-gold-500/30 shadow-gold-card hover:shadow-xl hover:border-gold-500/70 transition-all duration-300 overflow-hidden group cursor-pointer flex flex-col justify-between"
                   onClick={() => setSelectedPost(post)}
                 >
-                  <div className="aspect-video overflow-hidden border-b border-slate-100">
-                    <img
-                      src={post.image}
-                      alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    />
-                  </div>
-                  <CardHeader className="flex-grow">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="inline-block px-3 py-1 bg-amber-50 text-amber-700 border border-amber-100 rounded-full text-xs font-bold uppercase tracking-wider">
+                  <div>
+                    <div className="aspect-video overflow-hidden border-b border-gold-500/20 relative">
+                      <img
+                        src={post.image}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute top-3 left-3 px-3 py-1 bg-cosmic-950/80 backdrop-blur-xs text-gold-300 border border-gold-500/30 rounded-full text-[10px] font-display font-bold uppercase tracking-wider">
                         {post.category}
-                      </span>
-                      <div className="flex items-center gap-1 text-xs font-medium text-slate-500">
-                        <Calendar className="w-3 h-3" />
-                        {post.date}
                       </div>
                     </div>
-                    <CardTitle className="text-xl leading-snug group-hover:text-[#D35400] transition-colors">
-                      {post.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-slate-600 mb-6 line-clamp-3 leading-relaxed">
-                      {post.excerpt}
-                    </p>
-                    <Button variant="ghost" className="text-[#D35400] p-0 font-bold hover:gap-2 transition-all group-hover:text-blue-800 bg-transparent">
-                      Read Full Article
-                      <ArrowRight className="w-4 h-4 ml-1 group-hover:ml-2 transition-all" />
-                    </Button>
-                  </CardContent>
-                </Card>
+                    <div className="p-6 pb-2">
+                      <div className="flex items-center gap-1.5 text-xs font-medium text-cosmic-500 mb-3">
+                        <Calendar className="w-3.5 h-3.5 text-gold-600" />
+                        <span>{post.date}</span>
+                      </div>
+                      <h3 className="font-display text-xl font-bold text-cosmic-900 group-hover:text-gold-700 transition-colors leading-snug mb-3">
+                        {post.title}
+                      </h3>
+                      <p className="text-cosmic-600 text-sm leading-relaxed line-clamp-3">
+                        {post.excerpt}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="p-6 pt-4 border-t border-gold-500/10">
+                    <span className="font-display font-bold text-xs uppercase tracking-wider text-gold-700 group-hover:text-gold-600 inline-flex items-center gap-1.5">
+                      <span>Read  Article</span>
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>

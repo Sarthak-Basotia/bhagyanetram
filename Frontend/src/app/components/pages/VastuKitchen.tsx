@@ -34,7 +34,7 @@ export function VastuKitchen() {
       elements={{
         primary: 'Fire (Agni)',
         secondary: 'Water (Jal)',
-        description: 'The kitchen embodies the sacred balance between Fire and Water elements. Fire (cooking) represents transformation and nourishment, while Water (cleaning, drinking) represents purification. These elements must be positioned correctly to avoid elemental conflict and maintain energetic harmony.',
+        description: 'The kitchen embodies the  balance between Fire and Water elements. Fire (cooking) represents transformation and nourishment, while Water (cleaning, drinking) represents purification. These elements must be positioned correctly to avoid elemental conflict and maintain energetic harmony.',
       }}
       colors={{
         recommended: ['Yellow', 'Orange', 'Rose Pink', 'Light Green', 'White', 'Cream'],

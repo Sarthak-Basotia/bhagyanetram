@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Hand, Camera, Upload, LogIn, CheckCircle2, Lock, Loader2, Sparkles } from 'lucide-react';
+import { Hand, Camera, Upload, LogIn, CheckCircle2, Lock, Loader2, Sparkles, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 
@@ -61,7 +61,6 @@ export default function PalmistryPage() {
       const data = await res.json();
       if (res.ok) {
         setAuthStep(2);
-        // Display test OTP in console for easy debugging
         console.log("TEST OTP:", data.testOtp);
       } else {
         setError(data.error || 'Failed to send OTP.');
@@ -146,124 +145,249 @@ export default function PalmistryPage() {
     setReading(null);
   };
 
+  // Sanitize any generic disclaimer from AI models
+  const cleanReading = (raw: string | null) => {
+    if (!raw) return '';
+    return raw
+      .replace(/^I('m| am) unable to identify the person in the image[^\n]*\n*/i, '')
+      .replace(/^I cannot identify the (individual|person)[^\n]*\n*/i, '')
+      .replace(/^Certainly,?[^\n]*\n*/i, '')
+      .trim();
+  };
+
   return (
-    <>
+    <div className="min-h-screen bg-ivory-50 text-cosmic-900">
       <Helmet>
-        <title>AI Palmistry Reading | Bhagyanetram</title>
-        <meta name="description" content="Get an instant palm reading using advanced AI. Simply scan or upload a picture of your palm." />
+        <title> AI Palmistry (Hastarekha Shastra) | Bhagyanetram</title>
+        <meta name="description" content="Get an instant Vedic palm reading using advanced computer vision and traditional Hastarekha principles." />
+        <link rel="canonical" href="https://bhagyanetram.com/palmistry" />
       </Helmet>
 
-      <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          
-          <div className="text-center mb-10">
-            <h1 className="text-4xl md:text-5xl font-extrabold text-[#D35400] mb-4 flex items-center justify-center gap-3">
+      {/* Hero Section */}
+      <section className="relative py-20 lg:py-28 bg-cosmic-900 celestial-grid-bg text-white text-center overflow-hidden">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 right-10 w-80 h-80 bg-saffron-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 text-gold-300 text-xs font-medium uppercase tracking-wider mb-6">
+              <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+              <span>Samudrika & Hastarekha Shastra</span>
+            </div>
+
+            <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-gold-500/20 to-cosmic-800 border border-gold-500/40 shadow-gold-glow flex items-center justify-center mx-auto mb-6 text-gold-300">
               <Hand className="w-10 h-10" />
-              AI Palmistry
+            </div>
+
+            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white mb-6">
+              AI Vedic <span className="gold-gradient-text">Palmistry</span>
             </h1>
-            <p className="text-lg text-slate-700 max-w-2xl mx-auto">
-              Unlock the secrets hidden in the lines of your hand. Upload a clear picture of your palm to receive a personalized Vedic reading.
+            <p className="font-editorial text-xl sm:text-2xl text-ivory-200/90 max-w-3xl mx-auto italic leading-relaxed">
+              Unlock the karmic destiny etched into the  lines and planetary mounts of your palm.
             </p>
-          </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Main Body */}
+      <div className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
 
           {!token ? (
             // Authentication Section
-            <div className="bg-white p-8 rounded-2xl shadow-md max-w-md mx-auto border border-slate-200">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                  <Lock className="w-5 h-5 text-blue-600" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="bg-white p-8 sm:p-10 rounded-3xl shadow-gold-card max-w-md mx-auto border border-gold-500/30"
+            >
+              <div className="flex items-center gap-3.5 mb-6 pb-4 border-b border-gold-500/20">
+                <div className="w-12 h-12 rounded-2xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center text-gold-600">
+                  <Lock className="w-6 h-6" />
                 </div>
-                <h2 className="text-2xl font-bold text-slate-800">Log In to Continue</h2>
+                <div>
+                  <h2 className="font-display text-2xl font-bold text-cosmic-900">Devotee Access</h2>
+                  <p className="text-xs text-cosmic-500">Sign in to claim your 3 complimentary readings</p>
+                </div>
               </div>
               
-              {error && <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm">{error}</div>}
+              {error && (
+                <div className="mb-5 p-3.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-sm flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                  <span>{error}</span>
+                </div>
+              )}
 
               {authStep === 1 ? (
                 <form onSubmit={handleSendOTP} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
-                    <input type="text" required className="w-full border p-3 rounded-xl bg-slate-50 focus:ring-2 focus:ring-[#D35400] outline-none" 
-                      value={authForm.name} onChange={e => setAuthForm({...authForm, name: e.target.value})} />
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-cosmic-800 mb-1 font-display">
+                      Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      className="w-full border border-gold-500/30 p-3 rounded-xl bg-ivory-50/70 text-cosmic-900 focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 text-sm"
+                      value={authForm.name}
+                      onChange={e => setAuthForm({...authForm, name: e.target.value})}
+                      placeholder="e.g. Ananya Sen"
+                    />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Mobile Number</label>
-                    <input type="tel" required className="w-full border p-3 rounded-xl bg-slate-50 focus:ring-2 focus:ring-[#D35400] outline-none" 
-                      value={authForm.phone} onChange={e => setAuthForm({...authForm, phone: e.target.value})} />
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-cosmic-800 mb-1 font-display">
+                      Mobile Number *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      className="w-full border border-gold-500/30 p-3 rounded-xl bg-ivory-50/70 text-cosmic-900 focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 text-sm"
+                      value={authForm.phone}
+                      onChange={e => setAuthForm({...authForm, phone: e.target.value})}
+                      placeholder="+91 98765 43210"
+                    />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
-                    <input type="email" required className="w-full border p-3 rounded-xl bg-slate-50 focus:ring-2 focus:ring-[#D35400] outline-none" 
-                      value={authForm.email} onChange={e => setAuthForm({...authForm, email: e.target.value})} />
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-cosmic-800 mb-1 font-display">
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      className="w-full border border-gold-500/30 p-3 rounded-xl bg-ivory-50/70 text-cosmic-900 focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 text-sm"
+                      value={authForm.email}
+                      onChange={e => setAuthForm({...authForm, email: e.target.value})}
+                      placeholder="ananya@example.com"
+                    />
                   </div>
-                  <div className="flex items-start gap-2 pt-2">
-                    <input type="checkbox" id="terms" required className="mt-1" 
-                      checked={authForm.terms} onChange={e => setAuthForm({...authForm, terms: e.target.checked})} />
-                    <label htmlFor="terms" className="text-sm text-slate-600">I agree to the terms and conditions and allow Bhagyanetram to send me an OTP on email.</label>
+                  <div className="flex items-start gap-2.5 pt-2">
+                    <input
+                      type="checkbox"
+                      id="terms"
+                      required
+                      className="mt-1 accent-gold-600 rounded"
+                      checked={authForm.terms}
+                      onChange={e => setAuthForm({...authForm, terms: e.target.checked})}
+                    />
+                    <label htmlFor="terms" className="text-xs text-cosmic-600 leading-snug">
+                      I accept the  privacy terms and authorize BhagyaNetram to send a secure verification code to my email.
+                    </label>
                   </div>
-                  <button type="submit" disabled={loading} className="w-full bg-[#D35400] hover:bg-orange-700 text-white p-4 rounded-xl font-bold transition flex items-center justify-center gap-2">
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><LogIn className="w-5 h-5" /> Send OTP</>}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="gold-btn w-full p-4 rounded-xl font-display font-semibold text-sm shadow-gold-glow flex items-center justify-center gap-2 mt-4"
+                  >
+                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><LogIn className="w-5 h-5" /> Send Secure Code</>}
                   </button>
                 </form>
               ) : (
                 <form onSubmit={handleVerifyOTP} className="space-y-4">
-                  <div className="mb-6 bg-green-50 p-3 rounded-lg flex items-start gap-2 text-green-700 text-sm">
-                    <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
-                    <span>OTP sent successfully to {authForm.email}. Please check your inbox.</span>
+                  <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-2.5 text-emerald-800 text-xs sm:text-sm">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <span> OTP dispatched to <strong>{authForm.email}</strong>. Please check your inbox or spam.</span>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Enter OTP</label>
-                    <input type="text" required className="w-full border p-3 rounded-xl bg-slate-50 focus:ring-2 focus:ring-[#D35400] outline-none text-center text-xl tracking-widest" 
-                      value={authForm.otp} onChange={e => setAuthForm({...authForm, otp: e.target.value})} />
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-cosmic-800 mb-1 font-display">
+                      Enter 6-Digit Code
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      className="w-full border border-gold-500/40 p-3 rounded-xl bg-ivory-50/70 text-cosmic-900 focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 text-center text-2xl tracking-[0.3em] font-mono font-bold"
+                      value={authForm.otp}
+                      onChange={e => setAuthForm({...authForm, otp: e.target.value})}
+                    />
                   </div>
-                  <button type="submit" disabled={loading} className="w-full bg-[#D35400] hover:bg-orange-700 text-white p-4 rounded-xl font-bold transition flex items-center justify-center gap-2">
-                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verify & Login'}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="gold-btn w-full p-4 rounded-xl font-display font-semibold text-sm shadow-gold-glow flex items-center justify-center gap-2"
+                  >
+                    {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Verify Code & Enter Sanctuary'}
                   </button>
-                  <button type="button" onClick={() => setAuthStep(1)} className="w-full text-slate-500 text-sm hover:underline mt-2">
-                    Back to details
+                  <button
+                    type="button"
+                    onClick={() => setAuthStep(1)}
+                    className="w-full text-cosmic-500 text-xs font-medium hover:text-gold-700 transition mt-2 text-center"
+                  >
+                    ← Edit contact details
                   </button>
                 </form>
               )}
-            </div>
+            </motion.div>
           ) : (
             // Palmistry Dashboard
             <div className="space-y-8">
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <div>
-                  <h3 className="text-xl font-bold text-slate-800">Welcome, {user?.name}</h3>
-                  <p className="text-slate-600">You have <strong className="text-[#D35400] text-lg">{user?.palmistryCredits}</strong> palm readings left.</p>
+              {/* User Header Card */}
+              <div className="bg-white p-6 sm:p-7 rounded-3xl border border-gold-500/30 shadow-gold-card flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div className="flex items-center gap-4 text-center sm:text-left">
+                  <div className="w-14 h-14 rounded-2xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center text-gold-700 font-display font-bold text-xl">
+                    {user?.name ? user.name[0].toUpperCase() : '✦'}
+                  </div>
+                  <div>
+                    <h3 className="font-display text-xl font-bold text-cosmic-900">Welcome, {user?.name}</h3>
+                    <p className="text-cosmic-600 text-sm">
+                      Complimentary Readings: <strong className="text-gold-700 font-display text-lg">{user?.palmistryCredits ?? 0} / 3 remaining</strong>
+                    </p>
+                  </div>
                 </div>
-                <button onClick={handleLogout} className="text-sm font-semibold text-slate-500 hover:text-red-500 transition border px-4 py-2 rounded-lg">
-                  Logout
+                <button
+                  onClick={handleLogout}
+                  className="text-xs font-display font-semibold text-cosmic-500 hover:text-rose-600 transition border border-gold-500/20 px-4 py-2 rounded-full hover:bg-rose-50"
+                >
+                  Exit Session
                 </button>
               </div>
 
-              {error && <div className="p-4 bg-red-50 text-red-700 rounded-xl text-center font-medium">{error}</div>}
+              {error && (
+                <div className="p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl text-center text-sm font-medium">
+                  {error}
+                </div>
+              )}
 
               {user?.palmistryCredits > 0 ? (
-                <div className="bg-white p-8 rounded-3xl shadow-lg border border-slate-200">
+                <div className="bg-white p-8 sm:p-10 rounded-3xl shadow-gold-card border border-gold-500/30">
                   <div className="flex flex-col items-center">
                     
                     {!image ? (
-                      <div className="w-full max-w-md border-2 border-dashed border-slate-300 rounded-2xl p-12 flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100 transition cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                        <Camera className="w-16 h-16 text-slate-400 mb-4" />
-                        <h4 className="text-xl font-bold text-slate-700 mb-2">Upload Palm Image</h4>
-                        <p className="text-slate-500 text-center text-sm mb-6">Take a clear picture of your dominant hand (palm facing up) under good lighting.</p>
-                        <div className="bg-blue-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2">
-                          <Upload className="w-5 h-5" /> Browse Files
+                      <div
+                        className="w-full max-w-lg border-2 border-dashed border-gold-500/40 rounded-3xl p-10 sm:p-14 flex flex-col items-center justify-center bg-ivory-50/60 hover:bg-ivory-100/60 transition cursor-pointer group"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <div className="w-20 h-20 rounded-2xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center text-gold-600 mb-4 group-hover:scale-105 transition-transform">
+                          <Camera className="w-10 h-10" />
+                        </div>
+                        <h4 className="font-display text-2xl font-bold text-cosmic-900 mb-2">Scan or Upload Palm</h4>
+                        <p className="text-cosmic-600 text-center text-sm mb-6 max-w-xs leading-relaxed">
+                          Take a clear, well-lit photo of your primary hand held flat with palm lines clearly visible.
+                        </p>
+                        <div className="gold-btn px-6 py-3 rounded-full font-display font-semibold text-xs shadow-gold-glow flex items-center gap-2">
+                          <Upload className="w-4 h-4" /> Choose Palm Photo
                         </div>
                       </div>
                     ) : (
                       <div className="w-full flex flex-col items-center">
-                        <div className="relative rounded-2xl overflow-hidden shadow-md max-w-sm mb-6 border border-slate-200">
-                          <img src={image} alt="Palm" className="w-full h-auto object-cover" />
+                        <div className="relative rounded-3xl overflow-hidden shadow-gold-card max-w-sm mb-6 border border-gold-500/40">
+                          <img src={image} alt="Palm" className="w-full h-auto object-cover max-h-[380px]" />
                         </div>
-                        <div className="flex gap-4">
-                          <button onClick={() => { setImage(null); setReading(null); }} className="px-6 py-3 border border-slate-300 rounded-full font-semibold text-slate-600 hover:bg-slate-50 transition">
+                        <div className="flex flex-wrap justify-center gap-4">
+                          <button
+                            onClick={() => { setImage(null); setReading(null); }}
+                            className="px-6 py-3 rounded-full border border-gold-500/40 font-display font-semibold text-xs text-cosmic-800 hover:bg-ivory-100 transition"
+                          >
                             Retake Picture
                           </button>
                           {!reading && (
-                            <button onClick={handleAnalyze} disabled={loading} className="bg-[#D35400] text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-orange-700 transition flex items-center gap-2">
-                              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Sparkles className="w-5 h-5" /> Analyze Palm</>}
+                            <button
+                              onClick={handleAnalyze}
+                              disabled={loading}
+                              className="gold-btn px-8 py-3 rounded-full font-display font-semibold text-xs shadow-gold-glow flex items-center gap-2"
+                            >
+                              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Sparkles className="w-4 h-4" /> Reveal Hastarekha Reading</>}
                             </button>
                           )}
                         </div>
@@ -274,25 +398,98 @@ export default function PalmistryPage() {
                   </div>
 
                   {loading && image && !reading && (
-                    <div className="mt-10 flex flex-col items-center">
-                      <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-                      <p className="text-blue-700 font-medium">Scanning lines, mounts, and shapes...</p>
+                    <div className="mt-12 flex flex-col items-center">
+                      <div className="w-14 h-14 border-4 border-gold-200 border-t-gold-600 rounded-full animate-spin mb-4"></div>
+                      <p className="font-display text-cosmic-900 font-bold text-base">Deciphering Palm Mounts & Lines...</p>
+                      <p className="text-xs text-cosmic-500 mt-1">Analyzing Hridaya (Heart), Mastishka (Head), and Jeevan (Life) Rekha</p>
                     </div>
                   )}
 
                   {reading && (
-                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mt-10 bg-slate-50 rounded-2xl p-6 md:p-8 border border-slate-200">
-                      <h3 className="text-2xl font-bold text-slate-800 mb-6 border-b pb-4">Your Palm Reading</h3>
-                      <div className="prose prose-slate prose-headings:text-slate-800 prose-headings:font-bold prose-p:leading-relaxed max-w-none text-slate-700">
-                        <ReactMarkdown>{reading}</ReactMarkdown>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mt-12 bg-ivory-100/70 rounded-3xl p-6 sm:p-10 border border-gold-500/30 shadow-xs"
+                    >
+                      <div className="flex items-center gap-3 pb-5 mb-6 border-b border-gold-500/20">
+                        <div className="w-10 h-10 rounded-xl bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-700">
+                          <Hand className="w-5 h-5" />
+                        </div>
+                        <div>
+                          <h3 className="font-display text-2xl font-bold text-cosmic-900">Your Hastarekha Report</h3>
+                          <p className="text-xs text-cosmic-600"> lines analyzed as per classical Samudrika Shastra</p>
+                        </div>
+                      </div>
+
+                      <div className="prose max-w-none">
+                        <ReactMarkdown
+                          components={{
+                            h1: ({ children }) => (
+                              <h3 className="font-display text-2xl font-bold text-cosmic-900 mt-6 mb-3 pb-2 border-b border-gold-500/20">
+                                {children}
+                              </h3>
+                            ),
+                            h2: ({ children }) => (
+                              <h4 className="font-display text-xl font-bold text-cosmic-900 mt-5 mb-2.5 pb-2 border-b border-gold-500/20 flex items-center gap-2">
+                                <Sparkles className="w-4 h-4 text-gold-600" />
+                                <span>{children}</span>
+                              </h4>
+                            ),
+                            h3: ({ children }) => (
+                              <div className="mt-6 mb-3 p-3.5 bg-gradient-to-r from-gold-500/15 to-transparent border-l-4 border-gold-500 rounded-r-xl">
+                                <h4 className="font-display text-lg font-bold text-cosmic-900 flex items-center gap-2">
+                                  <Sparkles className="w-4 h-4 text-gold-600" />
+                                  <span>{children}</span>
+                                </h4>
+                              </div>
+                            ),
+                            p: ({ children }) => (
+                              <p className="text-cosmic-800 leading-relaxed text-sm sm:text-base mb-4 font-sans">
+                                {children}
+                              </p>
+                            ),
+                            ul: ({ children }) => <ul className="space-y-2 mb-4 pl-4">{children}</ul>,
+                            li: ({ children }) => (
+                              <li className="flex items-start gap-2 text-cosmic-800 text-sm sm:text-base">
+                                <span className="text-gold-600 font-bold">✦</span>
+                                <span>{children}</span>
+                              </li>
+                            ),
+                            strong: ({ children }) => (
+                              <strong className="font-bold text-cosmic-950 text-gold-900">
+                                {children}
+                              </strong>
+                            ),
+                          }}
+                        >
+                          {cleanReading(reading)}
+                        </ReactMarkdown>
+                      </div>
+
+                      <div className="mt-8 pt-6 border-t border-gold-500/20 text-center">
+                        <p className="text-xs text-cosmic-500 italic">
+                          "Lines on the palm represent the energetic blueprints of past karmas; conscious righteous action (Purushartha) shapes destiny."
+                        </p>
                       </div>
                     </motion.div>
                   )}
                 </div>
               ) : (
-                <div className="bg-amber-50 p-8 rounded-2xl border border-amber-200 text-center">
-                  <h3 className="text-2xl font-bold text-amber-800 mb-2">Out of Credits</h3>
-                  <p className="text-amber-700">You have used all 3 of your complimentary palm readings. Please check back later or contact support to purchase more credits.</p>
+                <div className="bg-white p-8 sm:p-10 rounded-3xl border border-gold-500/30 shadow-gold-card text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center mx-auto mb-4 text-gold-600">
+                    <Sparkles className="w-8 h-8" />
+                  </div>
+                  <h3 className="font-display text-2xl font-bold text-cosmic-900 mb-2">Complimentary Quota Exhausted</h3>
+                  <p className="text-cosmic-600 max-w-md mx-auto text-sm leading-relaxed mb-6">
+                    You have utilized all 3 of your complimentary palm readings. For an in-depth astrological and Samudrika consultation with Pandit Pranav Shastri, please book a personal consultation.
+                  </p>
+                  <a
+                    href="/contact"
+                    className="gold-btn px-8 py-3.5 rounded-full font-display font-semibold text-xs shadow-gold-glow inline-flex items-center gap-2"
+                  >
+                    <span>Schedule Astrologer Consultation</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </a>
                 </div>
               )}
             </div>
@@ -300,6 +497,6 @@ export default function PalmistryPage() {
 
         </div>
       </div>
-    </>
+    </div>
   );
 }

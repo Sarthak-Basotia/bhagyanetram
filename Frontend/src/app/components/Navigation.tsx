@@ -1,22 +1,14 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
-import { Button } from './ui/button';
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from './ui/navigation-menu';
+import { Menu, X, ChevronDown, Sparkles } from 'lucide-react';
+import { BookingModal } from './BookingModal';
 import logoImage from 'figma:asset/d5457f2df4c5864ece0203437258a94768a0cf00.png';
 
 export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [vastuDropdownOpen, setVastuDropdownOpen] = useState(false);
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
   
-  // Use React Router hooks for URL tracking and navigation
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -33,206 +25,222 @@ export function Navigation() {
     { id: 'vastu-toilet', label: 'Toilet' },
   ];
 
+  const navLinks = [
+    { path: '/', label: 'Home' },
+    { path: '/about', label: 'About' },
+    { path: '/horoscope', label: 'Horoscope' },
+    { path: '/zodiac', label: 'Zodiac Signs' },
+  ];
+
   return (
-    <nav className="sticky top-0 z-50 bg-card backdrop-blur-md border-b border-border shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center space-x-3 group"
-          >
-            <img 
-              src={logoImage} 
-              alt="Bhagyanetram Logo" 
-              className="w-12 h-12 object-contain transition-transform group-hover:scale-105"
-            />
-            <div className="flex flex-col">
-              <span className="text-xl text-foreground group-hover:text-primary transition-colors">
-                BHAGYANETRAM
-              </span>
-              <span className="text-xs text-muted-foreground uppercase tracking-wider">
-                Vastu & Astrology
-              </span>
-            </div>
-          </Link>
+    <>
+      <header className="sticky top-0 z-50 bg-cosmic-900/95 backdrop-blur-md border-b border-gold-500/20 transition-all duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            {/* Brand Emblem & Title */}
+            <Link to="/" className="flex items-center gap-3.5 group focus:outline-none">
+              <div className="relative w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center rounded-xl overflow-hidden bg-white/95 p-1 border border-gold-500/40 group-hover:border-gold-400 group-hover:scale-105 transition-all shadow-xs shrink-0">
+                <img
+                  src={logoImage}
+                  alt="BhagyaNetram Logo"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div>
+                <span className="block font-display text-lg sm:text-xl font-bold tracking-[0.14em] text-white group-hover:text-gold-300 transition-colors">
+                  BHAGYANETRAM
+                </span>
+                <span className="block text-[11px] uppercase tracking-[0.22em] text-gold-400/90 font-medium">
+                  Vastu &amp; Astrology
+                </span>
+              </div>
+            </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-1">
-            <Button
-              variant={location.pathname === '/' ? 'default' : 'ghost'}
-              onClick={() => navigate('/')}
-              className={location.pathname === '/' ? 'bg-primary' : ''}
-            >
-              Home
-            </Button>
-            <Button
-              variant={location.pathname === '/about' ? 'default' : 'ghost'}
-              onClick={() => navigate('/about')}
-              className={location.pathname === '/about' ? 'bg-primary' : ''}
-            >
-              About
-            </Button>
-            <Button
-              variant={location.pathname === '/horoscope' ? 'default' : 'ghost'}
-              onClick={() => navigate('/horoscope')}
-              className={location.pathname === '/horoscope' ? 'bg-primary' : ''}
-            >
-              Horoscope
-            </Button>
-            <Button
-              variant={location.pathname === '/zodiac' ? 'default' : 'ghost'}
-              onClick={() => navigate('/zodiac')}
-              className={location.pathname === '/zodiac' ? 'bg-primary' : ''}
-            >
-              Zodiac Signs
-            </Button>
-
-            {/* Vastu Dropdown */}
-            <div className="relative group">
-              <Button
-                variant="ghost"
-                className={`flex items-center gap-1 ${location.pathname.includes('/vastu') ? 'bg-primary text-primary-foreground hover:bg-primary/90' : ''}`}
-                onMouseEnter={() => setVastuDropdownOpen(true)}
-              >
-                Vastu Shastra
-                <ChevronDown className="w-4 h-4" />
-              </Button>
-              {vastuDropdownOpen && (
-                <div
-                  className="absolute top-full left-0 w-64 bg-card rounded-lg shadow-xl border border-primary/20 py-2 mt-1 z-50"
-                  onMouseLeave={() => setVastuDropdownOpen(false)}
-                >
-                  {vastuPages.map((page) => (
-                    <Link
-                      key={page.id}
-                      to={`/${page.id}`}
-                      onClick={() => setVastuDropdownOpen(false)}
-                      className="block w-full text-left px-4 py-2 hover:bg-primary/10 hover:text-primary text-sm transition-colors"
-                    >
-                      {page.label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <Button
-              variant={location.pathname === '/blog' ? 'default' : 'ghost'}
-              onClick={() => navigate('/blog')}
-              className={location.pathname === '/blog' ? 'bg-primary' : ''}
-            >
-              Blog
-            </Button>
-            <Button
-              variant={location.pathname === '/contact' ? 'default' : 'ghost'}
-              onClick={() => navigate('/contact')}
-              className={location.pathname === '/contact' ? 'bg-primary' : ''}
-            >
-              Contact Us
-            </Button>
-          </div>
-
-          {/* Mobile menu button */}
-          <button
-            className="lg:hidden p-2"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <X className="w-6 h-6 text-primary" />
-            ) : (
-              <Menu className="w-6 h-6 text-primary" />
-            )}
-          </button>
-        </div>
-
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-primary/10">
-            <div className="flex flex-col space-y-2">
-              <Button
-                variant={location.pathname === '/' ? 'default' : 'ghost'}
-                onClick={() => {
-                  navigate('/');
-                  setMobileMenuOpen(false);
-                }}
-                className="justify-start"
-              >
-                Home
-              </Button>
-              <Button
-                variant={location.pathname === '/about' ? 'default' : 'ghost'}
-                onClick={() => {
-                  navigate('/about');
-                  setMobileMenuOpen(false);
-                }}
-                className="justify-start"
-              >
-                About
-              </Button>
-              <Button
-                variant={location.pathname === '/horoscope' ? 'default' : 'ghost'}
-                onClick={() => {
-                  navigate('/horoscope');
-                  setMobileMenuOpen(false);
-                }}
-                className="justify-start"
-              >
-                Horoscope
-              </Button>
-              <Button
-                variant={location.pathname === '/zodiac' ? 'default' : 'ghost'}
-                onClick={() => {
-                  navigate('/zodiac');
-                  setMobileMenuOpen(false);
-                }}
-                className="justify-start"
-              >
-                Zodiac Signs
-              </Button>
-
-              {/* Vastu Shastra Mobile */}
-              <div className="border-t border-primary/10 pt-2 mt-2">
-                <p className="px-3 mb-2 text-sm text-muted-foreground">Vastu Shastra</p>
-                {vastuPages.map((page) => (
-                  <Button
-                    key={page.id}
-                    variant={location.pathname === `/${page.id}` ? 'default' : 'ghost'}
-                    onClick={() => {
-                      navigate(`/${page.id}`);
-                      setMobileMenuOpen(false);
-                    }}
-                    className="justify-start pl-6 w-full text-sm"
+            {/* Desktop Navigation Links */}
+            <nav className="hidden lg:flex items-center gap-6 xl:gap-7 text-sm font-medium text-ivory-200/90">
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className={`py-2 transition-colors relative ${
+                      isActive ? 'text-gold-300 font-semibold' : 'hover:text-gold-400'
+                    }`}
                   >
-                    {page.label}
-                  </Button>
-                ))}
+                    {link.label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-gold-400 to-saffron-500 rounded-full" />
+                    )}
+                  </Link>
+                );
+              })}
+
+              {/* Vastu Shastra Dropdown */}
+              <div 
+                className="relative"
+                onMouseEnter={() => setVastuDropdownOpen(true)}
+                onMouseLeave={() => setVastuDropdownOpen(false)}
+              >
+                <button
+                  type="button"
+                  className={`flex items-center gap-1.5 py-2 transition-colors cursor-pointer ${
+                    location.pathname.includes('/vastu')
+                      ? 'text-gold-300 font-semibold'
+                      : 'hover:text-gold-400'
+                  }`}
+                >
+                  <span>Vastu Shastra</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${vastuDropdownOpen ? 'rotate-180 text-gold-400' : ''}`} />
+                </button>
+
+                {vastuDropdownOpen && (
+                  <div className="absolute top-full left-0 w-72 bg-cosmic-900/95 backdrop-blur-md rounded-2xl shadow-cosmic-card border border-gold-500/30 py-3 mt-1 z-50 animate-in fade-in slide-in-from-top-2">
+                    <div className="px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-gold-400/80 border-b border-gold-500/20 mb-2">
+                      Vastu Categories
+                    </div>
+                    {vastuPages.map((page) => {
+                      const isPageActive = location.pathname === `/${page.id}`;
+                      return (
+                        <Link
+                          key={page.id}
+                          to={`/${page.id}`}
+                          onClick={() => setVastuDropdownOpen(false)}
+                          className={`block px-4 py-2 text-sm transition-colors ${
+                            isPageActive
+                              ? 'bg-gold-500/15 text-gold-300 font-semibold border-l-2 border-gold-400'
+                              : 'text-ivory-100 hover:bg-cosmic-800 hover:text-gold-300'
+                          }`}
+                        >
+                          {page.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
-              <Button
-                variant={location.pathname === '/blog' ? 'default' : 'ghost'}
-                onClick={() => {
-                  navigate('/blog');
-                  setMobileMenuOpen(false);
-                }}
-                className="justify-start"
+              <Link
+                to="/blog"
+                className={`py-2 transition-colors ${
+                  location.pathname === '/blog' ? 'text-gold-300 font-semibold' : 'hover:text-gold-400'
+                }`}
               >
                 Blog
-              </Button>
-              <Button
-                variant={location.pathname === '/contact' ? 'default' : 'ghost'}
-                onClick={() => {
-                  navigate('/contact');
-                  setMobileMenuOpen(false);
-                }}
-                className="justify-start"
+              </Link>
+              <Link
+                to="/contact"
+                className={`py-2 transition-colors ${
+                  location.pathname === '/contact' ? 'text-gold-300 font-semibold' : 'hover:text-gold-400'
+                }`}
               >
                 Contact Us
-              </Button>
+              </Link>
+            </nav>
+
+            {/* Desktop CTA & Mobile Toggle */}
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setBookingModalOpen(true)}
+                className="hidden sm:inline-flex items-center gap-2 gold-btn font-semibold text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-full shadow-md cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4 text-cosmic-950" />
+                <span>Get FREE Consultation</span>
+              </button>
+
+              {/* Mobile Hamburger Button */}
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle Menu"
+                className="lg:hidden p-2.5 rounded-xl border border-gold-500/30 text-gold-300 hover:bg-cosmic-800 focus:outline-none cursor-pointer"
+              >
+                {mobileMenuOpen ? (
+                  <X className="w-6 h-6" />
+                ) : (
+                  <Menu className="w-6 h-6" />
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Navigation Drawer */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden bg-cosmic-900 border-t border-gold-500/20 px-4 pt-3 pb-6 space-y-1 animate-in fade-in slide-in-from-top-2 max-h-[85vh] overflow-y-auto">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`block px-3 py-2.5 rounded-xl font-medium transition-colors ${
+                  location.pathname === link.path
+                    ? 'bg-cosmic-800 text-gold-300 font-semibold'
+                    : 'text-ivory-100 hover:bg-cosmic-800 hover:text-gold-400'
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+
+            {/* Vastu Shastra Section in Mobile */}
+            <div className="pt-2">
+              <div className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-gold-400/80">
+                Vastu Shastra
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 mt-1 pl-2">
+                {vastuPages.map((page) => (
+                  <Link
+                    key={page.id}
+                    to={`/${page.id}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3 py-2 rounded-lg text-sm text-ivory-200 hover:bg-cosmic-800 hover:text-gold-300"
+                  >
+                    • {page.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <Link
+              to="/blog"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2.5 rounded-xl text-ivory-100 hover:bg-cosmic-800 hover:text-gold-400 font-medium"
+            >
+              Blog
+            </Link>
+            <Link
+              to="/contact"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2.5 rounded-xl text-ivory-100 hover:bg-cosmic-800 hover:text-gold-400 font-medium"
+            >
+              Contact Us
+            </Link>
+
+            <div className="pt-4">
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setBookingModalOpen(true);
+                }}
+                className="w-full gold-btn font-semibold text-sm py-3 rounded-xl shadow-md cursor-pointer flex items-center justify-center gap-2"
+              >
+                <Sparkles className="w-4 h-4 text-cosmic-950" />
+                <span>Get FREE Consultation</span>
+              </button>
             </div>
           </div>
         )}
-      </div>
-    </nav>
+      </header>
+
+      {/* Global Navigation Booking Modal */}
+      <BookingModal
+        open={bookingModalOpen}
+        onOpenChange={setBookingModalOpen}
+        reason="Navigation Bar - Get FREE Consultation"
+      />
+    </>
   );
 }

@@ -6,19 +6,19 @@ export function VastuTemple() {
   return (
     <VastuTemplate
       title="Temple / Pooja Room Vastu"
-      description="The sacred sanctum for worship, meditation, and spiritual practices. Proper placement creates powerful divine vibrations, enhances spiritual consciousness, and brings blessings, peace, and prosperity to your home and family."
+      description="The  sanctum for worship, meditation, and spiritual practices. Proper placement creates powerful divine vibrations, enhances spiritual consciousness, and brings blessings, peace, and prosperity to your home and family."
       imageUrl={templeImage}
       icon={<Church className="w-12 h-12 text-white" />}
       directions={['North-East (Best)', 'East (Excellent)', 'North (Good)']}
       tips={[
         { category: 'do', text: 'Place the temple/pooja room in the North-East corner (Ishaan direction) of the house' },
         { category: 'do', text: 'Face East (towards Sun) or North (towards Himalayas) while praying and meditating' },
-        { category: 'do', text: 'Keep the temple spotlessly clean, sacred, and fragrant at all times' },
+        { category: 'do', text: 'Keep the temple spotlessly clean, , and fragrant at all times' },
         { category: 'do', text: 'Use white, light yellow, light blue, or saffron colors for the pooja room walls' },
         { category: 'do', text: 'Light a ghee lamp (diya) or incense sticks daily, preferably morning and evening' },
         { category: 'do', text: 'Place deity idols at eye level or higher on a wooden platform or altar' },
         { category: 'do', text: 'Use copper, brass, or silver items for worship (kalash, bells, plates)' },
-        { category: 'do', text: 'Keep fresh flowers, tulsi leaves, and sacred offerings' },
+        { category: 'do', text: 'Keep fresh flowers, tulsi leaves, and  offerings' },
         { category: 'dont', text: 'Avoid placing the temple in the bedroom (disturbs sleep and reduces sanctity)' },
         { category: 'dont', text: 'Don\'t position the pooja room under a staircase or in a dark corner' },
         { category: 'dont', text: 'Avoid placing the temple wall adjacent to a bathroom or toilet wall' },
@@ -35,7 +35,7 @@ export function VastuTemple() {
       elements={{
         primary: 'Space (Akasha)',
         secondary: 'Water (Jal)',
-        description: 'The temple area embodies the Space element representing infinite consciousness and divine connection. The Water element in North-East brings purity, clarity, and spiritual flow. Together they create a sacred space for transcendence and divine communion.',
+        description: 'The temple area embodies the Space element representing infinite consciousness and divine connection. The Water element in North-East brings purity, clarity, and spiritual flow. Together they create a  space for transcendence and divine communion.',
       }}
       colors={{
         recommended: ['White', 'Light Yellow', 'Light Blue', 'Saffron', 'Cream', 'Gold Accents'],

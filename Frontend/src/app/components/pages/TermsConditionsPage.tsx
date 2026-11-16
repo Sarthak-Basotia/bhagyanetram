@@ -1,77 +1,91 @@
-import React from 'react';
+import { Helmet } from 'react-helmet-async';
+import { Scale, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function TermsConditionsPage() {
   return (
-    <div className="min-h-screen bg-[#FFFDF2] py-12 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-4xl mx-auto bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-slate-200 text-slate-700">
-        <h1 className="text-3xl md:text-4xl font-extrabold text-[#D35400] mb-2">Terms and Conditions</h1>
-        <p className="text-sm text-slate-500 mb-8 font-medium">Last Updated: 27th September, 2026</p>
+    <div className="min-h-screen bg-ivory-50 text-cosmic-900">
+      <Helmet>
+        <title>Terms & Conditions | Bhagyanetram</title>
+        <meta name="description" content="Terms and Conditions governing the use of BhagyaNetram astrology, Vastu Shastra, and spiritual consultation services." />
+        <link rel="canonical" href="https://bhagyanetram.com/terms-and-conditions" />
+      </Helmet>
 
-        <div className="space-y-6 leading-relaxed">
+      {/* Hero Section */}
+      <section className="relative py-20 lg:py-24 bg-cosmic-900 celestial-grid-bg text-white text-center overflow-hidden">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 text-gold-300 text-xs font-medium uppercase tracking-wider mb-6">
+              <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+              <span>Dharmic Service Agreement</span>
+            </div>
+
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-gold-500/20 to-cosmic-800 border border-gold-500/40 shadow-gold-glow flex items-center justify-center mx-auto mb-6 text-gold-300">
+              <Scale className="w-8 h-8" />
+            </div>
+
+            <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-white mb-4">
+              Terms & <span className="gold-gradient-text">Conditions</span>
+            </h1>
+            <p className="font-editorial text-lg text-ivory-200/90 italic">
+              Last Updated: 27th September, 2026
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <div className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto bg-white p-8 sm:p-12 rounded-3xl shadow-gold-card border border-gold-500/30 text-cosmic-800 leading-relaxed font-sans space-y-6">
           <p>
-            Welcome to Bhagya Netram ("we," "us," "our," or the "Website"), accessible at https://bhagyanetram.com/. These Terms and Conditions ("Terms") govern your access to and use of our Website and astrology/spiritual consultation services. By accessing or using our Website, you agree to be bound by these Terms. If you do not agree, please do not use our Website or services.
+            Welcome to Bhagya Netram ("we," "us," "our," or the "Website"), accessible at https://bhagyanetram.com/. These Terms and Conditions govern your engagement with our Vedic astrology, horoscope forecasting, and Vastu Shastra consultation services.
           </p>
 
-          <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4 border-b pb-2">1. Nature of Services</h2>
-          <p>Bhagya Netram provides astrology, Vedic astrology, spiritual guidance, and related consultation services and content ("Services"). Our Services are based on traditional astrological principles and interpretations, and are intended for general guidance, informational, and entertainment purposes only.</p>
-          <p className="font-semibold text-slate-900 bg-amber-50 p-4 border border-amber-100 rounded-lg">
-            Our Services do not constitute, and should not be treated as a substitute for, professional medical, legal, financial, psychological, or other expert advice. You should always consult an appropriately qualified professional before making any significant medical, legal, financial, or personal decisions.
+          <h2 className="font-display text-2xl font-bold text-cosmic-900 mt-8 mb-4 border-b border-gold-500/20 pb-2">
+            1. Nature of Astrological Guidance
+          </h2>
+          <p>
+            Bhagya Netram delivers authentic consultations grounded in classical Parashari, Jaimini, and Vastu Shastra traditions. Astrological interpretations illuminate energetic potentials, planetary cycles, and karmic tendencies.
           </p>
-
-          <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4 border-b pb-2">2. Eligibility</h2>
-          <p>By using our Website and Services, you confirm that you are at least 18 years of age or are using the Website under the supervision of a parent or legal guardian.</p>
-
-          <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4 border-b pb-2">3. Consultation Process</h2>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>Consultations are typically initiated through our contact/enquiry forms or via direct email communication.</li>
-            <li>You are responsible for providing accurate information (such as date, time, and place of birth) to enable us to provide relevant astrological insights. We are not responsible for inaccurate readings resulting from incorrect or incomplete information provided by you.</li>
-            <li>Consultation availability, scheduling, and response times may vary and are not guaranteed.</li>
-          </ul>
-
-          <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4 border-b pb-2">4. No Guarantee of Outcomes</h2>
-          <p>Astrology and spiritual guidance are interpretive practices. We do not guarantee specific outcomes, results, predictions, or the accuracy of any reading, interpretation, or advice provided. Any decisions you make based on our Services are made at your own discretion and risk.</p>
-
-          <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4 border-b pb-2">5. User Responsibilities</h2>
-          <p>You agree to:</p>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>Provide truthful and accurate information when contacting us or requesting a consultation.</li>
-            <li>Use the Website and Services for lawful purposes only.</li>
-            <li>Not misuse, copy, reproduce, or distribute the content of this Website without our prior written consent.</li>
-            <li>Not attempt to disrupt, hack, or interfere with the proper functioning of the Website.</li>
-          </ul>
-
-          <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4 border-b pb-2">6. Intellectual Property</h2>
-          <p>All content on this Website, including text, graphics, logos, images, and written material, is the property of Bhagya Netram unless otherwise stated, and is protected by applicable intellectual property laws. You may not reproduce, distribute, or use this content commercially without our prior written permission.</p>
-
-          <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4 border-b pb-2">7. Limitation of Liability</h2>
-          <p>To the maximum extent permitted by applicable law, Bhagya Netram, its owners, and representatives shall not be liable for any direct, indirect, incidental, or consequential damages, losses, or harm arising from:</p>
-          <ul className="list-disc pl-6 space-y-2">
-            <li>Your use of, or reliance on, our Website or Services.</li>
-            <li>Any decisions made based on astrological consultations or content provided.</li>
-            <li>Any errors, omissions, or inaccuracies in the content or consultations provided.</li>
-          </ul>
-
-          <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4 border-b pb-2">8. Third-Party Links</h2>
-          <p>Our Website may include links to third-party websites or social media pages. We are not responsible for the content, accuracy, or practices of these third-party sites.</p>
-
-          <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4 border-b pb-2">9. Changes to Services and Terms</h2>
-          <p>We reserve the right to modify, suspend, or discontinue any part of our Website or Services at any time without prior notice. We may also update these Terms periodically; continued use of the Website after changes are posted constitutes your acceptance of the revised Terms.</p>
-
-          <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4 border-b pb-2">10. Governing Law</h2>
-          <p>These Terms shall be governed by and construed in accordance with the laws of India, without regard to conflict of law principles. Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the courts of Prayagraj, India.</p>
-
-          <h2 className="text-xl font-bold text-slate-900 mt-8 mb-4 border-b pb-2">11. Contact Us</h2>
-          <p>For any questions regarding these Terms and Conditions, please contact us at:</p>
-          <div className="bg-slate-50 p-4 rounded-lg border border-slate-100 inline-block mt-2">
-            <p><strong>Email:</strong> contact@bhagyanetram.com</p>
-            <p><strong>Website:</strong> https://bhagyanetram.com/</p>
-            <p><strong>Address:</strong> Prayagraj, India</p>
+          <div className="p-5 rounded-2xl bg-amber-50/80 border border-amber-300 text-amber-950 text-sm leading-relaxed">
+            <strong>Advisory Notice:</strong> Vedic astrology consultations are spiritual and holistic in nature. They do not substitute for certified clinical medical diagnosis, qualified legal counsel, or licensed financial planning. Clients retain sovereign free will and responsibility for all life decisions.
           </div>
 
-          <hr className="my-8 border-slate-200" />
-          <p className="text-xs text-slate-400 italic text-justify">
-            *These Terms and Conditions are provided for general informational purposes and should be reviewed by a qualified legal professional before publishing, to ensure they are complete and compliant with applicable laws in your jurisdiction.*
+          <h2 className="font-display text-2xl font-bold text-cosmic-900 mt-8 mb-4 border-b border-gold-500/20 pb-2">
+            2. Client Accuracy Responsibilities
+          </h2>
+          <p>
+            The precision of a Janma Kundli reading relies on the veracity of the birth time, date, and geographical coordinates provided. If your birth time is uncertain, please notify the astrologer so that Birth Time Rectification (BTR) may be scheduled prior to prediction analysis.
           </p>
+
+          <h2 className="font-display text-2xl font-bold text-cosmic-900 mt-8 mb-4 border-b border-gold-500/20 pb-2">
+            3. Intellectual Property
+          </h2>
+          <p>
+            All custom chart software, calculators, yantra imagery, and educational articles hosted on BhagyaNetram are protected by applicable intellectual property rights and may not be reproduced without written permission.
+          </p>
+
+          <h2 className="font-display text-2xl font-bold text-cosmic-900 mt-8 mb-4 border-b border-gold-500/20 pb-2">
+            4. Jurisdiction
+          </h2>
+          <p>
+            Any disputes arising from services or website usage shall be governed exclusively by the laws of India and subject to the courts of Prayagraj, Uttar Pradesh.
+          </p>
+
+          <h2 className="font-display text-2xl font-bold text-cosmic-900 mt-8 mb-4 border-b border-gold-500/20 pb-2">
+            5. Contact Us
+          </h2>
+          <div className="bg-ivory-100/70 p-5 rounded-2xl border border-gold-500/20 inline-block mt-2">
+            <p className="font-semibold text-cosmic-900">BhagyaNetram Spiritual Desk</p>
+            <p className="text-sm text-cosmic-700">Email: contact@bhagyanetram.com</p>
+            <p className="text-sm text-cosmic-700">Phone: +91 79057 55326</p>
+            <p className="text-sm text-cosmic-700">Prayagraj, Uttar Pradesh, India</p>
+          </div>
         </div>
       </div>
     </div>

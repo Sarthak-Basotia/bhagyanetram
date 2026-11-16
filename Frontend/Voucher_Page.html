@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bhagyanetram | Vastu Shastra, Energy Visits & Vedic Astrology — Flat 20% Off</title>
+    <meta name="description" content="Harmonize your space and awaken your destiny with Bhagyanetram. Claim Flat 20% OFF on On-Site Vastu Visits &  Energy Audits across Prayagraj & Pan-India.">
+    
+    <!-- Google Fonts: Cinzel & Playfair Display for spiritual luxury, Plus Jakarta Sans for clean modern readability -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for crisp  & UI icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        celestial: {
+                            950: '#060B19',
+                            900: '#0B132B',
+                            800: '#131F42',
+                            700: '#1C2D5A',
+                        },
+                        : {
+                            gold: '#D4AF37',
+                            goldLight: '#F3E5AB',
+                            goldDark: '#AA8218',
+                            saffron: '#F59E0B',
+                            amber: '#D97706',
+                        },
+                        ivory: {
+                            50: '#FDFBF7',
+                            100: '#F8F4EC',
+                            200: '#EFE7D6',
+                        }
+                    },
+                    fontFamily: {
+                        cinzel: ['Cinzel', 'serif'],
+                        playfair: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'gold-glow': '0 10px 35px -5px rgba(212, 175, 55, 0.35)',
+                        'gold-subtle': '0 4px 20px rgba(212, 175, 55, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom subtle  animations & utilities */
+        @keyframes spinSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        @keyframes floatGentle {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-spin-slow {
+            animation: spinSlow 60s linear infinite;
+        }
+        .animate-float {
+            animation: floatGentle 5s ease-in-out infinite;
+        }
+        .-arch {
+            border-radius: 220px 220px 24px 24px;
+        }
+        .gold-gradient-text {
+            background: linear-gradient(135deg, #F3E5AB 0%, #D4AF37 45%, #F59E0B 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #D4AF37 0%, #F59E0B 100%);
+        }
+        .celestial-pattern {
+            background-image: radial-gradient(rgba(212, 175, 55, 0.12) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+    </style>
+</head>
+<body class="bg-ivory-50 text-slate-800 font-sans antialiased overflow-x-hidden selection:bg--gold selection:text-celestial-900">
+
+    <!-- Toast Notification Container (Replaces alert()) -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- 1. TOP STICKY ANNOUNCEMENT RIBBON -->
+    <div class="bg-gradient-to-r from-celestial-950 via-celestial-800 to-celestial-950 text-white border-b border--gold/30 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-center sm:justify-between gap-2 text-xs sm:text-sm">
+            <div class="flex items-center gap-2 text-center sm:text-left">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg--saffron text-celestial-950 animate-pulse">
+                    Limited Offer
+                </span>
+                <p class="font-medium text-ivory-100">
+                    <span class="text--goldLight font-semibold">FLAT 20% OFF</span> on On-Site Vastu Visits &amp;  Energy Audits
+                </p>
+            </div>
+            <div class="flex items-center gap-2.5">
+                <button onclick="copyCouponCode('VASTU20')" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 border border--gold/40 text--goldLight font-mono text-xs font-semibold transition cursor-pointer" title="Click to copy code">
+                    <span>Code: VASTU20</span>
+                    <i class="fa-regular fa-copy text-[11px]"></i>
+                </button>
+                <a href="#booking-section" onclick="selectServiceAndScroll('Vastu & Energy Visit (20% Off)')" class="inline-flex items-center gap-1 px-3 py-1 rounded-lg gold-gradient-bg text-celestial-950 font-bold text-xs hover:brightness-110 transition shadow-sm">
+                    Claim 20% Off <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. NAVIGATION BAR -->
+    <header class="bg-celestial-900/95 backdrop-blur-md border-b border--gold/20 relative z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Brand Emblem & Logo -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from--gold to--amber p-[1.5px] shadow-gold-subtle group-hover:scale-105 transition">
+                        <div class="w-full h-full bg-celestial-900 rounded-[10px] flex items-center justify-center relative overflow-hidden">
+                            <!--  Third Eye / Sri Yantra Inspired SVG Icon -->
+                            <svg class="w-7 h-7 text--gold" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="2" stroke-dasharray="4 3"/>
+                                <path d="M8 32C14 21 22 16 32 16C42 16 50 21 56 32C50 43 42 48 32 48C22 48 14 43 8 32Z" stroke="currentColor" stroke-width="2.5"/>
+                                <circle cx="32" cy="32" r="7" stroke="#F59E0B" stroke-width="2.5"/>
+                                <circle cx="32" cy="32" r="2.5" fill="#F3E5AB"/>
+                                <path d="M32 6V12M32 52V58M6 32H12M52 32H58" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="font-cinzel text-xl sm:text-2xl font-bold tracking-wider text-white block leading-none">
+                            BHAGYA<span class="text--gold">NETRAM</span>
+                        </span>
+                        <span class="text-[11px] uppercase tracking-[0.2em] text--goldLight/80 font-medium block mt-1">
+                        Vastu • Energy • Astrology
+                    </span>
+                </div>
+            </a>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden lg:flex items-center gap-8 text-sm font-medium text-ivory-100/90">
+                    <a href="#offer-showcase" class="hover:text--gold transition">20% Off Visits</a>
+                    <a href="#about" class="hover:text--gold transition">About &amp; Philosophy</a>
+                    <a href="#services" class="hover:text--gold transition"> Services</a>
+                    <a href="#process" class="hover:text--gold transition">How It Works</a>
+                    <a href="#contact" class="hover:text--gold transition">Contact</a>
+                </nav>
+                    <a href="https://wa.me/917905755326?text=Namaste%20Bhagyanetram%2C%20I%20would%20like%20to%20know%20the%20rates%20for%20Vastu%20%26%20Energy%20Visit%20with%20the%2020%25%20OFF%20offer%20(Code%3A%20VASTU20)." target="_blank" rel="noopener" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-300 hover:bg-emerald-500/20 text-xs font-semibold transition">
+                        <i class="fa-brands fa-whatsapp text-base text-emerald-400"></i>
+                        <span>WhatsApp for Rates</span>
+                    </a>
+                    <a href="#booking-section" class="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl gold-gradient-bg text-celestial-950 font-bold text-xs sm:text-sm shadow-gold-glow hover:brightness-110 transition">
+                        <span>Claim 20% Off</span>
+                    </a>
+                    <a href="#booking-section" class="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl gold-gradient-bg text-celestial-950 font-bold text-xs sm:text-sm shadow-gold-glow hover:brightness-110 transition">
+                        <span>Book Visit (20% Off)</span>
+                    </a>
+                    <!-- Mobile Menu Toggle -->
+                    <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg text-ivory-100 hover:bg-white/10 focus:outline-none" aria-label="Toggle navigation menu">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Navigation -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-celestial-950 border-t border--gold/20 px-4 pt-3 pb-5 space-y-2">
+            <a href="#offer-showcase" class="block px-3 py-2.5 rounded-lg text-ivory-100 hover:bg-white/5 hover:text--gold font-medium">20% Off Vastu &amp; Energy Visits</a>
+            <a href="#about" class="block px-3 py-2.5 rounded-lg text-ivory-100 hover:bg-white/5 hover:text--gold font-medium">About Bhagyanetram</a>
+            <a href="#services" class="block px-3 py-2.5 rounded-lg text-ivory-100 hover:bg-white/5 hover:text--gold font-medium">All-Inclusive Services</a>
+            <a href="#process" class="block px-3 py-2.5 rounded-lg text-ivory-100 hover:bg-white/5 hover:text--gold font-medium">Consultation Process</a>
+            <a href="#contact" class="block px-3 py-2.5 rounded-lg text-ivory-100 hover:bg-white/5 hover:text--gold font-medium">Contact &amp; Location</a>
+            <div class="pt-2 border-t border-white/10 flex flex-col gap-2">
+                <a href="https://wa.me/917905755326?text=Namaste%20Bhagyanetram%2C%20please%20share%20rates%20for%20the%2020%25%20OFF%20Vastu%20%26%20Energy%20Visit%20(Code%3A%20VASTU20)." target="_blank" rel="noopener" class="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-600 text-white font-semibold text-sm">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Contact on WhatsApp for Rates (+91 79057 55326)
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. HERO SECTION -->
+    <section class="relative bg-celestial-900 celestial-pattern overflow-hidden pt-10 pb-16 sm:pt-16 sm:pb-24 lg:py-24">
+        <!-- Decorative Rotating  Mandala SVG in Background -->
+        <div class="pointer-events-none absolute -top-32 -right-32 w-[560px] h-[560px] opacity-[0.07] text--gold animate-spin-slow">
+            <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="100" cy="100" r="95" stroke="currentColor" stroke-width="1"/>
+                <circle cx="100" cy="100" r="78" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3"/>
+                <polygon points="100,10 178,145 22,145" stroke="currentColor" stroke-width="1.2"/>
+                <polygon points="100,190 178,55 22,55" stroke="currentColor" stroke-width="1.2"/>
+                <polygon points="100,25 165,137 35,137" stroke="currentColor" stroke-width="1"/>
+                <polygon points="100,175 165,63 35,63" stroke="currentColor" stroke-width="1"/>
+                <circle cx="100" cy="100" r="32" stroke="currentColor" stroke-width="1.2"/>
+                <circle cx="100" cy="100" r="14" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+        </div>
+
+        <!-- Ambient Radial Gold Glow -->
+        <div class="pointer-events-none absolute top-1/4 left-1/4 w-96 h-96 bg--gold/10 rounded-full blur-3xl"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+                
+                <!-- Left Column:  Value Proposition & 20% Offer Callout -->
+                <div class="lg:col-span-7 text-center lg:text-left">
+                    <!--  Pill Badge -->
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg--gold/15 border border--gold/40 text--goldLight text-xs sm:text-sm font-medium mb-6">
+                        <i class="fa-solid fa-om text--saffron"></i>
+                        <span>Vedic Vastu Shastra &amp; Cosmic Energy Alignment</span>
+                    </div>
+
+                    <!-- Main Display Headline -->
+                    <h1 class="font-cinzel text-3xl sm:text-5xl lg:text-[54px] font-bold text-white leading-[1.15] tracking-tight mb-5">
+                        Harmonize Your Space, <span class="gold-gradient-text block sm:inline">Awaken Your Destiny</span>
+                    </h1>
+
+                    <!-- Subheadline -->
+                    <p class="text-base sm:text-lg text-ivory-100/80 max-w-2xl mx-auto lg:mx-0 leading-relaxed mb-8">
+                        Transform your home, office, or commercial property into a sanctuary of peace, health, and abundance through authentic <strong class="text-white font-semibold">Vastu Visits</strong> and <strong class="text-white font-semibold"> Energy Audits</strong> — guided by ancient Vedic wisdom with <span class="text--goldLight underline decoration--gold/50 underline-offset-4">100% non-demolition remedies</span>.
+                    </p>
+
+                    <!-- Prominent 20% OFF Promo Callout Card -->
+                    <div class="bg-gradient-to-r from-celestial-800/95 via-celestial-800/90 to-celestial-950/95 border border--gold/50 rounded-2xl p-4 sm:p-5 mb-8 shadow-gold-subtle max-w-2xl mx-auto lg:mx-0 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg--saffron text-celestial-950 text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-bl-xl">
+                            Special Privilege
+                        </div>
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div class="flex items-center gap-4 text-left">
+                                <div class="w-14 h-14 rounded-2xl gold-gradient-bg text-celestial-950 flex flex-col items-center justify-center shrink-0 shadow-md">
+                                    <span class="font-cinzel text-xl font-extrabold leading-none">20%</span>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider mt-0.5">OFF</span>
+                                </div>
+                                <div>
+                                    <h2 class="font-playfair text-lg sm:text-xl font-bold text-white">
+                                        Vastu Visit &amp; Energy Visit Offer
+                                    </h2>
+                                    <p class="text-xs sm:text-sm text-ivory-100/75 mt-0.5">
+                                        Valid for Residential, Commercial &amp; Industrial On-Site Audits (Prayagraj &amp; Pan-India).
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-center sm:items-end shrink-0 w-full sm:w-auto">
+                                <button onclick="copyCouponCode('VASTU20')" class="w-full sm:w-auto flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-celestial-950 border border-dashed border--gold text--goldLight font-mono text-xs font-bold hover:bg--gold/10 transition cursor-pointer">
+                                    <span>VASTU20</span>
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                                <span class="text-[11px] text-emerald-400 mt-1 font-medium"><i class="fa-solid fa-circle-check mr-1"></i>Auto-applied at booking</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Primary & Secondary CTA Buttons -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="https://wa.me/917905755326?text=Namaste%20Bhagyanetram%2C%20I%20would%20like%20to%20claim%2020%25%20OFF%20and%20know%20the%20rates%20for%20a%20Vastu%20%2F%20Energy%20Visit%20(Code%3A%20VASTU20)." target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl gold-gradient-bg text-celestial-950 font-bold text-base shadow-gold-glow hover:scale-[1.02] transition">
+                            <i class="fa-brands fa-whatsapp text-xl text-celestial-950"></i>
+                            <span>Contact Us on WhatsApp for Rates</span>
+                        </a>
+                        <a href="#booking-section" onclick="selectServiceAndScroll('Combined Vastu + Energy Mastery Visit (20% Off)')" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-semibold text-base backdrop-blur-sm transition">
+                            <i class="fa-solid fa-calendar-check text--gold"></i>
+                            <span>Claim 20% Off Visit</span>
+                        </a>
+                    </div>
+
+                    <!-- Micro Reassurance -->
+                    <div class="mt-6 flex flex-wrap items-center justify-center lg:justify-start gap-x-6 gap-y-2 text-xs text-ivory-100/70">
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-gift text--gold"></i> Free 15-Min Initial Discovery Call</span>
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text--gold"></i> 100% Confidential Guidance</span>
+                        <span class="flex items-center gap-1.5"><i class="fa-solid fa-language text--gold"></i> Hindi &amp; English Support</span>
+                    </div>
+                </div>
+
+                <!-- Right Column: Ornate Framed Portrait of Founder / Astrologer -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="relative max-w-sm sm:max-w-md w-full">
+                        <!-- Outer  Gold Glow Frame -->
+                        <div class="p-2.5 sm:p-3.5 rounded-t-[230px] rounded-b-[32px] bg-gradient-to-b from--gold via--amber/70 to-celestial-800 shadow-gold-glow">
+                            <div class="relative overflow-hidden -arch bg-celestial-950 aspect-[4/4.6]">
+                                <img 
+                                    src="Pranav Bhaiya.jpg" 
+                                    onerror="this.onerror=null; this.src='https://placehold.co/600x700/0B132B/D4AF37?text=Bhagyanetram+Founder';"
+                                    alt="Pranav Ji — Founder & Chief Vastu and Vedic Astrologer at Bhagyanetram" 
+                                    class="w-full h-full object-cover object-top hover:scale-105 transition duration-700"
+                                >
+                                <!-- Subtle Bottom Vignette Overlay for Nameplate Legibility -->
+                                <div class="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-celestial-950 via-celestial-950/75 to-transparent flex flex-col justify-end p-5 text-center">
+                                    <span class="text-[11px] uppercase tracking-[0.22em] text--gold font-semibold">Founder &amp; Lead Margdarshak</span>
+                                    <h3 class="font-cinzel text-xl sm:text-2xl font-bold text-white mt-0.5">Bhagyanetram</h3>
+                                    <p class="text-xs text-ivory-100/80">Vedic Vastu Shastra, Energy Healing &amp; Jyotish Acharya • Prayagraj</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Floating Top-Right Discount Seal -->
+                        <div class="animate-float absolute -top-3 -right-2 sm:-right-5 w-20 h-20 sm:w-24 sm:h-24 rounded-full gold-gradient-bg p-1 shadow-xl flex items-center justify-center text-center rotate-12">
+                            <div class="w-full h-full rounded-full border-2 border-dashed border-celestial-950 flex flex-col items-center justify-center text-celestial-950">
+                                <span class="text-[10px] font-extrabold uppercase leading-none">Save</span>
+                                <span class="font-cinzel text-xl sm:text-2xl font-black leading-tight">20%</span>
+                                <span class="text-[9px] font-bold uppercase leading-none">On Visits</span>
+                            </div>
+                        </div>
+
+                        <!-- Floating Bottom-Left Trust Badge -->
+                        <div class="absolute -bottom-5 left-3 right-3 sm:-left-6 sm:right-auto bg-white text-celestial-900 rounded-2xl p-3.5 shadow-xl border border--gold/30 flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg--gold/15 text--amber flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-star text-lg"></i>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="font-bold text-sm text-celestial-900">4.9/5 Rated</span>
+                                    <span class="text-amber-500 text-xs">★★★★★</span>
+                                </div>
+                                <p class="text-xs text-slate-600 font-medium">25,000+ Consultations • Prayagraj &amp; Pan-India</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. TRUST & IMPACT METRICS BAR -->
+    <section class="bg-white border-y border-ivory-200 relative z-20 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 text-center">
+                <div class="p-3 rounded-2xl bg-ivory-50/70 border border-ivory-200/80">
+                    <div class="font-cinzel text-2xl sm:text-3xl font-extrabold text-celestial-900">25,000+</div>
+                    <div class="text-xs sm:text-sm font-medium text-slate-600 mt-1">Successful Consultations</div>
+                </div>
+                <div class="p-3 rounded-2xl bg-ivory-50/70 border border-ivory-200/80">
+                    <div class="font-cinzel text-2xl sm:text-3xl font-extrabold text-celestial-900">10,000+</div>
+                    <div class="text-xs sm:text-sm font-medium text-slate-600 mt-1">Happy Families &amp; Businesses</div>
+                </div>
+                <div class="p-3 rounded-2xl bg-ivory-50/70 border border-ivory-200/80">
+                    <div class="font-cinzel text-2xl sm:text-3xl font-extrabold text--amber">4.9 / 5 ★</div>
+                    <div class="text-xs sm:text-sm font-medium text-slate-600 mt-1">95% Client Satisfaction Rate</div>
+                </div>
+                <div class="p-3 rounded-2xl bg-ivory-50/70 border border-ivory-200/80">
+                    <div class="font-cinzel text-2xl sm:text-3xl font-extrabold text-celestial-900">10+ Years</div>
+                    <div class="text-xs sm:text-sm font-medium text-slate-600 mt-1">Vedic Mastery &amp; Zero Demolition</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. FEATURED 20% DISCOUNT OFFER SHOWCASE (VASTU VISIT & ENERGY VISIT) -->
+    <section id="offer-showcase" class="py-16 sm:py-24 bg-ivory-50 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Section Header -->
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg--gold/15 text--goldDark text-xs font-bold uppercase tracking-wider mb-3">
+                    <i class="fa-solid fa-sparkles"></i> Exclusive 20% Savings
+                </span>
+                <h2 class="font-cinzel text-3xl sm:text-4xl font-bold text-celestial-900 mb-4">
+                     Vastu Visits &amp; Energy Audits
+                </h2>
+                <p class="text-slate-600 text-base sm:text-lg">
+                    Every physical space carries subtle vibrational imprints. Choose your specialized on-site or energy audit below and enjoy an instant <strong class="text-celestial-900">20% Privilege Discount</strong>. Contact us on WhatsApp for tailored property rates.
+                </p>
+
+                <!-- Privilege Offer Status Pill -->
+                <div class="mt-6 inline-flex flex-wrap items-center justify-center gap-3 bg-white px-5 py-3 rounded-2xl shadow-sm border border-ivory-200">
+                    <span class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-700">
+                        <i class="fa-solid fa-tag text--amber"></i>
+                        Privilege Code <code class="text--goldDark font-bold bg-ivory-100 px-2 py-0.5 rounded">VASTU20</code>
+                    </span>
+                    <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+                        20% OFF ACTIVE • CUSTOM PROPERTY RATES ON WHATSAPP
+                    </span>
+                </div>
+            </div>
+
+            <!-- 3 Specialized Visit Cards -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+                
+                <!-- Card 1: Comprehensive Vastu Visit -->
+                <div class="bg-white rounded-3xl border border-ivory-200 p-7 sm:p-8 shadow-sm hover:shadow-xl hover:border--gold/50 transition flex flex-col justify-between relative">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-celestial-900 text--gold flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-compass"></i>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold tracking-wide">
+                                20% OFF • VASTU20
+                            </span>
+                        </div>
+
+                        <h3 class="font-playfair text-2xl font-bold text-celestial-900 mb-2">
+                            Comprehensive Vastu Visit
+                        </h3>
+                        <p class="text-sm text-slate-600 mb-6">
+                            Complete directional, architectural &amp; 16-zone Vastu Shastra evaluation for homes, flats, offices, and plots.
+                        </p>
+
+                        <!-- WhatsApp Rate Inquiry Callout Box -->
+                        <div class="bg-ivory-50 rounded-2xl p-4 mb-6 border border--gold/30">
+                            <div class="flex items-center gap-2 text-emerald-700 font-bold text-sm">
+                                <i class="fa-brands fa-whatsapp text-base"></i>
+                                <span>Contact us on WhatsApp for Rates</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">
+                                Includes <strong class="text-celestial-900">Flat 20% OFF</strong> tailored to your property size &amp; location.
+                            </p>
+                        </div>
+
+                        <ul class="space-y-3 text-sm text-slate-700 mb-8">
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--amber mt-1"></i>
+                                <span><strong>16-Zone &amp; 5-Element (Panchatatva)</strong> directional balance mapping</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--amber mt-1"></i>
+                                <span><strong>Mukhya Dwar (Main Entrance)</strong> &amp; Brahmasthan energy check</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--amber mt-1"></i>
+                                <span>Kitchen, Master Bedroom, Puja Room &amp; Cash Locker placement</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--amber mt-1"></i>
+                                <span><strong>100% Non-Demolition Remedies</strong> (colors, metals, yantras &amp; shifts)</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--amber mt-1"></i>
+                                <span>Detailed Written Vastu Report &amp; Post-Visit Guidance</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="space-y-2.5">
+                        <a href="https://wa.me/917905755326?text=Namaste%20Bhagyanetram%2C%20please%20share%20rates%20for%20a%20Comprehensive%20Vastu%20Visit%20with%20the%2020%25%20OFF%20offer%20(Code%3A%20VASTU20)." target="_blank" rel="noopener" class="w-full py-3.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-brands fa-whatsapp text-base"></i>
+                            <span>Contact Us on WhatsApp for Rates</span>
+                        </a>
+                        <button onclick="selectServiceAndScroll('Comprehensive Vastu Visit (20% Off)')" class="w-full py-2.5 px-4 rounded-xl bg-ivory-100 hover:bg-ivory-200 text-celestial-900 font-semibold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <span>Or Request Callback (20% Off)</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 2: Featured Most Popular — Combined Vastu + Energy Mastery Visit -->
+                <div class="bg-celestial-900 text-white rounded-3xl border-2 border--gold p-7 sm:p-8 shadow-gold-glow flex flex-col justify-between relative lg:-translate-y-3">
+                    <!-- Popular Ribbon -->
+                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full gold-gradient-bg text-celestial-950 text-xs font-extrabold uppercase tracking-wider shadow-md whitespace-nowrap">
+                        ★ Most Chosen • Complete Alignment
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-5 mt-2">
+                            <div class="w-12 h-12 rounded-2xl bg--gold/20 text--gold flex items-center justify-center text-xl border border--gold/40">
+                                <i class="fa-solid fa-sun"></i>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg--saffron text-celestial-950 text-xs font-extrabold tracking-wide">
+                                20% OFF + FREE KUNDLI SYNC
+                            </span>
+                        </div>
+
+                        <h3 class="font-playfair text-2xl font-bold text-white mb-2">
+                            Vastu + Energy Mastery Visit
+                        </h3>
+                        <p class="text-sm text-ivory-100/75 mb-6">
+                            Our signature holistic visit combining structural Vastu Shastra, subtle Energy Scanning, and Astro-Vastu alignment.
+                        </p>
+
+                        <!-- WhatsApp Rate Inquiry Callout Box -->
+                        <div class="bg-celestial-950/80 rounded-2xl p-4 mb-6 border border--gold/40">
+                            <div class="flex items-center gap-2 text--goldLight font-bold text-sm">
+                                <i class="fa-brands fa-whatsapp text-emerald-400 text-base"></i>
+                                <span>Contact us on WhatsApp for Rates</span>
+                            </div>
+                            <p class="text-xs text-ivory-100/70 mt-1">
+                                Includes <strong class="text-emerald-400">Flat 20% OFF</strong> + Space Purification + 30-Day Follow-up.
+                            </p>
+                        </div>
+
+                        <ul class="space-y-3 text-sm text-ivory-100/90 mb-8">
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--gold mt-1"></i>
+                                <span><strong>Everything in Vastu Visit + Energy Audit</strong> combined</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--gold mt-1"></i>
+                                <span><strong>Astro-Vastu Synergy:</strong> Aligning home zones with family birth charts</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--gold mt-1"></i>
+                                <span>Geopathic stress, negative energy &amp; EMF hotspot neutralization</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--gold mt-1"></i>
+                                <span><strong>Vedic Space Purification</strong> &amp; prosperity activation ritual</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--gold mt-1"></i>
+                                <span>Priority WhatsApp &amp; Call support during remedy implementation</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="space-y-2.5">
+                        <a href="https://wa.me/917905755326?text=Namaste%20Bhagyanetram%2C%20I%20would%20like%20to%20claim%2020%25%20OFF%20and%20know%20the%20rates%20for%20the%20Combined%20Vastu%20%2B%20Energy%20Mastery%20Visit%20(Code%3A%20VASTU20)." target="_blank" rel="noopener" class="w-full py-4 px-5 rounded-xl gold-gradient-bg text-celestial-950 font-extrabold text-sm shadow-gold-glow hover:brightness-110 transition flex items-center justify-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-base"></i>
+                            <span>Claim 20% OFF on WhatsApp</span>
+                        </a>
+                        <button onclick="selectServiceAndScroll('Combined Vastu + Energy Mastery Visit (20% Off)')" class="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-ivory-100 font-semibold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <span>Or Request Callback (20% Off)</span>
+                            <i class="fa-solid fa-arrow-right text-[10px] text--gold"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 3:  Energy Visit & Aura Audit -->
+                <div class="bg-white rounded-3xl border border-ivory-200 p-7 sm:p-8 shadow-sm hover:shadow-xl hover:border--gold/50 transition flex flex-col justify-between relative">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-50 text--amber border border--gold/30 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-spa"></i>
+                            </div>
+                            <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold tracking-wide">
+                                20% OFF • VASTU20
+                            </span>
+                        </div>
+
+                        <h3 class="font-playfair text-2xl font-bold text-celestial-900 mb-2">
+                             Energy &amp; Aura Visit
+                        </h3>
+                        <p class="text-sm text-slate-600 mb-6">
+                            Focused vibrational &amp; aura cleansing visit to clear stagnant energy, unexplained heaviness, or frequent obstacles.
+                        </p>
+
+                        <!-- WhatsApp Rate Inquiry Callout Box -->
+                        <div class="bg-ivory-50 rounded-2xl p-4 mb-6 border border--gold/30">
+                            <div class="flex items-center gap-2 text-emerald-700 font-bold text-sm">
+                                <i class="fa-brands fa-whatsapp text-base"></i>
+                                <span>Contact us on WhatsApp for Rates</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">
+                                Includes <strong class="text-celestial-900">Flat 20% OFF</strong> for homes, rented spaces &amp; offices.
+                            </p>
+                        </div>
+
+                        <ul class="space-y-3 text-sm text-slate-700 mb-8">
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--amber mt-1"></i>
+                                <span><strong>Subtle Energy &amp; Chakra Frequency</strong> scanning across all rooms</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--amber mt-1"></i>
+                                <span>Detection of stagnant emotional imprints &amp; geopathic stress lines</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--amber mt-1"></i>
+                                <span> Mantra, Dhoop &amp; Elemental Aura Cleansing protocol</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--amber mt-1"></i>
+                                <span>Crystal, Copper &amp;  Geometry energy-upliftment placement</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <i class="fa-solid fa-circle-check text--amber mt-1"></i>
+                                <span>Daily positive vibration maintenance guide for family members</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="space-y-2.5">
+                        <a href="https://wa.me/917905755326?text=Namaste%20Bhagyanetram%2C%20please%20share%20rates%20for%20a%20%20Energy%20%26%20Aura%20Visit%20with%20the%2020%25%20OFF%20offer%20(Code%3A%20VASTU20)." target="_blank" rel="noopener" class="w-full py-3.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-brands fa-whatsapp text-base"></i>
+                            <span>Contact Us on WhatsApp for Rates</span>
+                        </a>
+                        <button onclick="selectServiceAndScroll(' Energy & Aura Visit (20% Off)')" class="w-full py-2.5 px-4 rounded-xl bg-ivory-100 hover:bg-ivory-200 text-celestial-900 font-semibold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer">
+                            <span>Or Request Callback (20% Off)</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. ALL-INCLUSIVE  SERVICES GRID -->
+    <section id="services" class="py-16 sm:py-24 bg-celestial-900 text-white celestial-pattern relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg--gold/15 border border--gold/30 text--goldLight text-xs font-bold uppercase tracking-wider mb-3">
+                    Holistic Vedic Solutions
+                </span>
+                <h2 class="font-cinzel text-3xl sm:text-4xl font-bold text-white mb-4">
+                    All-Inclusive Spiritual &amp; Vastu Services
+                </h2>
+                <p class="text-ivory-100/75 text-base">
+                    From architectural energy audits to personal Kundli guidance — every service begins with a <span class="text--goldLight font-semibold">Free 15-Minute First Consultation</span> to understand your goals.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Service 1 -->
+                <div class="bg-celestial-800/70 backdrop-blur-sm border border-white/10 hover:border--gold/50 rounded-2xl p-6 transition group">
+                    <div class="w-12 h-12 rounded-xl bg--gold/15 text--gold flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-house-chimney"></i>
+                    </div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-playfair text-xl font-bold text-white">Home &amp; Office Vastu</h3>
+                        <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">20% OFF</span>
+                    </div>
+                    <p class="text-sm text-ivory-100/75 leading-relaxed mb-4">
+                        On-site &amp; floor-plan Vastu evaluation for apartments, bungalows, retail shops, factories, and corporate offices.
+                    </p>
+                    <a href="#booking-section" onclick="selectServiceAndScroll('Home & Office Vastu Visit (20% Off)')" class="text-xs font-bold text--gold hover:text--goldLight inline-flex items-center gap-1.5">
+                        Book with 20% Off <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="bg-celestial-800/70 backdrop-blur-sm border border-white/10 hover:border--gold/50 rounded-2xl p-6 transition group">
+                    <div class="w-12 h-12 rounded-xl bg--gold/15 text--gold flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-playfair text-xl font-bold text-white">Energy &amp; Aura Balancing</h3>
+                        <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300">20% OFF</span>
+                    </div>
+                    <p class="text-sm text-ivory-100/75 leading-relaxed mb-4">
+                        Detect and clear negative energy blockages, geopathic stress, and restlessness to restore vibrant positivity.
+                    </p>
+                    <a href="#booking-section" onclick="selectServiceAndScroll(' Energy & Aura Visit (20% Off)')" class="text-xs font-bold text--gold hover:text--goldLight inline-flex items-center gap-1.5">
+                        Book with 20% Off <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="bg-celestial-800/70 backdrop-blur-sm border border-white/10 hover:border--gold/50 rounded-2xl p-6 transition group">
+                    <div class="w-12 h-12 rounded-xl bg--gold/15 text--gold flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-star-and-crescent"></i>
+                    </div>
+                    <h3 class="font-playfair text-xl font-bold text-white mb-2">Vedic Kundli &amp; Birth Chart</h3>
+                    <p class="text-sm text-ivory-100/75 leading-relaxed mb-4">
+                        Deep planetary Dasha analysis, life-purpose decoding, health &amp; education insights with personalized guidance.
+                    </p>
+                    <a href="#booking-section" onclick="selectServiceAndScroll('Vedic Astrology & Kundli Reading')" class="text-xs font-bold text--gold hover:text--goldLight inline-flex items-center gap-1.5">
+                        Schedule Reading <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Service 4 -->
+                <div class="bg-celestial-800/70 backdrop-blur-sm border border-white/10 hover:border--gold/50 rounded-2xl p-6 transition group">
+                    <div class="w-12 h-12 rounded-xl bg--gold/15 text--gold flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-heart"></i>
+                    </div>
+                    <h3 class="font-playfair text-xl font-bold text-white mb-2">Marriage &amp; Shubh Muhurat</h3>
+                    <p class="text-sm text-ivory-100/75 leading-relaxed mb-4">
+                        Guna Milan compatibility, relationship harmony guidance, and auspicious Muhurat selection for Griha Pravesh &amp; weddings.
+                    </p>
+                    <a href="#booking-section" onclick="selectServiceAndScroll('Marriage Compatibility & Muhurat')" class="text-xs font-bold text--gold hover:text--goldLight inline-flex items-center gap-1.5">
+                        Consult Now <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Service 5 -->
+                <div class="bg-celestial-800/70 backdrop-blur-sm border border-white/10 hover:border--gold/50 rounded-2xl p-6 transition group">
+                    <div class="w-12 h-12 rounded-xl bg--gold/15 text--gold flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h3 class="font-playfair text-xl font-bold text-white mb-2">Business &amp; Wealth Growth</h3>
+                    <p class="text-sm text-ivory-100/75 leading-relaxed mb-4">
+                        Strategic commercial Vastu, North/Kuber zone activation, and planetary timing for career breakthroughs and stability.
+                    </p>
+                    <a href="#booking-section" onclick="selectServiceAndScroll('Business & Wealth Growth Consultation')" class="text-xs font-bold text--gold hover:text--goldLight inline-flex items-center gap-1.5">
+                        Unlock Growth <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <!-- Service 6 -->
+                <div class="bg-celestial-800/70 backdrop-blur-sm border border-white/10 hover:border--gold/50 rounded-2xl p-6 transition group">
+                    <div class="w-12 h-12 rounded-xl bg--gold/15 text--gold flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-gem"></i>
+                    </div>
+                    <h3 class="font-playfair text-xl font-bold text-white mb-2">Mantras, Gemstones &amp; Puja</h3>
+                    <p class="text-sm text-ivory-100/75 leading-relaxed mb-4">
+                        Authentic Rudraksha, energized gemstones, Vastu Yantras, and Vedic Griha Shanti Puja prescriptions tailored to your chart.
+                    </p>
+                    <a href="#booking-section" onclick="selectServiceAndScroll('Remedies, Gemstones & Puja Guidance')" class="text-xs font-bold text--gold hover:text--goldLight inline-flex items-center gap-1.5">
+                        Get Remedy Plan <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. HOW IT WORKS (4-STEP CONSULTATION JOURNEY) -->
+    <section id="process" class="py-16 bg-ivory-100 border-b border-ivory-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-bold uppercase tracking-widest text--goldDark">Simple &amp; Transparent</span>
+                <h2 class="font-cinzel text-2xl sm:text-3xl font-bold text-celestial-900 mt-1">
+                    Your 4-Step Path to Spatial Harmony
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-6 rounded-2xl border border-ivory-200 relative">
+                    <span class="font-cinzel text-3xl font-black text--gold/30 block mb-2">01</span>
+                    <h3 class="font-bold text-celestial-900 mb-1.5">Claim 20% Offer</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">Select Vastu Visit or Energy Visit below with auto-applied code <strong>VASTU20</strong>.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-ivory-200 relative">
+                    <span class="font-cinzel text-3xl font-black text--gold/30 block mb-2">02</span>
+                    <h3 class="font-bold text-celestial-900 mb-1.5">Free 15-Min Discovery</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">Discuss your property layout, challenges, and schedule your convenient visit date.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-ivory-200 relative">
+                    <span class="font-cinzel text-3xl font-black text--gold/30 block mb-2">03</span>
+                    <h3 class="font-bold text-celestial-900 mb-1.5">On-Site / Energy Audit</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">Detailed directional mapping, energy frequency check, and entrance/zone diagnosis.</p>
+                </div>
+                <div class="bg-white p-6 rounded-2xl border border-ivory-200 relative">
+                    <span class="font-cinzel text-3xl font-black text--gold/30 block mb-2">04</span>
+                    <h3 class="font-bold text-celestial-900 mb-1.5">Non-Demolition Remedies</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed">Receive your actionable report and ongoing WhatsApp support as positive shifts unfold.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 9. INTERACTIVE BOOKING & 20% DISCOUNT CLAIM SECTION -->
+    <section id="booking-section" class="py-16 sm:py-24 bg-ivory-50 relative">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-3xl shadow-xl border border--gold/30 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+                
+                <!-- Left Offer Summary & Direct Contact Panel -->
+                <div class="lg:col-span-5 bg-celestial-900 text-white p-8 sm:p-10 flex flex-col justify-between relative overflow-hidden">
+                    <div class="relative z-10">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg--saffron text-celestial-950 text-xs font-extrabold uppercase tracking-wider mb-5">
+                            <i class="fa-solid fa-tag"></i> 20% Discount Unlocked
+                        </span>
+                        <h2 class="font-cinzel text-2xl sm:text-3xl font-bold text-white leading-snug mb-4">
+                            Inquire Rates &amp; Reserve Your Visit
+                        </h2>
+                        <p class="text-sm text-ivory-100/80 leading-relaxed mb-6">
+                            Contact us on WhatsApp for custom rates or submit your details below to lock in your <strong class="text--goldLight">20% Discount (Code: VASTU20)</strong>. Our team responds within 30 minutes with exact visit rates and available slots.
+                        </p>
+
+                        <!-- Coupon Card -->
+                        <div class="p-4 rounded-2xl bg-celestial-950/80 border border-dashed border--gold/60 mb-8">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-[11px] uppercase tracking-wider text-ivory-100/60 block">Applied Privilege Code</span>
+                                    <span class="font-mono text-lg font-extrabold text--goldLight tracking-wider">VASTU20</span>
+                                </div>
+                                <span class="px-2.5 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 text-xs font-bold">
+                                    20% OFF VERIFIED
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Direct Contact Channels -->
+                    <div class="relative z-10 space-y-4 pt-6 border-t border-white/10 text-sm">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text--gold shrink-0">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-ivory-100/60">Call / WhatsApp (24/7 WhatsApp)</div>
+                                <a href="tel:+917905755326" class="font-semibold text-white hover:text--gold transition">+91 79057 55326</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text--gold shrink-0">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-ivory-100/60">Official Email</div>
+                                <a href="mailto:contact@bhagyanetram.com" class="font-semibold text-white hover:text--gold transition">contact@bhagyanetram.com</a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text--gold shrink-0">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-ivory-100/60">Base &amp; On-Site Coverage</div>
+                                <div class="font-semibold text-white">Prayagraj, India (Pan-India Visits Available)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Interactive Booking Form -->
+                <div class="lg:col-span-7 p-8 sm:p-10">
+                    <form id="visit-booking-form" onsubmit="handleBookingSubmit(event)" class="space-y-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <!-- Full Name -->
+                            <div>
+                                <label for="client-name" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Your Full Name *</label>
+                                <input type="text" id="client-name" required placeholder="e.g., Rajesh Sharma" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border--gold focus:ring-2 focus:ring--gold/20 outline-none text-sm transition">
+                            </div>
+
+                            <!-- Phone / WhatsApp -->
+                            <div>
+                                <label for="client-phone" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Phone / WhatsApp Number *</label>
+                                <input type="tel" id="client-phone" required placeholder="+91 98XXX XXXXX" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border--gold focus:ring-2 focus:ring--gold/20 outline-none text-sm transition">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <!-- Service Selection -->
+                            <div>
+                                <label for="service-type" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Select Service (20% Off Eligible) *</label>
+                                <select id="service-type" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border--gold focus:ring-2 focus:ring--gold/20 outline-none text-sm bg-white transition">
+                                    <option value="Comprehensive Vastu Visit (20% Off)">Comprehensive Vastu Visit (20% Off)</option>
+                                    <option value=" Energy & Aura Visit (20% Off)"> Energy &amp; Aura Visit (20% Off)</option>
+                                    <option value="Combined Vastu + Energy Mastery Visit (20% Off)" selected>Combined Vastu + Energy Mastery Visit (20% Off)</option>
+                                    <option value="Home & Office Vastu Visit (20% Off)">Home &amp; Office Vastu Visit (20% Off)</option>
+                                    <option value="Vedic Astrology & Kundli Reading">Vedic Astrology &amp; Kundli Reading</option>
+                                    <option value="Marriage Compatibility & Muhurat">Marriage Compatibility &amp; Muhurat</option>
+                                </select>
+                            </div>
+
+                            <!-- Property Type -->
+                            <div>
+                                <label for="property-type" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Property / Space Type</label>
+                                <select id="property-type" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border--gold focus:ring-2 focus:ring--gold/20 outline-none text-sm bg-white transition">
+                                    <option value="Home / Apartment / Villa">Home / Apartment / Villa</option>
+                                    <option value="Office / Corporate Workspace">Office / Corporate Workspace</option>
+                                    <option value="Shop / Showroom / Commercial">Shop / Showroom / Commercial</option>
+                                    <option value="Factory / Industrial Land">Factory / Industrial Land</option>
+                                    <option value="New Plot / Under Construction">New Plot / Under Construction</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <!-- City / Location -->
+                            <div>
+                                <label for="client-city" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">City / Location *</label>
+                                <input type="text" id="client-city" required placeholder="e.g., Prayagraj, Varanasi, Lucknow, Delhi..." class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border--gold focus:ring-2 focus:ring--gold/20 outline-none text-sm transition">
+                            </div>
+
+                            <!-- Preferred Visit Date -->
+                            <div>
+                                <label for="visit-date" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Preferred Date</label>
+                                <input type="date" id="visit-date" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:border--gold focus:ring-2 focus:ring--gold/20 outline-none text-sm transition">
+                            </div>
+                        </div>
+
+                        <!-- Specific Concerns / Notes -->
+                        <div>
+                            <label for="client-notes" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">Key Focus Areas (Optional)</label>
+                            <textarea id="client-notes" rows="2" placeholder="Share any specific concerns (e.g., family harmony, financial growth, health, new home shifting)..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 focus:border--gold focus:ring-2 focus:ring--gold/20 outline-none text-sm transition"></textarea>
+                        </div>
+
+                        <!-- Submit & Instant WhatsApp Buttons -->
+                        <div class="pt-2 flex flex-col sm:flex-row gap-3">
+                            <button type="button" onclick="sendDirectWhatsAppFromForm()" class="flex-1 py-4 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm shadow-lg transition flex items-center justify-center gap-2 cursor-pointer">
+                                <i class="fa-brands fa-whatsapp text-lg"></i>
+                                <span>Contact Us on WhatsApp for Rates (20% Off)</span>
+                            </button>
+                            <button type="submit" class="py-4 px-5 rounded-xl gold-gradient-bg text-celestial-950 font-extrabold text-sm shadow-gold-glow hover:brightness-105 transition flex items-center justify-center gap-2 cursor-pointer">
+                                <i class="fa-solid fa-sparkles"></i>
+                                <span>Lock 20% Offer</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Booking Confirmation Summary Panel (Shown upon submission) -->
+                    <div id="booking-confirmation" class="hidden mt-6 p-6 rounded-2xl bg-emerald-50 border border-emerald-200 text-slate-800">
+                        <div class="flex items-start gap-3">
+                            <div class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-playfair text-xl font-bold text-emerald-950">20% Discount Privilege Reserved!</h4>
+                                <p id="confirmation-summary-text" class="text-sm text-emerald-900 mt-1 leading-relaxed"></p>
+                                <div class="mt-4 flex flex-wrap gap-3">
+                                    <a id="whatsapp-confirm-link" href="#" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition">
+                                        <i class="fa-brands fa-whatsapp text-base"></i>
+                                        <span>Get Rates &amp; Confirm on WhatsApp (+91 79057 55326)</span>
+                                    </a>
+                                    <button onclick="resetBookingForm()" class="px-4 py-2.5 rounded-xl bg-white border border-emerald-300 text-emerald-900 font-semibold text-xs hover:bg-emerald-100/50 transition cursor-pointer">
+                                        Edit Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 10. FOOTER -->
+    <footer id="contact" class="bg-celestial-950 text-ivory-100/80 border-t border--gold/25 pt-16 pb-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/10">
+                
+                <!-- Column 1: Brand Info -->
+                <div>
+                    <div class="flex items-center gap-2.5 mb-4">
+                        <span class="font-cinzel text-2xl font-bold tracking-wider text-white">
+                            BHAGYA<span class="text--gold">NETRAM</span>
+                        </span>
+                    </div>
+                    <p class="text-sm text-ivory-100/70 leading-relaxed mb-5">
+                        Authentic Vedic Astrology, Scientific Vastu Shastra &amp; Energy Healing. Empowering homes and businesses with ancient wisdom and non-demolition remedies.
+                    </p>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg--gold/10 border border--gold/30 text-xs text--goldLight font-medium">
+                        <i class="fa-solid fa-tag"></i> Use Code <strong>VASTU20</strong> for 20% Off Visits
+                    </div>
+                </div>
+
+                <!-- Column 2: Quick Links -->
+                <div>
+                    <h4 class="font-cinzel text-sm font-bold uppercase tracking-wider text-white mb-4">Quick Navigation</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li><a href="#offer-showcase" class="hover:text--gold transition">20% Off Vastu &amp; Energy Visits</a></li>
+                        <li><a href="#about" class="hover:text--gold transition">About Bhagyanetram</a></li>
+                        <li><a href="#services" class="hover:text--gold transition">Vedic Astrology &amp; Services</a></li>
+                        <li><a href="#process" class="hover:text--gold transition">4-Step Consultation Process</a></li>
+                        <li><a href="#booking-section" class="hover:text--gold transition">Book Appointment</a></li>
+                    </ul>
+                </div>
+
+                <!-- Column 3: Core Specialties -->
+                <div>
+                    <h4 class="font-cinzel text-sm font-bold uppercase tracking-wider text-white mb-4"> Specialties</h4>
+                    <ul class="space-y-2.5 text-sm">
+                        <li>Residential &amp; Commercial Vastu</li>
+                        <li>Subtle Energy &amp; Aura Audits</li>
+                        <li>Birth Chart (Kundli) Analysis</li>
+                        <li>Marriage Matching &amp; Muhurat</li>
+                        <li>Non-Demolition Vastu Remedies</li>
+                    </ul>
+                </div>
+
+                <!-- Column 4: Direct Contact -->
+                <div>
+                    <h4 class="font-cinzel text-sm font-bold uppercase tracking-wider text-white mb-4">Connect With Us</h4>
+                    <ul class="space-y-3 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot text--gold mt-1"></i>
+                            <span>Prayagraj, Uttar Pradesh, India<br><span class="text-xs text-ivory-100/55">(On-site visits across India &amp; online worldwide)</span></span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-brands fa-whatsapp text-emerald-400 text-base"></i>
+                            <a href="https://wa.me/917905755326" target="_blank" rel="noopener" class="hover:text--gold transition font-medium">+91 79057 55326</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-envelope text--gold"></i>
+                            <a href="mailto:contact@bhagyanetram.com" class="hover:text--gold transition">contact@bhagyanetram.com</a>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-globe text--gold"></i>
+                            <a href="https://bhagyanetram.com/" target="_blank" rel="noopener" class="hover:text--gold transition">https://bhagyanetram.com/</a>
+                        </li>
+                        <li class="text-xs text-ivory-100/60 pt-1">
+                            Hours: Mon–Sat, 9:00 AM – 7:00 PM (24/7 WhatsApp)
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-ivory-100/55">
+                <p>© 2026 Bhagyanetram — Vastu &amp; Astrology. All Rights Reserved.</p>
+                <p>100% Confidential • Ancient Vedic Wisdom for Modern Harmony</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating WhatsApp Quick-Action Button -->
+    <a href="https://wa.me/917905755326?text=Namaste%20Bhagyanetram%2C%20please%20share%20rates%20for%20Vastu%20%2F%20Energy%20Visit%20with%20the%2020%25%20OFF%20offer%20(Code%3A%20VASTU20)." target="_blank" rel="noopener" aria-label="Contact Bhagyanetram on WhatsApp for Rates" class="fixed bottom-5 left-5 z-40 inline-flex items-center gap-2.5 px-4 py-3 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-xl transition hover:scale-105">
+        <i class="fa-brands fa-whatsapp text-xl"></i>
+        <span>WhatsApp for Rates • 20% Off</span>
+    </a>
+
+    <!-- Interactive JavaScript -->
+    <script>
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Custom Non-Intrusive Toast Notification (Replaces alert())
+        function showToast(message, type = 'gold') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const borderClass = type === 'success' ? 'border-emerald-500 bg-celestial-950 text-white' : 'border--gold bg-celestial-950 text-ivory-50';
+            toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-xl border ${borderClass} shadow-2xl text-xs sm:text-sm font-medium transform transition-all duration-300 translate-y-2 opacity-0`;
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text--gold"></i><span>${message}</span>`;
+            container.appendChild(toast);
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-2', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3200);
+        }
+
+        // Copy Coupon Code using execCommand fallback for iFrame safety
+        function copyCouponCode(code) {
+            try {
+                const tempInput = document.createElement('input');
+                tempInput.value = code;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast(`Coupon "${code}" copied! Contact us on WhatsApp for 20% OFF rates.`);
+            } catch (err) {
+                showToast(`Use code "${code}" on WhatsApp for 20% OFF on Vastu & Energy Visits.`);
+            }
+        }
+
+        // Pre-select Service in Booking Form & Smooth Scroll
+        function selectServiceAndScroll(serviceName) {
+            const serviceSelect = document.getElementById('service-type');
+            if (serviceSelect) {
+                for (let i = 0; i < serviceSelect.options.length; i++) {
+                    if (serviceSelect.options[i].value === serviceName) {
+                        serviceSelect.selectedIndex = i;
+                        break;
+                    }
+                }
+            }
+            const bookingSection = document.getElementById('booking-section');
+            if (bookingSection) {
+                bookingSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Build Pre-filled WhatsApp URL for Rates & 20% Discount Inquiry
+        function buildWhatsAppUrl() {
+            const name = document.getElementById('client-name').value.trim() || 'Seeker';
+            const phone = document.getElementById('client-phone').value.trim() || 'Not provided';
+            const service = document.getElementById('service-type').value;
+            const property = document.getElementById('property-type').value;
+            const city = document.getElementById('client-city').value.trim() || 'Not specified';
+            const date = document.getElementById('visit-date').value || 'Flexible';
+            const notes = document.getElementById('client-notes').value.trim();
+
+            let message = `Namaste Bhagyanetram! 🙏\nPlease share the rates for a consultation with the *20% OFF Offer (Code: VASTU20)*.\n\n`;
+            message += `• *Name:* ${name}\n`;
+            message += `• *Phone:* ${phone}\n`;
+            message += `• *Service:* ${service}\n`;
+            message += `• *Property:* ${property}\n`;
+            message += `• *City/Location:* ${city}\n`;
+            message += `• *Preferred Date:* ${date}\n`;
+            if (notes) {
+                message += `• *Focus Areas:* ${notes}\n`;
+            }
+
+            return `https://wa.me/917905755326?text=${encodeURIComponent(message)}`;
+        }
+
+        // Handle Booking Form Submission
+        function handleBookingSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('client-name').value.trim();
+            const service = document.getElementById('service-type').value;
+            const city = document.getElementById('client-city').value.trim();
+            const property = document.getElementById('property-type').value;
+
+            const whatsappUrl = buildWhatsAppUrl();
+            const confirmBox = document.getElementById('booking-confirmation');
+            const summaryText = document.getElementById('confirmation-summary-text');
+            const confirmLink = document.getElementById('whatsapp-confirm-link');
+
+            summaryText.innerHTML = `Namaste <strong>${name}</strong>, your rate inquiry &amp; 20% discount request for <strong>${service}</strong> (${property} in <strong>${city}</strong>) with code <strong class="font-mono bg-emerald-100 px-1.5 py-0.5 rounded">VASTU20</strong> is ready. Tap below to message our WhatsApp desk for tailored rates.`;
+            confirmLink.href = whatsappUrl;
+
+            confirmBox.classList.remove('hidden');
+            confirmBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            showToast('20% Discount Privilege reserved! Tap WhatsApp to receive your custom rates.', 'success');
+        }
+
+        // Direct WhatsApp Trigger from Form
+        function sendDirectWhatsAppFromForm() {
+            const url = buildWhatsAppUrl();
+            window.open(url, '_blank', 'noopener');
+        }
+
+        // Reset Confirmation Box
+        function resetBookingForm() {
+            document.getElementById('booking-confirmation').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

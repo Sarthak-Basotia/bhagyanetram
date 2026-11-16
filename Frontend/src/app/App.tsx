@@ -98,128 +98,143 @@ export default function App() {
         </main>
 
         {/* Footer */}
-        <footer className="bg-foreground text-background py-12 border-t border-border">
+        <footer className="bg-cosmic-950 text-ivory-200/85 border-t border-gold-500/20 pt-16 pb-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-              {/* About Column */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-gold-500/15">
+              {/* Brand Column */}
               <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <img
-                    src={logoImage}
-                    alt="Bhagyanetram Logo"
-                    className="w-10 h-10 object-contain brightness-100 rounded-md"
-                  />
-                  <h3 className="text-xl">BHAGYANETRAM</h3>
-                </div>
-                <p className="text-background/70 text-sm leading-relaxed">
+                <Link to="/" onClick={scrollToTop} className="inline-flex items-center gap-3 mb-4 group">
+                  <div className="w-10 h-10 rounded-xl bg-white/95 p-1 border border-gold-500/40 flex items-center justify-center group-hover:scale-105 transition-transform overflow-hidden shadow-xs shrink-0">
+                    <img
+                      src={logoImage}
+                      alt="BhagyaNetram Logo"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <span className="font-display text-xl font-bold tracking-[0.14em] text-white group-hover:text-gold-300 transition-colors">
+                    BHAGYANETRAM
+                  </span>
+                </Link>
+                <p className="text-sm text-ivory-200/75 leading-relaxed">
                   Expert Vedic Astrology and Vastu Shastra consultations for harmony, prosperity, and success.
                 </p>
               </div>
 
               {/* Quick Links */}
               <div>
-                <h4 className="mb-4 text-background">Quick Links</h4>
-                <ul className="space-y-2 text-sm">
+                <h3 className="font-display text-base font-bold text-gold-300 uppercase tracking-wider mb-4">
+                  Quick Links
+                </h3>
+                <ul className="space-y-2.5 text-sm">
                   <li>
-                    <Link to="/" onClick={scrollToTop} className="text-background/70 hover:text-background transition-colors">
+                    <Link to="/" onClick={scrollToTop} className="hover:text-gold-400 transition-colors">
                       Home
                     </Link>
                   </li>
                   <li>
-                    <Link to="/about" onClick={scrollToTop} className="text-background/70 hover:text-background transition-colors">
+                    <Link to="/about" onClick={scrollToTop} className="hover:text-gold-400 transition-colors">
                       About Us
                     </Link>
                   </li>
                   <li>
-                    <Link to="/horoscope" onClick={scrollToTop} className="text-background/70 hover:text-background transition-colors">
+                    <Link to="/horoscope" onClick={scrollToTop} className="hover:text-gold-400 transition-colors">
                       Horoscope
                     </Link>
                   </li>
                   <li>
-                    <Link to="/blog" onClick={scrollToTop} className="text-background/70 hover:text-background transition-colors">
+                    <Link to="/blog" onClick={scrollToTop} className="hover:text-gold-400 transition-colors">
                       Blog
                     </Link>
                   </li>
                 </ul>
               </div>
 
-              {/* Services */}
+              {/* Our Services */}
               <div>
-                <h4 className="mb-4 text-background">Our Services</h4>
-                <ul className="space-y-2 text-sm">
+                <h3 className="font-display text-base font-bold text-gold-300 uppercase tracking-wider mb-4">
+                  Our Services
+                </h3>
+                <ul className="space-y-2.5 text-sm">
                   <li>
-                    <Link to="/zodiac" onClick={scrollToTop} className="text-background/70 hover:text-background transition-colors">
+                    <Link to="/zodiac" onClick={scrollToTop} className="hover:text-gold-400 transition-colors">
                       Vedic Astrology
                     </Link>
                   </li>
                   <li>
-                    <Link to="/vastu-main-door" onClick={scrollToTop} className="text-background/70 hover:text-background transition-colors">
+                    <Link to="/vastu-main-door" onClick={scrollToTop} className="hover:text-gold-400 transition-colors">
                       Vastu Shastra
                     </Link>
                   </li>
                   <li>
-                    <Link to="/horoscope" onClick={scrollToTop} className="text-background/70 hover:text-background transition-colors">
+                    <Link to="/birth-chart" onClick={scrollToTop} className="hover:text-gold-400 transition-colors">
                       Birth Chart Reading
                     </Link>
                   </li>
                   <li>
-                    <Link to="/contact" onClick={scrollToTop} className="text-background/70 hover:text-background transition-colors">
+                    <Link to="/contact" onClick={scrollToTop} className="hover:text-gold-400 transition-colors">
                       Book Consultation
                     </Link>
                   </li>
                 </ul>
               </div>
 
-              {/* Contact Info */}
+              {/* Contact Us */}
               <div>
-                <h4 className="mb-4 text-background">Contact Us</h4>
-                <ul className="space-y-3 text-sm text-background/70">
-                  <li className="flex items-center gap-2">
+                <h3 className="font-display text-base font-bold text-gold-300 uppercase tracking-wider mb-4">
+                  Contact Us
+                </h3>
+                <ul className="space-y-3 text-sm">
+                  <li className="flex items-center gap-2.5">
                     <span>📞</span>
-                    <span>+91 79057 55326</span>
+                    <a href="tel:+917905755326" className="hover:text-gold-400 transition-colors">+91 79057 55326</a>
                   </li>
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center gap-2.5">
                     <span>✉️</span>
-                    <span>contact@bhagyanetram.com</span>
+                    <a href="mailto:contact@bhagyanetram.com" className="hover:text-gold-400 transition-colors">contact@bhagyanetram.com</a>
                   </li>
-                  <li className="flex items-center gap-2">
+                  <li className="flex items-center gap-2.5">
                     <span>📍</span>
                     <span>Prayagraj, India</span>
                   </li>
-                  <li className="pt-2">
-                    <p className="text-xs text-background/50 mb-2">Follow Us</p>
-                    <div className="flex gap-3">
-                      <span className="cursor-pointer hover:scale-110 transition-transform opacity-70 hover:opacity-100">📘</span>
-                      <span className="cursor-pointer hover:scale-110 transition-transform opacity-70 hover:opacity-100">📷</span>
-                      <span className="cursor-pointer hover:scale-110 transition-transform opacity-70 hover:opacity-100">🐦</span>
-                    </div>
-                  </li>
                 </ul>
+
+                <div className="mt-5">
+                  <span className="block text-xs uppercase tracking-wider text-gold-400/90 font-semibold mb-2.5">Follow Us</span>
+                  <div className="flex items-center gap-3">
+                    <a href="https://www.facebook.com/BhagyaNetram/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-9 h-9 rounded-full bg-cosmic-800 border border-gold-500/30 flex items-center justify-center text-ivory-100 hover:bg-gold-500 hover:text-cosmic-900 transition-colors">
+                      <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" /></svg>
+                    </a>
+                    <a href="https://www.instagram.com/bhagyanetram/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full bg-cosmic-800 border border-gold-500/30 flex items-center justify-center text-ivory-100 hover:bg-gold-500 hover:text-cosmic-900 transition-colors">
+                      <svg className="w-4 h-4 fill-none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" /></svg>
+                    </a>
+                    <a href="https://www.youtube.com/@BhagyaNetram" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="w-9 h-9 rounded-full bg-cosmic-800 border border-gold-500/30 flex items-center justify-center text-ivory-100 hover:bg-gold-500 hover:text-cosmic-900 transition-colors">
+                      <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* Bottom Bar */}
-            <div className="border-t border-background/20 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-background/60">
-              <div className="text-center md:text-left">
-                <p>© 2026 Bhagyanetram. All rights reserved.</p>
-                <p className="mt-1 text-xs">Professional Vedic Astrology & Vastu Shastra Consultations</p>
-              </div>
-              
-              {/* New Legal Links */}
-              <div className="flex gap-6 text-xs font-medium">
+            {/* Bottom Copyright Bar */}
+            <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-ivory-200/65 text-center md:text-left">
+              <div>© 2026 Bhagyanetram. All rights reserved.</div>
+              <div className="text-gold-400/85 font-medium">Professional Vedic Astrology &amp; Vastu Shastra Consultations</div>
+              <div className="flex items-center gap-5">
                 <Link 
                   to="/privacy-policy" 
                   onClick={scrollToTop} 
-                  className="hover:text-background transition-colors underline underline-offset-2"
+                  className="hover:text-gold-400 transition-colors"
                 >
                   Privacy Policy
                 </Link>
                 <Link 
                   to="/terms-and-conditions" 
                   onClick={scrollToTop} 
-                  className="hover:text-background transition-colors underline underline-offset-2"
+                  className="hover:text-gold-400 transition-colors"
                 >
-                  Terms & Conditions
+                  Terms &amp; Conditions
                 </Link>
               </div>
             </div>
@@ -232,9 +247,9 @@ export default function App() {
           <Button
             onClick={scrollToTop}
             size="icon"
-            className="fixed bottom-24 right-6 z-40 rounded-full w-12 h-12 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105 transition-all"
+            className="fixed bottom-24 right-6 z-40 rounded-full w-12 h-12 bg-cosmic-900 hover:bg-cosmic-800 text-gold-300 border border-gold-500/40 shadow-gold-glow hover:scale-105 transition-all cursor-pointer"
           >
-            <ChevronUp className="w-5 h-5" />
+            <ChevronUp className="w-5 h-5 text-gold-400" />
           </Button>
         )}
       </div>

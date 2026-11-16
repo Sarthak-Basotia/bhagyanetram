@@ -1,0 +1,2145 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BHAGYANETRAM — Vastu &amp; Astrology | Your Life's Guiding Light</title>
+  <meta name="description" content="Get instant guidance from India's top astrologers. Talk to experts in Vedic Astrology, Tarot, Numerology, and Vastu Shastra." />
+
+  <!-- Google Fonts: Cinzel & Cormorant Garamond for regal temple typography + Plus Jakarta Sans for modern clarity -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cosmic: {
+              950: '#070612',
+              900: '#0D0B1E',
+              850: '#13102B',
+              800: '#191538',
+              700: '#241F4D',
+            },
+            ivory: {
+              50: '#FDFBF7',
+              100: '#FAF6EE',
+              200: '#F2EAD9',
+              300: '#E5D8BD',
+            },
+            gold: {
+              300: '#F0D57A',
+              400: '#E2BE53',
+              500: '#D4AF37',
+              600: '#B8860B',
+              700: '#8F6506',
+            },
+            saffron: {
+              500: '#D96B38',
+              600: '#C85A32',
+              700: '#A84420',
+            }
+          },
+          fontFamily: {
+            display: ['Cinzel', 'serif'],
+            editorial: ['Cormorant Garamond', 'serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          boxShadow: {
+            'gold-glow': '0 0 35px -5px rgba(212, 175, 55, 0.25)',
+            'gold-card': '0 12px 40px -12px rgba(13, 11, 30, 0.12)',
+            'cosmic-card': '0 20px 50px -15px rgba(0, 0, 0, 0.55)',
+          },
+          animation: {
+            'spin-slow': 'spin 80s linear infinite',
+            'spin-reverse-slow': 'spinReverse 110s linear infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-soft': 'pulseSoft 4s ease-in-out infinite',
+          },
+          keyframes: {
+            spinReverse: {
+              '0%': { transform: 'rotate(360deg)' },
+              '100%': { transform: 'rotate(0deg)' },
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-8px)' },
+            },
+            pulseSoft: {
+              '0%, 100%': { opacity: '0.55' },
+              '50%': { opacity: '0.95' },
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom subtle temple textures & utility refinements */
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #FAF6EE;
+      color: #1A162E;
+      overflow-x: hidden;
+    }
+
+    .celestial-grid-bg {
+      background-image:
+        radial-gradient(circle at 20% 25%, rgba(212, 175, 55, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 82% 70%, rgba(200, 90, 50, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 50% 0%, rgba(56, 44, 122, 0.45) 0%, transparent 60%);
+    }
+
+    .ivory--bg {
+      background-image:
+        radial-gradient(circle at 85% 15%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 12% 85%, rgba(200, 90, 50, 0.06) 0%, transparent 40%);
+    }
+
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #F5DF96 0%, #D4AF37 45%, #B8860B 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .gold-btn {
+      background: linear-gradient(135deg, #E2BE53 0%, #D4AF37 50%, #B8860B 100%);
+      color: #0D0B1E;
+      transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .gold-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px -4px rgba(212, 175, 55, 0.45);
+      filter: brightness(1.05);
+    }
+
+    .glass-dark {
+      background: rgba(25, 21, 56, 0.62);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(212, 175, 55, 0.22);
+    }
+
+    .glass-dark:hover {
+      border-color: rgba(212, 175, 55, 0.55);
+      background: rgba(32, 27, 70, 0.78);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 9px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0D0B1E;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #8F6506;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D4AF37;
+    }
+  </style>
+</head>
+<body class="antialiased selection:bg-gold-500 selection:text-cosmic-900">
+
+  <!-- =========================================================
+       STICKY HEADER & NAVIGATION
+  ========================================================= -->
+  <header id="navbar" class="sticky top-0 z-50 bg-cosmic-900/95 backdrop-blur-md border-b border-gold-500/20 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        <!-- Brand Emblem & Title -->
+        <a href="#home" class="flex items-center gap-3.5 group focus:outline-none">
+          <!-- Custom  Eye / Mandala Emblem -->
+          <div class="relative w-11 h-11 flex items-center justify-center rounded-xl bg-gradient-to-br from-gold-400/20 to-saffron-600/20 border border-gold-500/40 group-hover:border-gold-400 transition-colors">
+            <svg class="w-7 h-7 text-gold-400" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="1.2" stroke-dasharray="2 3" />
+              <polygon points="24,5 41,24 24,43 7,24" stroke="currentColor" stroke-width="1.3" fill="none" />
+              <path d="M9 24C13.5 16.5 18.5 14 24 14C29.5 14 34.5 16.5 39 24C34.5 31.5 29.5 34 24 34C18.5 34 13.5 31.5 9 24Z" stroke="#F0D57A" stroke-width="1.6" />
+              <circle cx="24" cy="24" r="4.5" fill="#D4AF37" />
+              <circle cx="24" cy="24" r="1.6" fill="#0D0B1E" />
+            </svg>
+          </div>
+          <div>
+            <span class="block font-display text-lg sm:text-xl font-bold tracking-[0.14em] text-white group-hover:text-gold-300 transition-colors">
+              BHAGYANETRAM
+            </span>
+            <span class="block text-[11px] uppercase tracking-[0.22em] text-gold-400/90 font-medium">
+              Vastu &amp; Astrology
+            </span>
+          </div>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-6 xl:gap-7 text-sm font-medium text-ivory-200/90">
+          <a href="#home" class="hover:text-gold-400 transition-colors py-2">Home</a>
+          <a href="#about" class="hover:text-gold-400 transition-colors py-2">About</a>
+          <a href="#horoscope" class="hover:text-gold-400 transition-colors py-2">Horoscope</a>
+          <a href="#zodiac-signs" class="hover:text-gold-400 transition-colors py-2">Zodiac Signs</a>
+          <a href="#vastu-shastra" class="hover:text-gold-400 transition-colors py-2">Vastu Shastra</a>
+          <a href="#blog" class="hover:text-gold-400 transition-colors py-2">Blog</a>
+          <a href="#contact" class="hover:text-gold-400 transition-colors py-2">Contact Us</a>
+        </nav>
+
+        <!-- Desktop CTA & Mobile Menu Toggle -->
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            onclick="openModal('Get FREE Consultation', 'Claim your complimentary 15-minute consultation with India\'s verified Vedic astrologers.')"
+            class="hidden sm:inline-flex items-center gap-2 gold-btn font-semibold text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-full shadow-md cursor-pointer">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414m0-12.728l1.414 1.414m9.9 9.9l1.414 1.414" />
+            </svg>
+            <span>Get FREE Consultation</span>
+          </button>
+
+          <!-- Mobile Hamburger Button -->
+          <button
+            id="mobile-menu-btn"
+            type="button"
+            aria-label="Toggle Menu"
+            class="lg:hidden p-2.5 rounded-xl border border-gold-500/30 text-gold-300 hover:bg-cosmic-800 focus:outline-none">
+            <svg id="hamburger-icon" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden lg:hidden bg-cosmic-900 border-t border-gold-500/20 px-4 pt-3 pb-6 space-y-1">
+      <a href="#home" class="mobile-nav-link block px-3 py-2.5 rounded-xl text-ivory-100 hover:bg-cosmic-800 hover:text-gold-400 font-medium">Home</a>
+      <a href="#about" class="mobile-nav-link block px-3 py-2.5 rounded-xl text-ivory-100 hover:bg-cosmic-800 hover:text-gold-400 font-medium">About</a>
+      <a href="#horoscope" class="mobile-nav-link block px-3 py-2.5 rounded-xl text-ivory-100 hover:bg-cosmic-800 hover:text-gold-400 font-medium">Horoscope</a>
+      <a href="#zodiac-signs" class="mobile-nav-link block px-3 py-2.5 rounded-xl text-ivory-100 hover:bg-cosmic-800 hover:text-gold-400 font-medium">Zodiac Signs</a>
+      <a href="#vastu-shastra" class="mobile-nav-link block px-3 py-2.5 rounded-xl text-ivory-100 hover:bg-cosmic-800 hover:text-gold-400 font-medium">Vastu Shastra</a>
+      <a href="#blog" class="mobile-nav-link block px-3 py-2.5 rounded-xl text-ivory-100 hover:bg-cosmic-800 hover:text-gold-400 font-medium">Blog</a>
+      <a href="#contact" class="mobile-nav-link block px-3 py-2.5 rounded-xl text-ivory-100 hover:bg-cosmic-800 hover:text-gold-400 font-medium">Contact Us</a>
+      <div class="pt-3">
+        <button
+          type="button"
+          onclick="openModal('Get FREE Consultation', 'Claim your complimentary 15-minute consultation with India\'s verified Vedic astrologers.')"
+          class="w-full gold-btn font-semibold text-sm py-3 rounded-xl shadow-md">
+          Get FREE Consultation
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================
+       1. HERO SECTION (Deep Cosmic Midnight +  Geometry)
+  ========================================================= -->
+  <section id="home" class="relative bg-cosmic-900 celestial-grid-bg text-white overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28">
+    <!-- Subtle Cosmic Starfield Canvas -->
+    <canvas id="starfield-canvas" class="absolute inset-0 w-full h-full pointer-events-none opacity-65"></canvas>
+
+    <!-- Rotating  Zodiac & Sri Yantra Mandala Backdrop -->
+    <div class="pointer-events-none absolute -right-32 top-1/2 -translate-y-1/2 w-[560px] h-[560px] lg:w-[740px] lg:h-[740px] opacity-20">
+      <svg class="w-full h-full animate-spin-slow text-gold-400" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="300" cy="300" r="290" stroke="currentColor" stroke-width="1" />
+        <circle cx="300" cy="300" r="260" stroke="currentColor" stroke-width="1.5" stroke-dasharray="4 6" />
+        <circle cx="300" cy="300" r="215" stroke="currentColor" stroke-width="1" />
+        <circle cx="300" cy="300" r="165" stroke="currentColor" stroke-width="1.2" />
+        <!-- 12 House Radial Spokes -->
+        <g stroke="currentColor" stroke-width="0.9">
+          <line x1="300" y1="10" x2="300" y2="590" />
+          <line x1="10" y1="300" x2="590" y2="300" />
+          <line x1="95" y1="95" x2="505" y2="505" />
+          <line x1="505" y1="95" x2="95" y2="505" />
+          <line x1="155" y1="48" x2="445" y2="552" />
+          <line x1="48" y1="155" x2="552" y2="445" />
+          <line x1="445" y1="48" x2="155" y2="552" />
+          <line x1="552" y1="155" x2="48" y2="445" />
+        </g>
+        <!-- Interlocking  Triangles -->
+        <polygon points="300,75 495,412 105,412" stroke="currentColor" stroke-width="1.4" />
+        <polygon points="300,525 495,188 105,188" stroke="currentColor" stroke-width="1.4" />
+        <polygon points="300,125 452,388 148,388" stroke="currentColor" stroke-width="1" />
+        <polygon points="300,475 452,212 148,212" stroke="currentColor" stroke-width="1" />
+        <circle cx="300" cy="300" r="45" stroke="currentColor" stroke-width="1.5" />
+      </svg>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <!-- Left Main Hero Copy -->
+        <div class="lg:col-span-7 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-gold-500/15 border border-gold-500/35 text-gold-300 text-xs sm:text-sm font-medium tracking-wide mb-6">
+            <span class="w-2 h-2 rounded-full bg-gold-400 animate-ping"></span>
+            <span>Bhagyanetram</span>
+            <span class="text-gold-500/60">•</span>
+            <span class="italic font-editorial text-base text-gold-200">Your Life's Guiding Light</span>
+          </div>
+
+          <h1 class="font-display text-3xl sm:text-5xl lg:text-[3.45rem] font-bold leading-[1.15] tracking-tight text-white mb-6">
+            Confused About Your <span class="gold-gradient-text">Life Decisions?</span>
+          </h1>
+
+          <p class="text-base sm:text-lg lg:text-xl text-ivory-200/85 leading-relaxed max-w-2xl mx-auto lg:mx-0 mb-8">
+            Get instant guidance from India's top astrologers. Talk to experts in Vedic Astrology, Tarot, Numerology, and Vastu Shastra.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+            <button
+              type="button"
+              onclick="openModal('Get FREE Consultation', 'Connect with India\'s top Vedic Astrologers & Vastu experts. Your first 15 minutes are completely FREE.')"
+              class="w-full sm:w-auto gold-btn font-bold text-base px-8 py-4 rounded-2xl shadow-gold-glow inline-flex items-center justify-center gap-3 cursor-pointer">
+              <span>Get FREE Consultation</span>
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </button>
+
+            <a href="#astrologers" class="w-full sm:w-auto px-7 py-4 rounded-2xl border border-gold-500/40 bg-cosmic-800/50 hover:bg-cosmic-800 text-gold-200 font-semibold text-base transition-all inline-flex items-center justify-center gap-2">
+              <span>Top Online Astrologers</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right  Celestial Emblem Card -->
+        <div class="lg:col-span-5 flex justify-center">
+          <div class="relative w-full max-w-md rounded-3xl glass-dark p-7 sm:p-8 shadow-cosmic-card text-center">
+            <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-cosmic-950 border border-gold-500/50 text-[11px] uppercase tracking-[0.2em] text-gold-300 font-semibold">
+              Bhagyanetram
+            </div>
+
+            <!--  North-Indian Kundli + Celestial Eye Illustration -->
+            <div class="w-44 h-44 mx-auto my-3 relative flex items-center justify-center animate-float">
+              <svg viewBox="0 0 200 200" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="100" cy="100" r="92" stroke="#D4AF37" stroke-width="1" stroke-dasharray="3 4" opacity="0.6" />
+                <rect x="32" y="32" width="136" height="136" rx="8" stroke="#D4AF37" stroke-width="1.5" fill="rgba(212,175,55,0.04)" />
+                <line x1="32" y1="32" x2="168" y2="168" stroke="#D4AF37" stroke-width="1.2" opacity="0.7" />
+                <line x1="168" y1="32" x2="32" y2="168" stroke="#D4AF37" stroke-width="1.2" opacity="0.7" />
+                <polygon points="100,32 168,100 100,168 32,100" stroke="#F0D57A" stroke-width="1.5" fill="rgba(13,11,30,0.65)" />
+                <!--  Eye in Center -->
+                <path d="M68 100C78 85 88 80 100 80C112 80 122 85 132 100C122 115 112 120 100 120C88 120 78 115 68 100Z" stroke="#F0D57A" stroke-width="1.8" fill="#13102B" />
+                <circle cx="100" cy="100" r="10" fill="#D4AF37" />
+                <circle cx="100" cy="100" r="4" fill="#0D0B1E" />
+                <!-- Planetary Nodes -->
+                <circle cx="100" cy="32" r="3.5" fill="#F0D57A" />
+                <circle cx="168" cy="100" r="3.5" fill="#F0D57A" />
+                <circle cx="100" cy="168" r="3.5" fill="#F0D57A" />
+                <circle cx="32" cy="100" r="3.5" fill="#F0D57A" />
+              </svg>
+            </div>
+
+            <h2 class="font-display text-xl sm:text-2xl font-bold text-gold-300 tracking-wide">
+              Bhagyanetram
+            </h2>
+            <p class="font-editorial italic text-xl text-ivory-100 mt-1 mb-5">
+              Your Life's Guiding Light
+            </p>
+            <div class="grid grid-cols-3 gap-2 pt-4 border-t border-gold-500/20 text-xs">
+              <div>
+                <span class="block font-display font-bold text-gold-400 text-base">500+</span>
+                <span class="text-ivory-200/75">Astrologers</span>
+              </div>
+              <div class="border-x border-gold-500/20">
+                <span class="block font-display font-bold text-gold-400 text-base">24/7</span>
+                <span class="text-ivory-200/75">Guidance</span>
+              </div>
+              <div>
+                <span class="block font-display font-bold text-gold-400 text-base">4.9/5</span>
+                <span class="text-ivory-200/75">Rating</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Quick-Action Feature Cards -->
+      <div class="mt-14 lg:mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <!-- Card 1: Talk to Astrologer -->
+        <button
+          type="button"
+          onclick="openModal('Talk to Astrologer', 'Get instant voice guidance from our verified Vedic astrologers.')"
+          class="group text-left glass-dark rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 flex items-center gap-4 cursor-pointer">
+          <div class="w-13 h-13 shrink-0 rounded-2xl bg-gradient-to-br from-gold-400/25 to-gold-600/10 border border-gold-500/40 flex items-center justify-center text-gold-300 group-hover:scale-105 transition-transform p-3">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-base sm:text-lg text-white group-hover:text-gold-300 transition-colors">
+              Talk to Astrologer
+            </h3>
+            <p class="text-sm text-ivory-200/75 mt-0.5">Get instant guidance</p>
+          </div>
+        </button>
+
+        <!-- Card 2: Chat with Astrologer -->
+        <button
+          type="button"
+          onclick="openModal('Chat with Astrologer', 'Ask your questions directly via live chat with an expert astrologer.')"
+          class="group text-left glass-dark rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 flex items-center gap-4 cursor-pointer">
+          <div class="w-13 h-13 shrink-0 rounded-2xl bg-gradient-to-br from-saffron-500/25 to-gold-500/10 border border-gold-500/40 flex items-center justify-center text-gold-300 group-hover:scale-105 transition-transform p-3">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-base sm:text-lg text-white group-hover:text-gold-300 transition-colors">
+              Chat with Astrologer
+            </h3>
+            <p class="text-sm text-ivory-200/75 mt-0.5">Ask your questions</p>
+          </div>
+        </button>
+
+        <!-- Card 3: Free Kundli -->
+        <button
+          type="button"
+          onclick="openModal('Free Kundli', 'Enter your birth details to generate your detailed Vedic birth chart.')"
+          class="group text-left glass-dark rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 flex items-center gap-4 cursor-pointer">
+          <div class="w-13 h-13 shrink-0 rounded-2xl bg-gradient-to-br from-gold-400/25 to-gold-600/10 border border-gold-500/40 flex items-center justify-center text-gold-300 group-hover:scale-105 transition-transform p-3">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <line x1="3" y1="3" x2="21" y2="21" />
+              <line x1="21" y1="3" x2="3" y2="21" />
+              <polygon points="12,3 21,12 12,21 3,12" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-base sm:text-lg text-white group-hover:text-gold-300 transition-colors">
+              Free Kundli
+            </h3>
+            <p class="text-sm text-ivory-200/75 mt-0.5">Generate birth chart</p>
+          </div>
+        </button>
+
+        <!-- Card 4: Daily Horoscope -->
+        <a
+          href="#horoscope"
+          class="group text-left glass-dark rounded-2xl p-5 sm:p-6 transition-all duration-300 hover:-translate-y-1 flex items-center gap-4">
+          <div class="w-13 h-13 shrink-0 rounded-2xl bg-gradient-to-br from-saffron-500/25 to-gold-500/10 border border-gold-500/40 flex items-center justify-center text-gold-300 group-hover:scale-105 transition-transform p-3">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="4" />
+              <path stroke-linecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-display font-bold text-base sm:text-lg text-white group-hover:text-gold-300 transition-colors">
+              Daily Horoscope
+            </h3>
+            <p class="text-sm text-ivory-200/75 mt-0.5">Know your day</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       2. TOP ONLINE ASTROLOGERS (Warm Temple Parchment Section)
+  ========================================================= -->
+  <section id="astrologers" class="py-20 lg:py-24 bg-ivory-100 ivory--bg border-b border-ivory-300/70">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Section Header -->
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <div class="inline-flex items-center gap-2 text-gold-700 font-semibold text-xs uppercase tracking-[0.22em] mb-3">
+          <span class="w-6 h-px bg-gold-600"></span>
+          <span>Verified Vedic Masters</span>
+          <span class="w-6 h-px bg-gold-600"></span>
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-[2.6rem] font-bold text-cosmic-900">
+          Top Online Astrologers
+        </h2>
+        <p class="mt-3 text-base sm:text-lg text-cosmic-800/80">
+          Connect with certified experts for personalized guidance
+        </p>
+      </div>
+
+      <!-- 3 Astrologer Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-7 lg:gap-8">
+        <!-- Astrologer 1: Pandit Pranav -->
+        <article class="group bg-white rounded-3xl border border-gold-500/30 p-7 shadow-gold-card hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between relative overflow-hidden">
+          <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-gold-600 via-gold-400 to-saffron-600"></div>
+
+          <div>
+            <!-- Top Row: Rating & Online Pill -->
+            <div class="flex items-center justify-between mb-6">
+              <div class="inline-flex items-center gap-1.5 bg-ivory-100 border border-gold-500/30 px-3 py-1 rounded-full text-sm font-bold text-cosmic-900">
+                <svg class="w-4 h-4 text-gold-500 fill-current" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                <span>4.9</span>
+                <span class="text-xs font-medium text-cosmic-700/70">(10K+)</span>
+              </div>
+
+              <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Verified
+              </span>
+            </div>
+
+            <!--  Portrait Emblem -->
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-cosmic-900 to-cosmic-700 border-2 border-gold-400 flex items-center justify-center shrink-0 shadow-md">
+                <svg class="w-12 h-12 text-gold-300" viewBox="0 0 64 64" fill="none">
+                  <circle cx="32" cy="23" r="10" stroke="currentColor" stroke-width="2" />
+                  <path d="M32 14V18" stroke="#D96B38" stroke-width="2.5" stroke-linecap="round" />
+                  <path d="M14 54C14 43 22 37 32 37C42 37 50 43 50 54" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path d="M24 41L32 48L40 41" stroke="#F0D57A" stroke-width="1.6" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-display text-xl font-bold text-cosmic-900 group-hover:text-gold-700 transition-colors">
+                  Pandit Pranav
+                </h3>
+                <p class="text-sm font-semibold text-saffron-600 mt-0.5">
+                  Vedic Astrology, Vastu
+                </p>
+              </div>
+            </div>
+
+            <!-- Details List -->
+            <div class="space-y-2.5 pt-4 border-t border-ivory-200 text-sm text-cosmic-800">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-gold-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>10 Years Experience</span>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-gold-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                </svg>
+                <span>Hindi, English</span>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onclick="openModal('Consult Now — Pandit Pranav', 'Vedic Astrology, Vastu • 10 Years Experience (Hindi, English)')"
+            class="mt-7 w-full py-3.5 px-5 rounded-xl bg-cosmic-900 hover:bg-cosmic-800 text-gold-300 font-semibold text-sm border border-gold-500/40 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <span>Consult Now</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </button>
+        </article>
+
+        <!-- Astrologer 2: Garrgi Ji -->
+        <article class="group bg-white rounded-3xl border border-gold-500/30 p-7 shadow-gold-card hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between relative overflow-hidden">
+          <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-gold-600 via-gold-400 to-saffron-600"></div>
+
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <div class="inline-flex items-center gap-1.5 bg-ivory-100 border border-gold-500/30 px-3 py-1 rounded-full text-sm font-bold text-cosmic-900">
+                <svg class="w-4 h-4 text-gold-500 fill-current" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                <span>4.9</span>
+                <span class="text-xs font-medium text-cosmic-700/70">(2011)</span>
+              </div>
+
+              <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Verified
+              </span>
+            </div>
+
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-cosmic-900 to-cosmic-700 border-2 border-gold-400 flex items-center justify-center shrink-0 shadow-md">
+                <svg class="w-12 h-12 text-gold-300" viewBox="0 0 64 64" fill="none">
+                  <circle cx="32" cy="23" r="10" stroke="currentColor" stroke-width="2" />
+                  <circle cx="32" cy="18.5" r="1.6" fill="#D96B38" />
+                  <path d="M14 54C14 43 22 37 32 37C42 37 50 43 50 54" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path d="M22 22C22 14 42 14 42 22" stroke="#F0D57A" stroke-width="1.5" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-display text-xl font-bold text-cosmic-900 group-hover:text-gold-700 transition-colors">
+                  Garrgi Ji
+                </h3>
+                <p class="text-sm font-semibold text-saffron-600 mt-0.5">
+                  Palmistry, Astro, Vastu
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-2.5 pt-4 border-t border-ivory-200 text-sm text-cosmic-800">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-gold-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>7 Years Experience</span>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-gold-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                </svg>
+                <span>Hindi</span>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onclick="openModal('Consult Now — Garrgi Ji', 'Palmistry, Astro, Vastu • 7 Years Experience (Hindi)')"
+            class="mt-7 w-full py-3.5 px-5 rounded-xl bg-cosmic-900 hover:bg-cosmic-800 text-gold-300 font-semibold text-sm border border-gold-500/40 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <span>Consult Now</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </button>
+        </article>
+
+        <!-- Astrologer 3: Nidhi Ji -->
+        <article class="group bg-white rounded-3xl border border-gold-500/30 p-7 shadow-gold-card hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between relative overflow-hidden">
+          <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-gold-600 via-gold-400 to-saffron-600"></div>
+
+          <div>
+            <div class="flex items-center justify-between mb-6">
+              <div class="inline-flex items-center gap-1.5 bg-ivory-100 border border-gold-500/30 px-3 py-1 rounded-full text-sm font-bold text-cosmic-900">
+                <svg class="w-4 h-4 text-gold-500 fill-current" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                <span>4.9</span>
+                <span class="text-xs font-medium text-cosmic-700/70">(3156)</span>
+              </div>
+
+              <span class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Verified
+              </span>
+            </div>
+
+            <div class="flex items-center gap-4 mb-6">
+              <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-cosmic-900 to-cosmic-700 border-2 border-gold-400 flex items-center justify-center shrink-0 shadow-md">
+                <svg class="w-12 h-12 text-gold-300" viewBox="0 0 64 64" fill="none">
+                  <circle cx="32" cy="23" r="10" stroke="currentColor" stroke-width="2" />
+                  <circle cx="32" cy="18.5" r="1.6" fill="#D96B38" />
+                  <path d="M14 54C14 43 22 37 32 37C42 37 50 43 50 54" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path d="M25 42C28 45 36 45 39 42" stroke="#F0D57A" stroke-width="1.6" />
+                </svg>
+              </div>
+              <div>
+                <h3 class="font-display text-xl font-bold text-cosmic-900 group-hover:text-gold-700 transition-colors">
+                  Nidhi Ji
+                </h3>
+                <p class="text-sm font-semibold text-saffron-600 mt-0.5">
+                  Vedic Astrology, Vastu
+                </p>
+              </div>
+            </div>
+
+            <div class="space-y-2.5 pt-4 border-t border-ivory-200 text-sm text-cosmic-800">
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-gold-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>7 Years Experience</span>
+              </div>
+              <div class="flex items-center gap-2.5">
+                <svg class="w-4 h-4 text-gold-600 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                </svg>
+                <span>Hindi, English</span>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onclick="openModal('Consult Now — Nidhi Ji', 'Vedic Astrology, Vastu • 7 Years Experience (Hindi, English)')"
+            class="mt-7 w-full py-3.5 px-5 rounded-xl bg-cosmic-900 hover:bg-cosmic-800 text-gold-300 font-semibold text-sm border border-gold-500/40 transition-all flex items-center justify-center gap-2 cursor-pointer">
+            <span>Consult Now</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </button>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       3. COMPREHENSIVE ASTROLOGY SERVICES (Authentic Kundli Charts)
+  ========================================================= -->
+  <section id="horoscope" class="py-20 lg:py-24 bg-ivory-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-4xl mx-auto mb-14">
+        <h2 class="font-display text-2xl sm:text-4xl font-bold text-cosmic-900 leading-snug">
+          Bhagyanetram Provides Comprehensive And All-Inclusive Astrology Services
+        </h2>
+        <p class="mt-3 text-base sm:text-lg text-cosmic-800/80">
+          Some of the services we provide are:
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Service 1: Free Kundli (With Authentic North-Indian 12-House Kundli Diagram) -->
+        <div class="bg-white rounded-3xl border border-gold-500/35 p-7 sm:p-8 shadow-gold-card flex flex-col justify-between hover:-translate-y-1 transition-all duration-300">
+          <div>
+            <!-- Authentic North-Indian Kundli Diamond SVG Chart (Houses 12,1,2,3,11,4,10,5,9,8,7,6) -->
+            <div class="w-full h-48 rounded-2xl bg-cosmic-900 p-3 mb-6 flex items-center justify-center border border-gold-500/30 relative overflow-hidden">
+              <svg viewBox="0 0 240 160" class="w-full h-full max-w-[230px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="20" y="10" width="200" height="140" rx="4" stroke="#D4AF37" stroke-width="1.5" fill="rgba(212,175,55,0.05)" />
+                <line x1="20" y1="10" x2="220" y2="150" stroke="#D4AF37" stroke-width="1.2" />
+                <line x1="220" y1="10" x2="20" y2="150" stroke="#D4AF37" stroke-width="1.2" />
+                <polygon points="120,10 220,80 120,150 20,80" stroke="#F0D57A" stroke-width="1.4" />
+                <!-- Traditional House Numbers -->
+                <g fill="#F0D57A" font-family="Cinzel, serif" font-size="10" font-weight="700" text-anchor="middle">
+                  <text x="120" y="46">1</text>
+                  <text x="72" y="27">2</text>
+                  <text x="40" y="48">3</text>
+                  <text x="74" y="83">4</text>
+                  <text x="40" y="120">5</text>
+                  <text x="72" y="141">6</text>
+                  <text x="120" y="122">7</text>
+                  <text x="168" y="141">8</text>
+                  <text x="200" y="120">9</text>
+                  <text x="166" y="83">10</text>
+                  <text x="200" y="48">11</text>
+                  <text x="168" y="27">12</text>
+                </g>
+              </svg>
+            </div>
+
+            <h3 class="font-display text-2xl font-bold text-cosmic-900 mb-4">
+              Free Kundli
+            </h3>
+            <ul class="space-y-3 text-cosmic-800 text-sm sm:text-base">
+              <li class="flex items-start gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-saffron-600 mt-2 shrink-0"></span>
+                <span>Find out your destiny</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-saffron-600 mt-2 shrink-0"></span>
+                <span>Inspect the positions of celestial bodies</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-saffron-600 mt-2 shrink-0"></span>
+                <span>Enable yourself to make better decisions</span>
+              </li>
+            </ul>
+          </div>
+
+          <button
+            type="button"
+            onclick="openModal('Free Kundli', 'Find out your destiny, inspect celestial positions, and generate your free birth chart.')"
+            class="mt-7 w-full py-3 rounded-xl border border-gold-600/40 bg-ivory-100 hover:bg-gold-500 hover:text-cosmic-900 text-cosmic-900 font-semibold text-sm transition-colors cursor-pointer">
+            Know More
+          </button>
+        </div>
+
+        <!-- Service 2: Today Panchang (With South-Indian 12-House Kundli Diagram) -->
+        <div class="bg-white rounded-3xl border border-gold-500/35 p-7 sm:p-8 shadow-gold-card flex flex-col justify-between hover:-translate-y-1 transition-all duration-300">
+          <div>
+            <!-- Authentic South-Indian 12-House Grid SVG Chart (Houses 12,1,2,3,11,4,10,5,9,8,7,6) -->
+            <div class="w-full h-48 rounded-2xl bg-cosmic-900 p-3 mb-6 flex items-center justify-center border border-gold-500/30">
+              <svg viewBox="0 0 240 160" class="w-full h-full max-w-[230px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="20" y="10" width="200" height="140" rx="4" stroke="#D4AF37" stroke-width="1.5" fill="rgba(212,175,55,0.05)" />
+                <!-- Outer 4x4 Grid excluding inner 2x2 -->
+                <line x1="70" y1="10" x2="70" y2="150" stroke="#D4AF37" stroke-width="1.2" />
+                <line x1="170" y1="10" x2="170" y2="150" stroke="#D4AF37" stroke-width="1.2" />
+                <line x1="120" y1="10" x2="120" y2="45" stroke="#D4AF37" stroke-width="1.2" />
+                <line x1="120" y1="115" x2="120" y2="150" stroke="#D4AF37" stroke-width="1.2" />
+                <line x1="20" y1="45" x2="220" y2="45" stroke="#D4AF37" stroke-width="1.2" />
+                <line x1="20" y1="115" x2="220" y2="115" stroke="#D4AF37" stroke-width="1.2" />
+                <line x1="20" y1="80" x2="70" y2="80" stroke="#D4AF37" stroke-width="1.2" />
+                <line x1="170" y1="80" x2="220" y2="80" stroke="#D4AF37" stroke-width="1.2" />
+                <!-- House Numbers -->
+                <g fill="#F0D57A" font-family="Cinzel, serif" font-size="10" font-weight="700" text-anchor="middle">
+                  <text x="45" y="31">12</text>
+                  <text x="95" y="31">1</text>
+                  <text x="145" y="31">2</text>
+                  <text x="195" y="31">3</text>
+                  <text x="45" y="66">11</text>
+                  <text x="195" y="66">4</text>
+                  <text x="45" y="101">10</text>
+                  <text x="195" y="101">5</text>
+                  <text x="45" y="136">9</text>
+                  <text x="95" y="136">8</text>
+                  <text x="145" y="136">7</text>
+                  <text x="195" y="136">6</text>
+                </g>
+                <text x="120" y="84" fill="#D4AF37" font-family="Cinzel, serif" font-size="10" font-weight="700" text-anchor="middle" letter-spacing="1.5">PANCHANG</text>
+              </svg>
+            </div>
+
+            <h3 class="font-display text-2xl font-bold text-cosmic-900 mb-4">
+              Today Panchang
+            </h3>
+            <ul class="space-y-3 text-cosmic-800 text-sm sm:text-base">
+              <li class="flex items-start gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-saffron-600 mt-2 shrink-0"></span>
+                <span>Embrace positivity</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-saffron-600 mt-2 shrink-0"></span>
+                <span>Accomplish tasks with ease</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-saffron-600 mt-2 shrink-0"></span>
+                <span>Positivity in your life</span>
+              </li>
+            </ul>
+          </div>
+
+          <button
+            type="button"
+            onclick="openModal('Today Panchang', 'Discover daily Tithi, Nakshatra, Yoga, Karana, and auspicious Muhurat timings.')"
+            class="mt-7 w-full py-3 rounded-xl border border-gold-600/40 bg-ivory-100 hover:bg-gold-500 hover:text-cosmic-900 text-cosmic-900 font-semibold text-sm transition-colors cursor-pointer">
+            Know More
+          </button>
+        </div>
+
+        <!-- Service 3: Kundli Matching (With Dual Ashtakoot Compatibility Mandala) -->
+        <div class="bg-white rounded-3xl border border-gold-500/35 p-7 sm:p-8 shadow-gold-card flex flex-col justify-between hover:-translate-y-1 transition-all duration-300">
+          <div>
+            <!-- Ashtakoot 36 Gunas  Compatibility Graphic -->
+            <div class="w-full h-48 rounded-2xl bg-cosmic-900 p-3 mb-6 flex items-center justify-center border border-gold-500/30">
+              <svg viewBox="0 0 240 160" class="w-full h-full max-w-[230px]" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="95" cy="80" r="48" stroke="#D4AF37" stroke-width="1.4" fill="rgba(212,175,55,0.06)" />
+                <circle cx="145" cy="80" r="48" stroke="#F0D57A" stroke-width="1.4" fill="rgba(200,90,50,0.08)" />
+                <polygon points="95,42 128,99 62,99" stroke="#D4AF37" stroke-width="1" />
+                <polygon points="145,118 178,61 112,61" stroke="#F0D57A" stroke-width="1" />
+                <circle cx="120" cy="80" r="18" fill="#0D0B1E" stroke="#D4AF37" stroke-width="1.4" />
+                <text x="120" y="78" fill="#F0D57A" font-family="Cinzel, serif" font-size="10" font-weight="700" text-anchor="middle">36</text>
+                <text x="120" y="89" fill="#D4AF37" font-family="Plus Jakarta Sans, sans-serif" font-size="7" font-weight="600" text-anchor="middle">GUNAS</text>
+              </svg>
+            </div>
+
+            <h3 class="font-display text-2xl font-bold text-cosmic-900 mb-4">
+              Kundli Matching
+            </h3>
+            <ul class="space-y-3 text-cosmic-800 text-sm sm:text-base">
+              <li class="flex items-start gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-saffron-600 mt-2 shrink-0"></span>
+                <span>Precise results</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-saffron-600 mt-2 shrink-0"></span>
+                <span>36 gunas for compatibility</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-saffron-600 mt-2 shrink-0"></span>
+                <span>Foresee the troubles</span>
+              </li>
+            </ul>
+          </div>
+
+          <button
+            type="button"
+            onclick="openModal('Kundli Matching', 'Check 36 Gunas marriage compatibility with detailed Ashtakoot & Manglik analysis.')"
+            class="mt-7 w-full py-3 rounded-xl border border-gold-600/40 bg-ivory-100 hover:bg-gold-500 hover:text-cosmic-900 text-cosmic-900 font-semibold text-sm transition-colors cursor-pointer">
+            Know More
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       4. LEARN ABOUT ASTROLOGY (Editorial  Science Section)
+  ========================================================= -->
+  <section id="about" class="py-20 lg:py-28 bg-ivory-100 border-y border-ivory-300/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Header -->
+      <div class="text-center max-w-3xl mx-auto mb-10">
+        <span class="inline-block text-xs font-bold uppercase tracking-[0.24em] text-saffron-600 mb-2">
+          Learn About Astrology
+        </span>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-cosmic-900">
+          Understanding Vedic Science
+        </h2>
+        <p class="mt-4 text-base sm:text-lg text-cosmic-800/85">
+          Explore the ancient wisdom of astrology and how it can guide your life decisions
+        </p>
+      </div>
+
+      <!-- Interactive Filter Tabs (Defaults to All so 100% of text is visible immediately) -->
+      <div class="flex flex-wrap items-center justify-center gap-2.5 mb-12" role="tablist">
+        <button type="button" onclick="filterAstrologyTab('all')" id="tab-all" class="astro-tab px-5 py-2.5 rounded-full text-sm font-semibold bg-cosmic-900 text-gold-300 border border-gold-500/40 shadow-sm cursor-pointer">
+          All Pillars
+        </button>
+        <button type="button" onclick="filterAstrologyTab('vedic')" id="tab-vedic" class="astro-tab px-5 py-2.5 rounded-full text-sm font-semibold bg-white text-cosmic-900 border border-gold-500/30 hover:border-gold-500 cursor-pointer">
+          Indian Astrology (Vedic Astrology)
+        </button>
+        <button type="button" onclick="filterAstrologyTab('western')" id="tab-western" class="astro-tab px-5 py-2.5 rounded-full text-sm font-semibold bg-white text-cosmic-900 border border-gold-500/30 hover:border-gold-500 cursor-pointer">
+          Western Astrology
+        </button>
+        <button type="button" onclick="filterAstrologyTab('natal')" id="tab-natal" class="astro-tab px-5 py-2.5 rounded-full text-sm font-semibold bg-white text-cosmic-900 border border-gold-500/30 hover:border-gold-500 cursor-pointer">
+          Astrology Chart (Natal Chart)
+        </button>
+      </div>
+
+      <!-- 3 Editorial Pillars -->
+      <div class="space-y-8">
+        <!-- Pillar 1: Indian Astrology (Vedic Astrology) -->
+        <article data-astro-panel="vedic" class="bg-white rounded-3xl border border-gold-500/30 p-7 sm:p-10 shadow-gold-card">
+          <div class="flex flex-col lg:flex-row lg:items-start gap-8">
+            <div class="lg:w-1/3">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-cosmic-900 text-gold-400 font-display font-bold text-lg mb-4">
+                01
+              </div>
+              <h3 class="font-display text-2xl sm:text-3xl font-bold text-cosmic-900 leading-snug">
+                Indian Astrology (Vedic Astrology)
+              </h3>
+              <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-gold-700">
+                <span class="px-3 py-1 rounded-full bg-ivory-100 border border-gold-500/30">27 Constellations</span>
+                <span class="px-3 py-1 rounded-full bg-ivory-100 border border-gold-500/30">9 Planets</span>
+                <span class="px-3 py-1 rounded-full bg-ivory-100 border border-gold-500/30">12 Zodiac Signs</span>
+                <span class="px-3 py-1 rounded-full bg-ivory-100 border border-gold-500/30">12 Houses</span>
+              </div>
+            </div>
+            <div class="lg:w-2/3 space-y-4 text-cosmic-800/90 leading-relaxed text-base">
+              <p>
+                Indian astrology, also known as Vedic astrology, boasts a rich history dating back centuries. It is based on the movements of stars and planets, incorporating astrological signs and their corresponding dates (zodiacs) for a comprehensive understanding.
+              </p>
+              <p>
+                Vedic astrology considers 27 constellations, 9 planets, 12 zodiac signs, and 12 houses, analyzing their influence on an individual's life. Astrology by date of birth is used to create a horoscope chart, which displays the placement of the 9 planets within the 12 houses at the time of birth.
+              </p>
+              <p>
+                Expert astrologers interpret this chart to assess the impact of planetary positions on various life aspects, offering personalized horoscope readings and astrological signs interpretations. Vedic astrology is used for predicting marriage compatibility, career prospects, financial trends, and health outcomes.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Pillar 2: Western Astrology -->
+        <article data-astro-panel="western" class="bg-white rounded-3xl border border-gold-500/30 p-7 sm:p-10 shadow-gold-card">
+          <div class="flex flex-col lg:flex-row lg:items-start gap-8">
+            <div class="lg:w-1/3">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-cosmic-900 text-gold-400 font-display font-bold text-lg mb-4">
+                02
+              </div>
+              <h3 class="font-display text-2xl sm:text-3xl font-bold text-cosmic-900 leading-snug">
+                Western Astrology
+              </h3>
+              <div class="mt-4 flex flex-wrap gap-2 text-xs font-semibold text-gold-700">
+                <span class="px-3 py-1 rounded-full bg-ivory-100 border border-gold-500/30">Equatorial Zodiac</span>
+                <span class="px-3 py-1 rounded-full bg-ivory-100 border border-gold-500/30">Transit Analysis</span>
+                <span class="px-3 py-1 rounded-full bg-ivory-100 border border-gold-500/30">Progression Analysis</span>
+              </div>
+            </div>
+            <div class="lg:w-2/3 space-y-4 text-cosmic-800/90 leading-relaxed text-base">
+              <p>
+                Western astrology employs an equatorial zodiac system based on the equator points. This system emphasizes the precise time of birth for generating horoscopes and making predictions.
+              </p>
+              <p>
+                Western astrology tracks the movements of the Sun, planets, and Moon, considering their positions in the 12 houses of a birth chart. Similar to Vedic astrology, Western astrology uses birth chart analysis to understand an individual's personality, strengths, and weaknesses.
+              </p>
+              <p>
+                However, Western astrology differs from Vedic astrology in its interpretation of planetary influences and the emphasis on psychological aspects of personality. Western astrologers often use techniques like transit analysis and progression analysis to predict future trends and events.
+              </p>
+            </div>
+          </div>
+        </article>
+
+        <!-- Pillar 3: Astrology Chart (Natal Chart) -->
+        <article data-astro-panel="natal" class="bg-white rounded-3xl border border-gold-500/30 p-7 sm:p-10 shadow-gold-card">
+          <div class="flex flex-col lg:flex-row lg:items-start gap-8">
+            <div class="lg:w-1/3">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-cosmic-900 text-gold-400 font-display font-bold text-lg mb-4">
+                03
+              </div>
+              <h3 class="font-display text-2xl sm:text-3xl font-bold text-cosmic-900 leading-snug">
+                Astrology Chart (Natal Chart)
+              </h3>
+              <div class="mt-6">
+                <button
+                  type="button"
+                  onclick="openModal('Get Your Free Birth Chart', 'Submit your date, time, and place of birth to receive your personalized Natal Chart analysis.')"
+                  class="gold-btn font-bold text-sm px-6 py-3.5 rounded-xl shadow-md inline-flex items-center gap-2 cursor-pointer">
+                  <span>Get Your Free Birth Chart</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="lg:w-2/3 space-y-4 text-cosmic-800/90 leading-relaxed text-base">
+              <p>
+                An astrology chart, also known as a natal chart, maps the positions of the planets around the Sun at the moment of an individual's birth. This chart reveals a person's inherent strengths and weaknesses, indicating opportune times for decision-making and personal growth.
+              </p>
+              <p>
+                Birth chart analysis is a cornerstone of both Vedic and Western astrology, providing valuable insights for astrological signs and horoscope readings. Here's what astrologers consider when analyzing a birth chart:
+              </p>
+              <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <li class="flex items-start gap-3 bg-ivory-100/80 border border-gold-500/25 rounded-xl p-3.5 text-sm font-medium text-cosmic-900">
+                  <svg class="w-5 h-5 text-gold-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>The position of each planet in the 12 houses</span>
+                </li>
+                <li class="flex items-start gap-3 bg-ivory-100/80 border border-gold-500/25 rounded-xl p-3.5 text-sm font-medium text-cosmic-900">
+                  <svg class="w-5 h-5 text-gold-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>The placement of the Moon, Venus, and Mars</span>
+                </li>
+                <li class="flex items-start gap-3 bg-ivory-100/80 border border-gold-500/25 rounded-xl p-3.5 text-sm font-medium text-cosmic-900">
+                  <svg class="w-5 h-5 text-gold-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Jupiter's placement for luck and opportunities</span>
+                </li>
+                <li class="flex items-start gap-3 bg-ivory-100/80 border border-gold-500/25 rounded-xl p-3.5 text-sm font-medium text-cosmic-900">
+                  <svg class="w-5 h-5 text-gold-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Planetary aspects and their significance</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       5. FREE ASTROLOGY SERVICES (12-Card  Tool Grid)
+  ========================================================= -->
+  <section id="zodiac-signs" class="py-20 lg:py-24 bg-ivory-50">
+    <div id="vastu-shastra" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <div class="inline-flex items-center gap-2 text-gold-700 font-semibold text-xs uppercase tracking-[0.22em] mb-3">
+          <span class="w-6 h-px bg-gold-600"></span>
+          <span> Tools &amp; Insights</span>
+          <span class="w-6 h-px bg-gold-600"></span>
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-cosmic-900">
+          Free Astrology Services
+        </h2>
+        <p class="mt-3 text-base sm:text-lg text-cosmic-800/80">
+          Explore our comprehensive range of free astrological tools and insights
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        <!-- 1. Match Making -->
+        <button type="button" onclick="openModal('Match Making', 'Check compatibility for marriage using Vedic Ashtakoot Guna Milan.')" class="group text-left bg-white hover:bg-cosmic-900 rounded-2xl border border-gold-500/30 p-6 shadow-sm hover:shadow-gold-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-ivory-100 group-hover:bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-600 group-hover:text-gold-300 mb-4 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-cosmic-900 group-hover:text-white transition-colors">Match Making</h3>
+          <p class="text-sm text-cosmic-800/75 group-hover:text-ivory-200/80 mt-1 transition-colors">Check compatibility for marriage</p>
+        </button>
+
+        <!-- 2. Panchang -->
+        <button type="button" onclick="openModal('Panchang', 'Check daily auspicious timings, Tithi, Nakshatra, and Rahu Kaal.')" class="group text-left bg-white hover:bg-cosmic-900 rounded-2xl border border-gold-500/30 p-6 shadow-sm hover:shadow-gold-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-ivory-100 group-hover:bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-600 group-hover:text-gold-300 mb-4 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-cosmic-900 group-hover:text-white transition-colors">Panchang</h3>
+          <p class="text-sm text-cosmic-800/75 group-hover:text-ivory-200/80 mt-1 transition-colors">Daily auspicious timings</p>
+        </button>
+
+        <!-- 3. Tarot Reading -->
+        <button type="button" onclick="openModal('Tarot Reading', 'Receive intuitive card-based predictions for clarity in love, career, and life.')" class="group text-left bg-white hover:bg-cosmic-900 rounded-2xl border border-gold-500/30 p-6 shadow-sm hover:shadow-gold-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-ivory-100 group-hover:bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-600 group-hover:text-gold-300 mb-4 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <rect x="6" y="3" width="12" height="18" rx="2" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 8l1.2 2.4 2.6.4-1.9 1.8.5 2.6L12 14l-2.4 1.2.5-2.6-1.9-1.8 2.6-.4L12 8z" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-cosmic-900 group-hover:text-white transition-colors">Tarot Reading</h3>
+          <p class="text-sm text-cosmic-800/75 group-hover:text-ivory-200/80 mt-1 transition-colors">Card-based predictions</p>
+        </button>
+
+        <!-- 4. Birth Chart -->
+        <button type="button" onclick="openModal('Birth Chart', 'Generate your complete natal chart analysis based on Vedic principles.')" class="group text-left bg-white hover:bg-cosmic-900 rounded-2xl border border-gold-500/30 p-6 shadow-sm hover:shadow-gold-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-ivory-100 group-hover:bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-600 group-hover:text-gold-300 mb-4 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9" />
+              <circle cx="12" cy="12" r="4" />
+              <line x1="12" y1="3" x2="12" y2="21" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-cosmic-900 group-hover:text-white transition-colors">Birth Chart</h3>
+          <p class="text-sm text-cosmic-800/75 group-hover:text-ivory-200/80 mt-1 transition-colors">Complete natal chart analysis</p>
+        </button>
+
+        <!-- 5. Palmistry -->
+        <button type="button" onclick="openModal('Palmistry', 'Unlock hand reading insights on your life line, heart line, and destiny.')" class="group text-left bg-white hover:bg-cosmic-900 rounded-2xl border border-gold-500/30 p-6 shadow-sm hover:shadow-gold-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-ivory-100 group-hover:bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-600 group-hover:text-gold-300 mb-4 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-cosmic-900 group-hover:text-white transition-colors">Palmistry</h3>
+          <p class="text-sm text-cosmic-800/75 group-hover:text-ivory-200/80 mt-1 transition-colors">Hand reading insights</p>
+        </button>
+
+        <!-- 6. Numerology -->
+        <button type="button" onclick="openModal('Numerology', 'Explore number-based predictions for your name, birth date, and destiny number.')" class="group text-left bg-white hover:bg-cosmic-900 rounded-2xl border border-gold-500/30 p-6 shadow-sm hover:shadow-gold-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-ivory-100 group-hover:bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-600 group-hover:text-gold-300 mb-4 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-cosmic-900 group-hover:text-white transition-colors">Numerology</h3>
+          <p class="text-sm text-cosmic-800/75 group-hover:text-ivory-200/80 mt-1 transition-colors">Number-based predictions</p>
+        </button>
+
+        <!-- 7. Gemstone Guide -->
+        <button type="button" onclick="openModal('Gemstone Guide', 'Find the lucky stones tailored to strengthen your planetary placements.')" class="group text-left bg-white hover:bg-cosmic-900 rounded-2xl border border-gold-500/30 p-6 shadow-sm hover:shadow-gold-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-ivory-100 group-hover:bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-600 group-hover:text-gold-300 mb-4 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <polygon points="6,4 18,4 22,10 12,21 2,10" />
+              <line x1="2" y1="10" x2="22" y2="10" />
+              <polyline points="6,4 12,10 18,4" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-cosmic-900 group-hover:text-white transition-colors">Gemstone Guide</h3>
+          <p class="text-sm text-cosmic-800/75 group-hover:text-ivory-200/80 mt-1 transition-colors">Lucky stones for you</p>
+        </button>
+
+        <!-- 8. Planet Transit -->
+        <button type="button" onclick="openModal('Planet Transit', 'Track current planetary positions (Gochar) and their effects on your Rashi.')" class="group text-left bg-white hover:bg-cosmic-900 rounded-2xl border border-gold-500/30 p-6 shadow-sm hover:shadow-gold-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-ivory-100 group-hover:bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-600 group-hover:text-gold-300 mb-4 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="5" />
+              <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-25 12 12)" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-cosmic-900 group-hover:text-white transition-colors">Planet Transit</h3>
+          <p class="text-sm text-cosmic-800/75 group-hover:text-ivory-200/80 mt-1 transition-colors">Current planetary positions</p>
+        </button>
+
+        <!-- 9. Vastu Tips -->
+        <button type="button" onclick="openModal('Vastu Tips', 'Harmonize your home and office with practical Vastu Shastra solutions.')" class="group text-left bg-white hover:bg-cosmic-900 rounded-2xl border border-gold-500/30 p-6 shadow-sm hover:shadow-gold-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-ivory-100 group-hover:bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-600 group-hover:text-gold-300 mb-4 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-cosmic-900 group-hover:text-white transition-colors">Vastu Tips</h3>
+          <p class="text-sm text-cosmic-800/75 group-hover:text-ivory-200/80 mt-1 transition-colors">Home harmony solutions</p>
+        </button>
+
+        <!-- 10. Zodiac Signs -->
+        <button type="button" onclick="openModal('Zodiac Signs', 'Explore your sun sign and moon sign traits across all 12 Rashis.')" class="group text-left bg-white hover:bg-cosmic-900 rounded-2xl border border-gold-500/30 p-6 shadow-sm hover:shadow-gold-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-ivory-100 group-hover:bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-600 group-hover:text-gold-300 mb-4 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-cosmic-900 group-hover:text-white transition-colors">Zodiac Signs</h3>
+          <p class="text-sm text-cosmic-800/75 group-hover:text-ivory-200/80 mt-1 transition-colors">Know your sun sign traits</p>
+        </button>
+
+        <!-- 11. Festivals -->
+        <button type="button" onclick="openModal('Festivals', 'View upcoming Hindu festivals, Vrat dates, and  auspicious days.')" class="group text-left bg-white hover:bg-cosmic-900 rounded-2xl border border-gold-500/30 p-6 shadow-sm hover:shadow-gold-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-ivory-100 group-hover:bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-600 group-hover:text-gold-300 mb-4 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3c-2.5 3-4 5.5-4 8a4 4 0 008 0c0-2.5-1.5-5-4-8z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 17c2.5 2 11.5 2 14 0l-2 4H7l-2-4z" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-cosmic-900 group-hover:text-white transition-colors">Festivals</h3>
+          <p class="text-sm text-cosmic-800/75 group-hover:text-ivory-200/80 mt-1 transition-colors">Upcoming Hindu festivals</p>
+        </button>
+
+        <!-- 12. Yantra Meditation -->
+        <button type="button" onclick="openModal('Yantra Meditation', 'Experience  geometry meditation for mental peace and spiritual alignment.')" class="group text-left bg-white hover:bg-cosmic-900 rounded-2xl border border-gold-500/30 p-6 shadow-sm hover:shadow-gold-glow transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-ivory-100 group-hover:bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-600 group-hover:text-gold-300 mb-4 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <polygon points="12,3 21,19 3,19" />
+              <polygon points="12,21 21,5 3,5" />
+            </svg>
+          </div>
+          <h3 class="font-display font-bold text-lg text-cosmic-900 group-hover:text-white transition-colors">Yantra Meditation</h3>
+          <p class="text-sm text-cosmic-800/75 group-hover:text-ivory-200/80 mt-1 transition-colors"> geometry for peace</p>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       6. SPECIALIZED CONSULTATIONS (Deep Cosmic Dark Section)
+  ========================================================= -->
+  <section class="py-20 lg:py-24 bg-cosmic-900 celestial-grid-bg text-white relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <div class="inline-flex items-center gap-2 text-gold-400 font-semibold text-xs uppercase tracking-[0.22em] mb-3">
+          <span class="w-6 h-px bg-gold-500"></span>
+          <span>Focused Guidance</span>
+          <span class="w-6 h-px bg-gold-500"></span>
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-white">
+          Specialized Consultations
+        </h2>
+        <p class="mt-3 text-base sm:text-lg text-ivory-200/80">
+          Expert guidance for every aspect of your life
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 1. Love & Relationship -->
+        <div class="glass-dark rounded-3xl p-7 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <div class="w-12 h-12 rounded-2xl bg-saffron-600/20 border border-saffron-500/40 flex items-center justify-center text-gold-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </div>
+              <span class="text-xs font-semibold px-3 py-1 rounded-full bg-gold-500/15 text-gold-300 border border-gold-500/30">
+                15,847 consultations
+              </span>
+            </div>
+            <h3 class="font-display text-xl font-bold text-white mb-2">
+              Love &amp; Relationship
+            </h3>
+          </div>
+          <button
+            type="button"
+            onclick="openModal('Love & Relationship Consultation', '15,847 consultations completed • Connect with a relationship astrologer now.')"
+            class="mt-6 w-full py-3 rounded-xl bg-gold-500/15 hover:bg-gold-500 text-gold-300 hover:text-cosmic-900 border border-gold-500/40 font-semibold text-sm transition-all cursor-pointer">
+            Consult Now
+          </button>
+        </div>
+
+        <!-- 2. Marriage & Kundli -->
+        <div class="glass-dark rounded-3xl p-7 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <div class="w-12 h-12 rounded-2xl bg-gold-500/20 border border-gold-500/40 flex items-center justify-center text-gold-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <span class="text-xs font-semibold px-3 py-1 rounded-full bg-gold-500/15 text-gold-300 border border-gold-500/30">
+                12,563 consultations
+              </span>
+            </div>
+            <h3 class="font-display text-xl font-bold text-white mb-2">
+              Marriage &amp; Kundli
+            </h3>
+          </div>
+          <button
+            type="button"
+            onclick="openModal('Marriage & Kundli Consultation', '12,563 consultations completed • Get detailed Kundli matching and marriage timing.')"
+            class="mt-6 w-full py-3 rounded-xl bg-gold-500/15 hover:bg-gold-500 text-gold-300 hover:text-cosmic-900 border border-gold-500/40 font-semibold text-sm transition-all cursor-pointer">
+            Consult Now
+          </button>
+        </div>
+
+        <!-- 3. Career Guidance -->
+        <div class="glass-dark rounded-3xl p-7 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <div class="w-12 h-12 rounded-2xl bg-saffron-600/20 border border-saffron-500/40 flex items-center justify-center text-gold-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <span class="text-xs font-semibold px-3 py-1 rounded-full bg-gold-500/15 text-gold-300 border border-gold-500/30">
+                18,234 consultations
+              </span>
+            </div>
+            <h3 class="font-display text-xl font-bold text-white mb-2">
+              Career Guidance
+            </h3>
+          </div>
+          <button
+            type="button"
+            onclick="openModal('Career Guidance Consultation', '18,234 consultations completed • Discover the right career path and promotion timings.')"
+            class="mt-6 w-full py-3 rounded-xl bg-gold-500/15 hover:bg-gold-500 text-gold-300 hover:text-cosmic-900 border border-gold-500/40 font-semibold text-sm transition-all cursor-pointer">
+            Consult Now
+          </button>
+        </div>
+
+        <!-- 4. Business & Finance -->
+        <div class="glass-dark rounded-3xl p-7 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <div class="w-12 h-12 rounded-2xl bg-gold-500/20 border border-gold-500/40 flex items-center justify-center text-gold-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <span class="text-xs font-semibold px-3 py-1 rounded-full bg-gold-500/15 text-gold-300 border border-gold-500/30">
+                9,876 consultations
+              </span>
+            </div>
+            <h3 class="font-display text-xl font-bold text-white mb-2">
+              Business &amp; Finance
+            </h3>
+          </div>
+          <button
+            type="button"
+            onclick="openModal('Business & Finance Consultation', '9,876 consultations completed • Astrological insights for investments and business expansion.')"
+            class="mt-6 w-full py-3 rounded-xl bg-gold-500/15 hover:bg-gold-500 text-gold-300 hover:text-cosmic-900 border border-gold-500/40 font-semibold text-sm transition-all cursor-pointer">
+            Consult Now
+          </button>
+        </div>
+
+        <!-- 5. Vastu Consultation -->
+        <div class="glass-dark rounded-3xl p-7 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <div class="w-12 h-12 rounded-2xl bg-saffron-600/20 border border-saffron-500/40 flex items-center justify-center text-gold-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </div>
+              <span class="text-xs font-semibold px-3 py-1 rounded-full bg-gold-500/15 text-gold-300 border border-gold-500/30">
+                14,329 consultations
+              </span>
+            </div>
+            <h3 class="font-display text-xl font-bold text-white mb-2">
+              Vastu Consultation
+            </h3>
+          </div>
+          <button
+            type="button"
+            onclick="openModal('Vastu Consultation', '14,329 consultations completed • Align your home and workplace with Vastu Shastra.')"
+            class="mt-6 w-full py-3 rounded-xl bg-gold-500/15 hover:bg-gold-500 text-gold-300 hover:text-cosmic-900 border border-gold-500/40 font-semibold text-sm transition-all cursor-pointer">
+            Consult Now
+          </button>
+        </div>
+
+        <!-- 6. Spiritual Guidance -->
+        <div class="glass-dark rounded-3xl p-7 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1">
+          <div>
+            <div class="flex items-center justify-between mb-5">
+              <div class="w-12 h-12 rounded-2xl bg-gold-500/20 border border-gold-500/40 flex items-center justify-center text-gold-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414m0-12.728l1.414 1.414m9.9 9.9l1.414 1.414" />
+                </svg>
+              </div>
+              <span class="text-xs font-semibold px-3 py-1 rounded-full bg-gold-500/15 text-gold-300 border border-gold-500/30">
+                11,092 consultations
+              </span>
+            </div>
+            <h3 class="font-display text-xl font-bold text-white mb-2">
+              Spiritual Guidance
+            </h3>
+          </div>
+          <button
+            type="button"
+            onclick="openModal('Spiritual Guidance Consultation', '11,092 consultations completed • Mantras, puja remedies, and spiritual peace.')"
+            class="mt-6 w-full py-3 rounded-xl bg-gold-500/15 hover:bg-gold-500 text-gold-300 hover:text-cosmic-900 border border-gold-500/40 font-semibold text-sm transition-all cursor-pointer">
+            Consult Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       7. WHY CHOOSE US (Trust Metrics + 9 Pillars)
+  ========================================================= -->
+  <section class="py-20 lg:py-24 bg-ivory-100 ivory--bg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-12">
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-cosmic-900">
+          Why Choose Us
+        </h2>
+        <p class="mt-3 text-base sm:text-lg text-cosmic-800/80">
+          India's most trusted astrology platform with proven results
+        </p>
+      </div>
+
+      <!-- 3 Stat Highlights Banner -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-14">
+        <div class="bg-cosmic-900 text-white rounded-3xl p-6 sm:p-7 text-center border border-gold-500/35 shadow-lg">
+          <div class="font-display text-3xl sm:text-4xl font-bold gold-gradient-text">10+ Years</div>
+          <div class="text-xs sm:text-sm uppercase tracking-wider text-ivory-200/85 mt-2 font-medium">Vedic Experience</div>
+        </div>
+        <div class="bg-cosmic-900 text-white rounded-3xl p-6 sm:p-7 text-center border border-gold-500/35 shadow-lg">
+          <div class="font-display text-3xl sm:text-4xl font-bold gold-gradient-text">10,000+</div>
+          <div class="text-xs sm:text-sm uppercase tracking-wider text-ivory-200/85 mt-2 font-medium">Happy Clients</div>
+        </div>
+        <div class="bg-cosmic-900 text-white rounded-3xl p-6 sm:p-7 text-center border border-gold-500/35 shadow-lg">
+          <div class="font-display text-3xl sm:text-4xl font-bold gold-gradient-text">4.9/5</div>
+          <div class="text-xs sm:text-sm uppercase tracking-wider text-ivory-200/85 mt-2 font-medium">Average Rating</div>
+        </div>
+      </div>
+
+      <!-- 9 Feature Cards (3x3 Grid) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 1 -->
+        <div class="bg-white rounded-2xl border border-gold-500/25 p-6 sm:p-7 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-11 h-11 rounded-xl bg-ivory-100 border border-gold-500/30 flex items-center justify-center text-gold-600 mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-lg font-bold text-cosmic-900 mb-2">Verified Expert Astrologers</h3>
+          <p class="text-sm text-cosmic-800/80 leading-relaxed">
+            All our astrologers are thoroughly vetted, certified, and have minimum 10+ years of experience in Vedic astrology and related sciences.
+          </p>
+        </div>
+
+        <!-- 2 -->
+        <div class="bg-white rounded-2xl border border-gold-500/25 p-6 sm:p-7 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-11 h-11 rounded-xl bg-ivory-100 border border-gold-500/30 flex items-center justify-center text-gold-600 mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-lg font-bold text-cosmic-900 mb-2">100% Confidential</h3>
+          <p class="text-sm text-cosmic-800/80 leading-relaxed">
+            Your personal information and consultation details are completely secure and never shared with third parties.
+          </p>
+        </div>
+
+        <!-- 3 -->
+        <div class="bg-white rounded-2xl border border-gold-500/25 p-6 sm:p-7 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-11 h-11 rounded-xl bg-ivory-100 border border-gold-500/30 flex items-center justify-center text-gold-600 mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-lg font-bold text-cosmic-900 mb-2">Accurate Predictions</h3>
+          <p class="text-sm text-cosmic-800/80 leading-relaxed">
+            Our astrologers have a proven track record of accurate predictions based on detailed birth chart analysis and planetary positions.
+          </p>
+        </div>
+
+        <!-- 4 -->
+        <div class="bg-white rounded-2xl border border-gold-500/25 p-6 sm:p-7 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-11 h-11 rounded-xl bg-ivory-100 border border-gold-500/30 flex items-center justify-center text-gold-600 mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-lg font-bold text-cosmic-900 mb-2">Instant Connection</h3>
+          <p class="text-sm text-cosmic-800/80 leading-relaxed">
+            Connect with expert astrologers instantly via call or chat. No waiting, no appointments needed for quick guidance.
+          </p>
+        </div>
+
+        <!-- 5 -->
+        <div class="bg-white rounded-2xl border border-gold-500/25 p-6 sm:p-7 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-11 h-11 rounded-xl bg-ivory-100 border border-gold-500/30 flex items-center justify-center text-gold-600 mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-lg font-bold text-cosmic-900 mb-2">Personalized Solutions</h3>
+          <p class="text-sm text-cosmic-800/80 leading-relaxed">
+            Receive customized remedies, gemstone recommendations, and puja suggestions tailored to your specific planetary positions.
+          </p>
+        </div>
+
+        <!-- 6 -->
+        <div class="bg-white rounded-2xl border border-gold-500/25 p-6 sm:p-7 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-11 h-11 rounded-xl bg-ivory-100 border border-gold-500/30 flex items-center justify-center text-gold-600 mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-lg font-bold text-cosmic-900 mb-2">Proven Track Record</h3>
+          <p class="text-sm text-cosmic-800/80 leading-relaxed">
+            Over 25,000 successful consultations with 95% client satisfaction rate and countless positive life transformations.
+          </p>
+        </div>
+
+        <!-- 7 -->
+        <div class="bg-white rounded-2xl border border-gold-500/25 p-6 sm:p-7 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-11 h-11 rounded-xl bg-ivory-100 border border-gold-500/30 flex items-center justify-center text-gold-600 mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-lg font-bold text-cosmic-900 mb-2">Comprehensive Services</h3>
+          <p class="text-sm text-cosmic-800/80 leading-relaxed">
+            From Kundli making to Vastu consultation, marriage matching to career guidance - all under one roof.
+          </p>
+        </div>
+
+        <!-- 8 -->
+        <div class="bg-white rounded-2xl border border-gold-500/25 p-6 sm:p-7 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-11 h-11 rounded-xl bg-ivory-100 border border-gold-500/30 flex items-center justify-center text-gold-600 mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+            </svg>
+          </div>
+          <h3 class="font-display text-lg font-bold text-cosmic-900 mb-2">Multilingual Support</h3>
+          <p class="text-sm text-cosmic-800/80 leading-relaxed">
+            Get consultation in Hindi, English, Tamil, Telugu, Bengali, Marathi, Gujarati, and more regional languages.
+          </p>
+        </div>
+
+        <!-- 9 -->
+        <div class="bg-white rounded-2xl border border-gold-500/25 p-6 sm:p-7 shadow-sm hover:shadow-md transition-shadow">
+          <div class="w-11 h-11 rounded-xl bg-ivory-100 border border-gold-500/30 flex items-center justify-center text-gold-600 mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <h3 class="font-display text-lg font-bold text-cosmic-900 mb-2">Follow-up Support</h3>
+          <p class="text-sm text-cosmic-800/80 leading-relaxed">
+            Not just one-time consultation - get ongoing support and guidance as you implement the suggested remedies.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       8. WHAT OUR CLIENTS SAY (Testimonials Section)
+  ========================================================= -->
+  <section id="blog" class="py-20 lg:py-24 bg-ivory-50 border-t border-ivory-300/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <div class="inline-flex items-center gap-2 text-gold-700 font-semibold text-xs uppercase tracking-[0.22em] mb-3">
+          <span class="w-6 h-px bg-gold-600"></span>
+          <span>Client Experiences</span>
+          <span class="w-6 h-px bg-gold-600"></span>
+        </div>
+        <h2 class="font-display text-3xl sm:text-4xl font-bold text-cosmic-900">
+          What Our Clients Say
+        </h2>
+        <p class="mt-3 text-base sm:text-lg text-cosmic-800/80">
+          Real stories from real people
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-7">
+        <!-- Testimonial 1: Meera Singh -->
+        <article class="bg-white rounded-3xl border border-gold-500/30 p-7 sm:p-8 shadow-gold-card flex flex-col justify-between">
+          <div>
+            <!-- 5 Gold Stars -->
+            <div class="flex items-center gap-1 text-gold-500 mb-5">
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+            </div>
+
+            <blockquote class="font-editorial italic text-xl text-cosmic-900 leading-relaxed mb-6">
+              "The Vastu consultation changed my life completely. Within 3 months of implementing the suggestions, my business started flourishing and family relationships improved dramatically."
+            </blockquote>
+          </div>
+
+          <div class="flex items-center justify-between pt-4 border-t border-ivory-200">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-full bg-cosmic-900 text-gold-300 font-display font-bold flex items-center justify-center text-sm">
+                MS
+              </div>
+              <div>
+                <div class="font-display font-bold text-cosmic-900 text-sm">Meera Singh</div>
+                <div class="text-xs text-cosmic-700/75">Mumbai</div>
+              </div>
+            </div>
+            <span class="text-xs text-cosmic-700/65 font-medium">2 days ago</span>
+          </div>
+        </article>
+
+        <!-- Testimonial 2: Amit Patel -->
+        <article class="bg-white rounded-3xl border border-gold-500/30 p-7 sm:p-8 shadow-gold-card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-1 text-gold-500 mb-5">
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+            </div>
+
+            <blockquote class="font-editorial italic text-xl text-cosmic-900 leading-relaxed mb-6">
+              "Dr. Sharma's birth chart reading was incredibly accurate. The remedies he suggested for my career have shown results faster than I expected. Highly recommend!"
+            </blockquote>
+          </div>
+
+          <div class="flex items-center justify-between pt-4 border-t border-ivory-200">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-full bg-cosmic-900 text-gold-300 font-display font-bold flex items-center justify-center text-sm">
+                AP
+              </div>
+              <div>
+                <div class="font-display font-bold text-cosmic-900 text-sm">Amit Patel</div>
+                <div class="text-xs text-cosmic-700/75">Ahmedabad</div>
+              </div>
+            </div>
+            <span class="text-xs text-cosmic-700/65 font-medium">5 days ago</span>
+          </div>
+        </article>
+
+        <!-- Testimonial 3: Kavita Reddy -->
+        <article class="bg-white rounded-3xl border border-gold-500/30 p-7 sm:p-8 shadow-gold-card flex flex-col justify-between">
+          <div>
+            <div class="flex items-center gap-1 text-gold-500 mb-5">
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+              <svg class="w-5 h-5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+            </div>
+
+            <blockquote class="font-editorial italic text-xl text-cosmic-900 leading-relaxed mb-6">
+              "I was skeptical at first, but the predictions about my relationship were spot on. The guidance helped me make the right decision. Forever grateful!"
+            </blockquote>
+          </div>
+
+          <div class="flex items-center justify-between pt-4 border-t border-ivory-200">
+            <div class="flex items-center gap-3">
+              <div class="w-11 h-11 rounded-full bg-cosmic-900 text-gold-300 font-display font-bold flex items-center justify-center text-sm">
+                KR
+              </div>
+              <div>
+                <div class="font-display font-bold text-cosmic-900 text-sm">Kavita Reddy</div>
+                <div class="text-xs text-cosmic-700/75">Bangalore</div>
+              </div>
+            </div>
+            <span class="text-xs text-cosmic-700/65 font-medium">1 week ago</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       9. GET EXPERT GUIDANCE & CONTACT HUB
+  ========================================================= -->
+  <section id="contact" class="py-20 lg:py-28 bg-ivory-100 border-t border-ivory-300/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Top Header -->
+      <div class="text-center max-w-3xl mx-auto mb-14">
+        <span class="inline-block text-xs font-bold uppercase tracking-[0.24em] text-saffron-600 mb-2">
+          Get Expert Guidance
+        </span>
+        <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-cosmic-900">
+          Why You Should Contact Us Today
+        </h2>
+        <p class="mt-4 text-base sm:text-lg text-cosmic-800/85 leading-relaxed">
+          Don't let uncertainty hold you back. Our expert astrologers are here to provide clarity, direction, and practical solutions for all your life challenges.
+        </p>
+      </div>
+
+      <!-- 4 Reason Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        <div class="bg-white rounded-3xl border border-gold-500/30 p-7 shadow-sm">
+          <h3 class="font-display text-xl font-bold text-cosmic-900 mb-2">
+            Facing Life Challenges?
+          </h3>
+          <p class="text-cosmic-800/85 text-sm sm:text-base leading-relaxed">
+            Whether it's career confusion, relationship issues, financial stress, or health concerns - get personalized astrological guidance.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-3xl border border-gold-500/30 p-7 shadow-sm">
+          <h3 class="font-display text-xl font-bold text-cosmic-900 mb-2">
+            Making Important Decisions?
+          </h3>
+          <p class="text-cosmic-800/85 text-sm sm:text-base leading-relaxed">
+            Planning marriage, changing jobs, starting a business, or buying property? Know the most auspicious time through Vedic astrology.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-3xl border border-gold-500/30 p-7 shadow-sm">
+          <h3 class="font-display text-xl font-bold text-cosmic-900 mb-2">
+            Seeking Peace &amp; Prosperity?
+          </h3>
+          <p class="text-cosmic-800/85 text-sm sm:text-base leading-relaxed">
+            Transform your home and workplace with Vastu Shastra. Create harmonious spaces that attract positive energy and success.
+          </p>
+        </div>
+
+        <div class="bg-white rounded-3xl border border-gold-500/30 p-7 shadow-sm">
+          <h3 class="font-display text-xl font-bold text-cosmic-900 mb-2">
+            Want to Understand Your Destiny?
+          </h3>
+          <p class="text-cosmic-800/85 text-sm sm:text-base leading-relaxed">
+            Discover your life path, strengths, challenges, and opportunities through detailed birth chart analysis.
+          </p>
+        </div>
+      </div>
+
+      <!-- Two Primary Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+        <a
+          href="tel:+917905755326"
+          class="w-full sm:w-auto gold-btn font-bold text-base px-8 py-4 rounded-2xl shadow-md inline-flex items-center justify-center gap-2.5">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+          </svg>
+          <span>Call Now for FREE Consultation</span>
+        </a>
+
+        <button
+          type="button"
+          onclick="openModal('Send Message', 'Send us your query and birth details. Our team responds within 24 hours.')"
+          class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-cosmic-900 hover:bg-cosmic-800 text-gold-300 border border-gold-500/40 font-semibold text-base transition-all inline-flex items-center justify-center gap-2.5 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          <span>Send Message</span>
+        </button>
+      </div>
+
+      <!-- Checklist & Direct Contact Channels Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <!-- Left 7 Cols: What You Get When You Contact Us -->
+        <div class="lg:col-span-7 bg-white rounded-3xl border border-gold-500/35 p-7 sm:p-10 shadow-gold-card">
+          <h3 class="font-display text-2xl sm:text-3xl font-bold text-cosmic-900 mb-6">
+            What You Get When You Contact Us
+          </h3>
+          <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm sm:text-base text-cosmic-800">
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-gold-500/20 text-gold-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</span>
+              <span>Instant connection with verified astrologers</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-gold-500/20 text-gold-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</span>
+              <span>Detailed birth chart analysis and interpretation</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-gold-500/20 text-gold-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</span>
+              <span>Personalized predictions for career, marriage, health</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-gold-500/20 text-gold-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</span>
+              <span>Relationship compatibility and marriage matching</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-gold-500/20 text-gold-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</span>
+              <span>Vastu consultation for home and office</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-gold-500/20 text-gold-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</span>
+              <span>Business and financial growth guidance</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-gold-500/20 text-gold-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</span>
+              <span>Effective remedies - mantras, gemstones, pujas</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-gold-500/20 text-gold-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</span>
+              <span>Auspicious dates for important events</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-gold-500/20 text-gold-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</span>
+              <span>Follow-up support and ongoing guidance</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="w-6 h-6 rounded-full bg-gold-500/20 text-gold-700 flex items-center justify-center shrink-0 mt-0.5 font-bold text-xs">✓</span>
+              <span>Written consultation report via email</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Right 5 Cols: Offer + 3 Contact Cards -->
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <!-- Offer Card: First Time Users -->
+          <div class="rounded-3xl bg-gradient-to-br from-cosmic-900 via-cosmic-850 to-cosmic-800 text-white p-6 border border-gold-400/50 shadow-lg">
+            <span class="inline-block text-xs font-bold uppercase tracking-[0.2em] text-gold-300 mb-1">
+              First Time Users
+            </span>
+            <h4 class="font-display text-2xl sm:text-3xl font-bold gold-gradient-text">
+              FREE 15 Minutes
+            </h4>
+            <p class="text-sm text-ivory-200/90 mt-1">
+              Get your first consultation absolutely free!
+            </p>
+          </div>
+
+          <!-- Phone Card: Call Us Directly -->
+          <div class="bg-white rounded-2xl border border-gold-500/30 p-5 flex items-center justify-between gap-4 shadow-sm">
+            <div>
+              <div class="text-xs font-bold uppercase tracking-wider text-saffron-600">Call Us Directly</div>
+              <div class="font-display font-bold text-lg text-cosmic-900 mt-0.5">+91 79057 55326</div>
+              <div class="text-xs text-cosmic-700/80 mt-0.5">Available Mon-Sat, 9 AM - 7 PM</div>
+            </div>
+            <a href="tel:+917905755326" class="shrink-0 px-4 py-2.5 rounded-xl bg-cosmic-900 hover:bg-cosmic-800 text-gold-300 text-xs font-semibold transition-colors">
+              Call Now
+            </a>
+          </div>
+
+          <!-- WhatsApp Card: WhatsApp Chat -->
+          <div class="bg-white rounded-2xl border border-gold-500/30 p-5 flex items-center justify-between gap-4 shadow-sm">
+            <div>
+              <div class="text-xs font-bold uppercase tracking-wider text-emerald-700">WhatsApp Chat</div>
+              <div class="font-display font-bold text-lg text-cosmic-900 mt-0.5">Instant Response</div>
+              <div class="text-xs text-cosmic-700/80 mt-0.5">24/7 automated replies</div>
+            </div>
+            <a href="https://wa.me/917905755326" target="_blank" rel="noopener noreferrer" class="shrink-0 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold transition-colors">
+              Chat on WhatsApp
+            </a>
+          </div>
+
+          <!-- Email Card: Email Consultation -->
+          <div class="bg-white rounded-2xl border border-gold-500/30 p-5 flex items-center justify-between gap-4 shadow-sm">
+            <div class="min-w-0">
+              <div class="text-xs font-bold uppercase tracking-wider text-gold-700">Email Consultation</div>
+              <div class="font-semibold text-sm sm:text-base text-cosmic-900 mt-0.5 truncate">contact@bhagyanetram.com</div>
+              <div class="text-xs text-cosmic-700/80 mt-0.5">Response within 24 hours</div>
+            </div>
+            <a href="mailto:contact@bhagyanetram.com" class="shrink-0 px-4 py-2.5 rounded-xl border border-gold-600/40 bg-ivory-100 hover:bg-gold-500 text-cosmic-900 text-xs font-semibold transition-colors">
+              Send Email
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       10. BOTTOM CTA BANNER
+  ========================================================= -->
+  <section class="py-16 lg:py-20 bg-gradient-to-r from-cosmic-950 via-cosmic-900 to-cosmic-950 border-t border-gold-500/30 text-white relative overflow-hidden">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
+        Ready to Transform Your Life?
+      </h2>
+      <p class="text-base sm:text-xl text-ivory-200/85 mb-8">
+        Get instant access to India's top astrologers. First consultation FREE!
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <button
+          type="button"
+          onclick="openModal('Talk to Astrologer Now', 'Get instant access to India\'s top astrologers. First consultation FREE!')"
+          class="w-full sm:w-auto gold-btn font-bold text-base px-8 py-4 rounded-2xl shadow-gold-glow cursor-pointer">
+          Talk to Astrologer Now
+        </button>
+        <a
+          href="#contact"
+          class="w-full sm:w-auto px-8 py-4 rounded-2xl border border-gold-500/45 bg-cosmic-800/60 hover:bg-cosmic-800 text-gold-200 font-semibold text-base transition-colors">
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================
+       11. FOOTER
+  ========================================================= -->
+  <footer class="bg-cosmic-950 text-ivory-200/85 border-t border-gold-500/20 pt-16 pb-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-gold-500/15">
+        <!-- Brand Column -->
+        <div>
+          <a href="#home" class="inline-flex items-center gap-3 mb-4">
+            <div class="w-9 h-9 rounded-lg bg-gold-500/15 border border-gold-500/40 flex items-center justify-center text-gold-400">
+              <svg class="w-5 h-5" viewBox="0 0 48 48" fill="none">
+                <polygon points="24,5 41,24 24,43 7,24" stroke="currentColor" stroke-width="2" />
+                <circle cx="24" cy="24" r="5" fill="#D4AF37" />
+              </svg>
+            </div>
+            <span class="font-display text-xl font-bold tracking-[0.14em] text-white">
+              BHAGYANETRAM
+            </span>
+          </a>
+          <p class="text-sm text-ivory-200/75 leading-relaxed">
+            Expert Vedic Astrology and Vastu Shastra consultations for harmony, prosperity, and success.
+          </p>
+        </div>
+
+        <!-- Quick Links -->
+        <div>
+          <h3 class="font-display text-base font-bold text-gold-300 uppercase tracking-wider mb-4">
+            Quick Links
+          </h3>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#home" class="hover:text-gold-400 transition-colors">Home</a></li>
+            <li><a href="#about" class="hover:text-gold-400 transition-colors">About Us</a></li>
+            <li><a href="#horoscope" class="hover:text-gold-400 transition-colors">Horoscope</a></li>
+            <li><a href="#blog" class="hover:text-gold-400 transition-colors">Blog</a></li>
+          </ul>
+        </div>
+
+        <!-- Our Services -->
+        <div>
+          <h3 class="font-display text-base font-bold text-gold-300 uppercase tracking-wider mb-4">
+            Our Services
+          </h3>
+          <ul class="space-y-2.5 text-sm">
+            <li><a href="#about" class="hover:text-gold-400 transition-colors">Vedic Astrology</a></li>
+            <li><a href="#vastu-shastra" class="hover:text-gold-400 transition-colors">Vastu Shastra</a></li>
+            <li><a href="#horoscope" class="hover:text-gold-400 transition-colors">Birth Chart Reading</a></li>
+            <li>
+              <button type="button" onclick="openModal('Book Consultation', 'Schedule your personalized Vedic Astrology or Vastu Shastra consultation.')" class="hover:text-gold-400 transition-colors cursor-pointer">
+                Book Consultation
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Contact Us -->
+        <div>
+          <h3 class="font-display text-base font-bold text-gold-300 uppercase tracking-wider mb-4">
+            Contact Us
+          </h3>
+          <ul class="space-y-3 text-sm">
+            <li class="flex items-center gap-2.5">
+              <span>📞</span>
+              <a href="tel:+917905755326" class="hover:text-gold-400 transition-colors">+91 79057 55326</a>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <span>✉️</span>
+              <a href="mailto:contact@bhagyanetram.com" class="hover:text-gold-400 transition-colors">contact@bhagyanetram.com</a>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <span>📍</span>
+              <span>Prayagraj, India</span>
+            </li>
+          </ul>
+
+          <div class="mt-5">
+            <span class="block text-xs uppercase tracking-wider text-gold-400/90 font-semibold mb-2.5">Follow Us</span>
+            <div class="flex items-center gap-3">
+              <!-- Facebook -->
+              <a href="#contact" aria-label="Facebook" class="w-9 h-9 rounded-full bg-cosmic-800 border border-gold-500/30 flex items-center justify-center text-ivory-100 hover:bg-gold-500 hover:text-cosmic-900 transition-colors">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" /></svg>
+              </a>
+              <!-- Instagram -->
+              <a href="#contact" aria-label="Instagram" class="w-9 h-9 rounded-full bg-cosmic-800 border border-gold-500/30 flex items-center justify-center text-ivory-100 hover:bg-gold-500 hover:text-cosmic-900 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" /></svg>
+              </a>
+              <!-- YouTube -->
+              <a href="https://www.youtube.com/@BhagyaNetram" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="w-9 h-9 rounded-full bg-cosmic-800 border border-gold-500/30 flex items-center justify-center text-ivory-100 hover:bg-gold-500 hover:text-cosmic-900 transition-colors">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Copyright Bar -->
+      <div class="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-ivory-200/65 text-center md:text-left">
+        <div>© 2026 Bhagyanetram. All rights reserved.</div>
+        <div class="text-gold-400/85 font-medium">Professional Vedic Astrology &amp; Vastu Shastra Consultations</div>
+        <div class="flex items-center gap-5">
+          <button type="button" onclick="openPolicyModal('Privacy Policy')" class="hover:text-gold-400 transition-colors cursor-pointer">Privacy Policy</button>
+          <button type="button" onclick="openPolicyModal('Terms & Conditions')" class="hover:text-gold-400 transition-colors cursor-pointer">Terms &amp; Conditions</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================================
+       INTERACTIVE CONSULTATION / KUNDLI MODAL
+  ========================================================= -->
+  <div id="consultation-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-cosmic-950/80 backdrop-blur-sm">
+    <div class="relative w-full max-w-lg rounded-3xl bg-ivory-50 border border-gold-500/40 shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease-out]">
+      <!-- Modal Header -->
+      <div class="bg-cosmic-900 text-white px-6 py-5 border-b border-gold-500/30 flex items-start justify-between gap-4">
+        <div>
+          <span class="text-[11px] uppercase tracking-[0.22em] text-gold-400 font-semibold">BHAGYANETRAM</span>
+          <h3 id="modal-title" class="font-display text-xl sm:text-2xl font-bold text-white mt-0.5">
+            Get FREE Consultation
+          </h3>
+          <p id="modal-subtitle" class="text-xs sm:text-sm text-ivory-200/80 mt-1">
+            First Time Users: FREE 15 Minutes
+          </p>
+        </div>
+        <button type="button" onclick="closeModal()" aria-label="Close modal" class="p-2 rounded-xl bg-cosmic-800 text-gold-300 hover:bg-cosmic-700 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <form id="consultation-form" onsubmit="handleConsultationSubmit(event)" class="p-6 sm:p-7 space-y-4">
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-cosmic-900 mb-1.5">Full Name</label>
+          <input type="text" required placeholder="Enter your full name" class="w-full px-4 py-3 rounded-xl bg-white border border-gold-500/35 text-cosmic-900 text-sm focus:outline-none focus:border-gold-600" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-cosmic-900 mb-1.5">Phone / WhatsApp</label>
+            <input type="tel" required placeholder="+91 XXXXX XXXXX" class="w-full px-4 py-3 rounded-xl bg-white border border-gold-500/35 text-cosmic-900 text-sm focus:outline-none focus:border-gold-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-cosmic-900 mb-1.5">Date of Birth</label>
+            <input type="date" class="w-full px-4 py-3 rounded-xl bg-white border border-gold-500/35 text-cosmic-900 text-sm focus:outline-none focus:border-gold-600" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-cosmic-900 mb-1.5">Time of Birth (Optional)</label>
+            <input type="time" class="w-full px-4 py-3 rounded-xl bg-white border border-gold-500/35 text-cosmic-900 text-sm focus:outline-none focus:border-gold-600" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-cosmic-900 mb-1.5">Place of Birth</label>
+            <input type="text" placeholder="City, State" class="w-full px-4 py-3 rounded-xl bg-white border border-gold-500/35 text-cosmic-900 text-sm focus:outline-none focus:border-gold-600" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-cosmic-900 mb-1.5">Your Question / Concern</label>
+          <textarea rows="2" placeholder="Career, marriage, Kundli matching, Vastu..." class="w-full px-4 py-2.5 rounded-xl bg-white border border-gold-500/35 text-cosmic-900 text-sm focus:outline-none focus:border-gold-600"></textarea>
+        </div>
+
+        <button type="submit" class="w-full gold-btn font-bold text-sm sm:text-base py-3.5 rounded-xl shadow-md cursor-pointer">
+          Confirm Request • FREE 15 Minutes
+        </button>
+
+        <div class="pt-2 flex items-center justify-center gap-4 text-xs text-cosmic-800/75">
+          <span>📞 +91 79057 55326</span>
+          <span>•</span>
+          <span>100% Confidential</span>
+        </div>
+      </form>
+
+      <!-- Confirmation Message Box (Hidden until submitted) -->
+      <div id="consultation-success" class="hidden p-8 text-center space-y-4">
+        <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-2xl font-bold">
+          ✓
+        </div>
+        <h4 class="font-display text-2xl font-bold text-cosmic-900">Request Received</h4>
+        <p class="text-sm text-cosmic-800/85 leading-relaxed">
+          Thank you for connecting with <strong>Bhagyanetram</strong>. An expert astrologer will reach out shortly, or you can call us directly at <strong>+91 79057 55326</strong>.
+        </p>
+        <button type="button" onclick="closeModal()" class="gold-btn font-bold text-sm px-6 py-3 rounded-xl cursor-pointer">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       JAVASCRIPT INTERACTIVITY
+  ========================================================= -->
+  <script>
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const hamburgerIcon = document.getElementById('hamburger-icon');
+    const closeIcon = document.getElementById('close-icon');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      const isHidden = mobileMenu.classList.contains('hidden');
+      mobileMenu.classList.toggle('hidden', !isHidden);
+      hamburgerIcon.classList.toggle('hidden', isHidden);
+      closeIcon.classList.toggle('hidden', !isHidden);
+    });
+
+    document.querySelectorAll('.mobile-nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        hamburgerIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+      });
+    });
+
+    // Editorial Astrology Tabs Filter
+    function filterAstrologyTab(tabKey) {
+      const tabs = document.querySelectorAll('.astro-tab');
+      const panels = document.querySelectorAll('[data-astro-panel]');
+
+      tabs.forEach(tab => {
+        tab.classList.remove('bg-cosmic-900', 'text-gold-300');
+        tab.classList.add('bg-white', 'text-cosmic-900');
+      });
+
+      const activeBtn = document.getElementById('tab-' + tabKey);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-white', 'text-cosmic-900');
+        activeBtn.classList.add('bg-cosmic-900', 'text-gold-300');
+      }
+
+      panels.forEach(panel => {
+        if (tabKey === 'all' || panel.getAttribute('data-astro-panel') === tabKey) {
+          panel.classList.remove('hidden');
+        } else {
+          panel.classList.add('hidden');
+        }
+      });
+    }
+
+    // Consultation Modal Controls
+    const modal = document.getElementById('consultation-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalSubtitle = document.getElementById('modal-subtitle');
+    const consultationForm = document.getElementById('consultation-form');
+    const consultationSuccess = document.getElementById('consultation-success');
+
+    function openModal(title, subtitle) {
+      modalTitle.textContent = title || 'Get FREE Consultation';
+      modalSubtitle.textContent = subtitle || 'First Time Users: FREE 15 Minutes';
+      consultationForm.classList.remove('hidden');
+      consultationSuccess.classList.add('hidden');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function openPolicyModal(title) {
+      openModal(title, 'Bhagyanetram • 100% Confidential Vedic Astrology & Vastu Shastra Consultations');
+    }
+
+    function closeModal() {
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.style.overflow = '';
+    }
+
+    function handleConsultationSubmit(e) {
+      e.preventDefault();
+      consultationForm.classList.add('hidden');
+      consultationSuccess.classList.remove('hidden');
+      consultationForm.reset();
+    }
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
+    });
+
+    // Subtle Celestial Starfield Canvas in Hero
+    (function initStarfield() {
+      const canvas = document.getElementById('starfield-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let stars = [];
+
+      function resizeCanvas() {
+        canvas.width = canvas.parentElement.offsetWidth;
+        canvas.height = canvas.parentElement.offsetHeight;
+        stars = Array.from({ length: 65 }, () => ({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 1.5 + 0.4,
+          alpha: Math.random() * 0.8 + 0.2,
+          delta: (Math.random() * 0.015 + 0.004) * (Math.random() < 0.5 ? 1 : -1)
+        }));
+      }
+
+      function drawStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (const s of stars) {
+          s.alpha += s.delta;
+          if (s.alpha > 0.95 || s.alpha < 0.15) s.delta *= -1;
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(240, 213, 122, ${s.alpha})`;
+          ctx.fill();
+        }
+        requestAnimationFrame(drawStars);
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+      window.addEventListener('load', () => {
+        resizeCanvas();
+        drawStars();
+      });
+    })();
+  </script>
+</body>
+</html>

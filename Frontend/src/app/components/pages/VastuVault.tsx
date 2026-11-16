@@ -14,7 +14,7 @@ export function VastuVault() {
         { category: 'do', text: 'Ensure the vault opens towards the North (Kuber\'s direction - God of Wealth)' },
         { category: 'do', text: 'Keep the vault elevated 6-12 inches from the ground level on a wooden platform' },
         { category: 'do', text: 'Place a Kuber Yantra, Lakshmi idol, or Sri Yantra inside or near the vault' },
-        { category: 'do', text: 'Keep the area around the vault spotlessly clean, organized, and sacred' },
+        { category: 'do', text: 'Keep the area around the vault spotlessly clean, organized, and ' },
         { category: 'do', text: 'Position vault with solid wall support behind it (never in the center)' },
         { category: 'do', text: 'Store wealth, jewellery, and important documents facing North' },
         { category: 'do', text: 'Keep a few grains of rice and a coin in the vault for continuous prosperity' },
