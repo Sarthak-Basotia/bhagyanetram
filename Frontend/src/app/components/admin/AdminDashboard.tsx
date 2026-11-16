@@ -255,8 +255,70 @@ export default function AdminDashboard() {
     setAstrologerModalOpen(true);
   };
 
+  const compressImage = (file: File, maxWidth = 800, quality = 0.88): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+          } else {
+            if (height > maxWidth) {
+              width = Math.round((width * maxWidth) / height);
+              height = maxWidth;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.drawImage(img, 0, 0, width, height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          } else {
+            resolve(event.target?.result as string);
+          }
+        };
+        img.onerror = (err) => reject(err);
+      };
+      reader.onerror = (err) => reject(err);
+    });
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 10 * 1024 * 1024) {
+        showToast('Please select a photo smaller than 10MB');
+        return;
+      }
+      try {
+        const compressedBase64 = await compressImage(file, 800, 0.88);
+        setAstrologerForm((prev) => ({ ...prev, image: compressedBase64 }));
+        showToast('Photo loaded! It will be saved into MongoDB upon clicking Update.');
+      } catch (err: any) {
+        console.error('Image compression error:', err);
+        showToast('Failed to process image. Please try again.');
+      }
+    }
+  };
+
   const handleOpenEditAstrologer = (astrologer: any) => {
     setEditingAstrologer(astrologer);
+    const resolvedImg = (astrologer.image && (astrologer.image.startsWith('data:image/') || astrologer.image.startsWith('http')))
+      ? astrologer.image
+      : resolveAstrologerImage(astrologer);
+
     setAstrologerForm({
       name: astrologer.name || '',
       title: astrologer.title || '',
@@ -265,7 +327,7 @@ export default function AdminDashboard() {
       languages: astrologer.languages || '',
       rating: astrologer.rating || 4.9,
       reviews: astrologer.reviews || '',
-      image: astrologer.image || '',
+      image: resolvedImg || '',
       available: astrologer.available !== undefined ? astrologer.available : true,
       price: astrologer.price || '',
       bio: astrologer.bio || '',
@@ -1464,18 +1526,18 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gold-300 mb-1.5 flex items-center justify-between">
+                <label className="block text-xs font-semibold text-gold-300 mb-2 flex items-center justify-between">
                   <span>Astrologer Profile Photo</span>
-                  <span className="text-[10px] text-ivory-200/60 font-normal">Saves directly to MongoDB</span>
+                  <span className="text-[10px] text-emerald-400 font-medium">● Stored directly in MongoDB</span>
                 </label>
 
-                <div className="p-3.5 rounded-xl bg-cosmic-950 border border-gold-500/30 flex flex-col sm:flex-row items-center gap-4">
-                  {/* Photo Preview */}
-                  <div className="w-18 h-18 rounded-xl overflow-hidden border-2 border-gold-500/40 bg-cosmic-900 shrink-0 flex items-center justify-center relative shadow-md">
-                    {astrologerForm.image ? (
+                {astrologerForm.image ? (
+                  /* Display Loaded Photo with Change & Remove actions */
+                  <div className="p-4 rounded-2xl bg-cosmic-950 border border-gold-500/30 flex items-center gap-4">
+                    <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-gold-500/60 bg-cosmic-900 shrink-0 shadow-gold-glow flex items-center justify-center relative">
                       <img
                         src={astrologerForm.image}
-                        alt="Preview"
+                        alt="Astrologer Photo"
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           const name = (astrologerForm.name || '').toLowerCase();
@@ -1484,68 +1546,59 @@ export default function AdminDashboard() {
                           else e.currentTarget.src = panditPranavImg;
                         }}
                       />
-                    ) : (
-                      <div className="text-center p-2 text-ivory-200/40 flex flex-col items-center">
-                        <ImageIcon className="w-6 h-6 text-gold-500/50 mb-1" />
-                        <span className="text-[9px]">No photo</span>
+                    </div>
+
+                    <div className="flex-1 space-y-2">
+                      <div className="text-xs text-ivory-100 font-semibold flex items-center gap-1.5">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                        <span>Photo ready to save in MongoDB</span>
                       </div>
-                    )}
-                  </div>
+                      <p className="text-[11px] text-ivory-200/60 leading-relaxed">
+                        This image will be stored directly inside MongoDB so it appears reliably across all screens.
+                      </p>
 
-                  {/* Upload Actions */}
-                  <div className="flex-1 w-full space-y-2">
-                    <div className="flex items-center gap-2">
-                      <label className="flex-1 py-2 px-3 rounded-lg bg-gold-500 hover:bg-gold-400 text-cosmic-950 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition shadow-sm">
-                        <Upload className="w-3.5 h-3.5" />
-                        <span>Upload Photo from Device</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              if (file.size > 8 * 1024 * 1024) {
-                                showToast('Please select a photo smaller than 8MB');
-                                return;
-                              }
-                              const reader = new FileReader();
-                              reader.onload = () => {
-                                if (typeof reader.result === 'string') {
-                                  setAstrologerForm({ ...astrologerForm, image: reader.result });
-                                  showToast('Photo loaded! It will be saved into MongoDB upon saving.');
-                                }
-                              };
-                              reader.readAsDataURL(file);
-                            }
-                          }}
-                        />
-                      </label>
+                      <div className="flex items-center gap-2 pt-1">
+                        <label className="py-1.5 px-3 rounded-xl bg-gold-500 hover:bg-gold-400 text-cosmic-950 font-bold text-xs flex items-center gap-1.5 cursor-pointer transition shadow-sm">
+                          <Upload className="w-3.5 h-3.5" />
+                          <span>Change Photo</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleImageUpload}
+                          />
+                        </label>
 
-                      {astrologerForm.image && (
                         <button
                           type="button"
                           onClick={() => setAstrologerForm({ ...astrologerForm, image: '' })}
-                          className="py-2 px-3 rounded-lg bg-red-500/20 text-red-300 border border-red-500/40 text-xs font-semibold hover:bg-red-500/30 cursor-pointer transition"
+                          className="py-1.5 px-3 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-500/30 text-xs font-semibold cursor-pointer transition"
                         >
-                          Remove
+                          Remove Photo
                         </button>
-                      )}
+                      </div>
                     </div>
-
-                    <input
-                      type="text"
-                      value={astrologerForm.image.startsWith('data:image') ? '[Image stored as Base64 in database]' : astrologerForm.image}
-                      onChange={(e) => {
-                        if (!e.target.value.includes('stored as Base64')) {
-                          setAstrologerForm({ ...astrologerForm, image: e.target.value });
-                        }
-                      }}
-                      placeholder="Or enter external photo URL / data URI"
-                      className="w-full px-3 py-1.5 rounded-lg bg-cosmic-900 border border-gold-500/20 text-ivory-200/80 text-[11px] focus:border-gold-400 focus:outline-none"
-                    />
                   </div>
-                </div>
+                ) : (
+                  /* Upload Dropzone when no photo is loaded */
+                  <label className="border-2 border-dashed border-gold-500/40 hover:border-gold-400 bg-cosmic-950/70 hover:bg-cosmic-950 rounded-2xl p-6 flex flex-col items-center justify-center text-center cursor-pointer transition group">
+                    <div className="w-12 h-12 rounded-2xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center text-gold-400 mb-3 group-hover:scale-110 transition-transform">
+                      <Upload className="w-6 h-6" />
+                    </div>
+                    <span className="text-sm font-bold text-white group-hover:text-gold-300 transition-colors">
+                      Click to upload Astrologer Photo
+                    </span>
+                    <span className="text-xs text-ivory-200/60 mt-1">
+                      Supports JPG, PNG, WEBP • Auto-compressed & saved into MongoDB
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageUpload}
+                    />
+                  </label>
+                )}
               </div>
 
               <div>
