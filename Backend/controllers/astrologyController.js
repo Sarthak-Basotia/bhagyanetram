@@ -1,5 +1,6 @@
 import OpenAI from 'openai';
 import { Festival } from '../models/Festival.js';
+import { generateMonthCalendar } from '../services/festivalGenerator.js';
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -406,9 +407,30 @@ export const getGemstoneGuide = async (req, res) => {
 
 export const getFestivals = async (req, res) => {
   try {
-    // Fetch all available months, sorted chronologically
-    const calendars = await Festival.find({}).sort({ year: 1, month: 1 });
+    let calendars = await Festival.find({ year: 2026 }).sort({ month: 1 });
     
+    // Check if data in database is corrupted with old hallucinated entries (e.g. Karwa Chauth on Nov 17 or Govardhan on Nov 7)
+    const nov = calendars.find(c => c.month === 11);
+    const hasHallucination = !nov || nov.days?.some(d => 
+      (d.date === 17 && (d.festivalHindi?.includes('करवा') || d.festivalEnglish?.toLowerCase().includes('karva'))) ||
+      (d.date === 7 && (d.festivalHindi?.includes('गोवर्धन') || d.festivalEnglish?.toLowerCase().includes('govardhan')))
+    );
+
+    if (calendars.length < 12 || hasHallucination) {
+      console.log("Database has outdated festival records. Syncing with authentic 2026 Panchang...");
+      const updated = [];
+      for (let m = 1; m <= 12; m++) {
+        const cal = await generateMonthCalendar(2026, m);
+        await Festival.findOneAndUpdate(
+          { year: 2026, month: m },
+          cal,
+          { upsert: true, new: true }
+        );
+        updated.push(cal);
+      }
+      calendars = updated;
+    }
+
     res.json({ success: true, data: calendars });
   } catch (error) {
     console.error("Festival API Error:", error);

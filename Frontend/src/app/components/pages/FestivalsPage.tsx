@@ -42,16 +42,18 @@ export default function FestivalsPage() {
     const getCalendarData = async () => {
       try {
         const res = await fetchFestivals();
-        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
-          if (res.data.length >= 12) {
+        if (res && res.success && Array.isArray(res.data) && res.data.length >= 12) {
+          // Strictly validate that API response does not contain stale hallucinated dates
+          const nov = res.data.find((m: any) => m.month === 11);
+          const isStaleOrHallucinated = nov?.days?.some((d: any) => 
+            (d.date === 17 && (d.festivalHindi?.includes('करवा') || d.festivalEnglish?.toLowerCase().includes('karva'))) ||
+            (d.date === 7 && (d.festivalHindi?.includes('गोवर्धन') || d.festivalEnglish?.toLowerCase().includes('govardhan')))
+          );
+
+          if (!isStaleOrHallucinated) {
             setCalendars(res.data);
           } else {
-            // Merge available months with fallback
-            const merged = ALL_FESTIVALS_2026.map(fallbackM => {
-              const apiM = res.data.find((m: any) => m.month === fallbackM.month);
-              return apiM || fallbackM;
-            });
-            setCalendars(merged);
+            console.warn('API returned stale/unverified festival dates; keeping verified authentic 2026 Panchang.');
           }
         }
       } catch (err: any) {
