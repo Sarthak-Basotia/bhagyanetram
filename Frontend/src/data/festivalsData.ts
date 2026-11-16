@@ -20,7 +20,7 @@ export interface MonthCalendar {
 
 const daysMap = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
-const tithis = [
+const tithiNames = [
   { hi: 'प्रतिपदा', en: 'Pratipada' },
   { hi: 'द्वितीया', en: 'Dwitiya' },
   { hi: 'तृतीया', en: 'Tritiya' },
@@ -43,23 +43,22 @@ export const monthMetadata2026: Array<{
   name: string;
   shortName: string;
   hinduMonths: string;
-  festivals: Record<number, { hi: string; en: string; major: boolean }>;
+  startTithi: number;
+  festivals: Record<number, { hi: string; en: string; major: boolean; isNewMoon?: boolean; isFullMoon?: boolean }>;
 }> = [
   {
     month: 1,
     name: 'JANUARY 2026',
     shortName: 'Jan',
     hinduMonths: 'पौष / माघ',
+    startTithi: 12,
     festivals: {
-      1: { hi: 'नववर्ष २०२६', en: "New Year's Day", major: false },
-      8: { hi: 'संकष्टी संकटा चौथ', en: 'Sakat Chauth', major: false },
-      14: { hi: 'मकर संक्रांति / पोंगल', en: 'Makar Sankranti / Pongal', major: true },
-      15: { hi: 'उत्तरायण उत्सव', en: 'Uttarayana', major: false },
-      18: { hi: 'मौनी अमावस्या', en: 'Mauni Amavasya', major: true },
-      23: { hi: 'वसंत पंचमी आगमन', en: 'Vasant Panchami Purva', major: false },
-      24: { hi: 'पौष पूर्णिमा', en: 'Paush Purnima', major: false },
-      26: { hi: 'गणतंत्र दिवस', en: 'Republic Day', major: false },
-      28: { hi: 'जया एकादशी व्रत', en: 'Jaya Ekadashi', major: false }
+      3: { hi: 'पौष पूर्णिमा व्रत', en: 'Paush Purnima', major: false, isFullMoon: true },
+      10: { hi: 'स्वामी विवेकानंद जयंती', en: 'Swami Vivekananda Jayanti', major: false },
+      14: { hi: 'मकर संक्रांति / पोंगल / लोहड़ी', en: 'Makar Sankranti / Pongal', major: true },
+      18: { hi: 'मौनी अमावस्या', en: 'Mauni Amavasya', major: true, isNewMoon: true },
+      23: { hi: 'षटतिला एकादशी व्रत', en: 'Shattila Ekadashi', major: false },
+      26: { hi: 'गणतंत्र दिवस / वसंत पंचमी, सरस्वती पूजा', en: 'Republic Day / Vasant Panchami', major: true },
     }
   },
   {
@@ -67,15 +66,14 @@ export const monthMetadata2026: Array<{
     name: 'FEBRUARY 2026',
     shortName: 'Feb',
     hinduMonths: 'माघ / फाल्गुन',
+    startTithi: 15,
     festivals: {
-      1: { hi: 'माघ पूर्णिमा स्नान', en: 'Magha Purnima Snan', major: false },
-      12: { hi: 'वसंत पंचमी / सरस्वती पूजा', en: 'Vasant Panchami', major: true },
-      13: { hi: 'अचला सप्तमी', en: 'Achala Saptami', major: false },
-      14: { hi: 'भीष्म अष्टमी', en: 'Bhishma Ashtami', major: false },
-      15: { hi: 'विजया एकादशी', en: 'Vijaya Ekadashi', major: false },
-      16: { hi: 'महाशिवरात्रि व्रत', en: 'Maha Shivratri', major: true },
-      17: { hi: 'फाल्गुन अमावस्या', en: 'Phalguna Amavasya', major: false },
-      23: { hi: 'माघ पूर्णिमा व्रत', en: 'Maghi Purnima', major: false }
+      1: { hi: 'माघ पूर्णिमा स्नान', en: 'Magha Purnima Snan', major: true, isFullMoon: true },
+      5: { hi: 'संकष्टी संकटा चौथ', en: 'Sankashti Chaturthi / Sakat Chauth', major: false },
+      8: { hi: 'जया एकादशी व्रत', en: 'Jaya Ekadashi', major: false },
+      15: { hi: 'महाशिवरात्रि व्रत', en: 'Maha Shivratri', major: true },
+      17: { hi: 'फाल्गुन भौमवती अमावस्या', en: 'Phalguna Amavasya', major: false, isNewMoon: true },
+      27: { hi: 'आमलकी एकादशी व्रत', en: 'Amalaki Ekadashi', major: false },
     }
   },
   {
@@ -83,18 +81,18 @@ export const monthMetadata2026: Array<{
     name: 'MARCH 2026',
     shortName: 'Mar',
     hinduMonths: 'फाल्गुन / चैत्र',
+    startTithi: 13,
     festivals: {
-      2: { hi: 'आमलकी एकादशी', en: 'Amalaki Ekadashi', major: false },
-      3: { hi: 'होलिका दहन', en: 'Holika Dahan', major: true },
-      4: { hi: 'होली (धुलंडी)', en: 'Holi (Color Festival)', major: true },
+      3: { hi: 'होलिका दहन / फाल्गुन पूर्णिमा', en: 'Holika Dahan', major: true, isFullMoon: true },
+      4: { hi: 'होली (रंगोत्सव / धुलंडी)', en: 'Holi (Color Festival)', major: true },
       8: { hi: 'रंग पंचमी', en: 'Rang Panchami', major: false },
       15: { hi: 'पापमोचिनी एकादशी', en: 'Papmochani Ekadashi', major: false },
-      18: { hi: 'फाल्गुन अमावस्या', en: 'Chaitra Amavasya', major: false },
-      19: { hi: 'चैत्र नवरात्रि प्रारंभ / नव संवत्सर', en: 'Chaitra Navratri / Gudi Padwa', major: true },
-      22: { hi: 'मत्स्य जयंती', en: 'Matsya Jayanti', major: false },
-      25: { hi: 'दुर्गा महाअष्टमी', en: 'Chaitra Durga Ashtami', major: true },
+      18: { hi: 'चैत्र अमावस्या', en: 'Chaitra Amavasya', major: false, isNewMoon: true },
+      19: { hi: 'चैत्र नवरात्रि प्रारंभ / गुड़ी पड़वा / नव संवत्सर', en: 'Chaitra Navratri / Gudi Padwa / Hindu New Year', major: true },
+      20: { hi: 'चेटी चंड / झूलेलाल जयंती', en: 'Cheti Chand', major: false },
+      26: { hi: 'दुर्गा महाअष्टमी पूजा', en: 'Durga Ashtami', major: true },
       27: { hi: 'श्री राम नवमी', en: 'Shri Ram Navami', major: true },
-      31: { hi: 'कामदा एकादशी', en: 'Kamada Ekadashi', major: false }
+      30: { hi: 'कामदा एकादशी', en: 'Kamada Ekadashi', major: false },
     }
   },
   {
@@ -102,16 +100,17 @@ export const monthMetadata2026: Array<{
     name: 'APRIL 2026',
     shortName: 'Apr',
     hinduMonths: 'चैत्र / वैशाख',
+    startTithi: 15,
     festivals: {
-      2: { hi: 'हनुमान जयंती / चैत्र पूर्णिमा', en: 'Hanuman Jayanti', major: true },
+      1: { hi: 'हनुमान जयंती / चैत्र पूर्णिमा', en: 'Hanuman Jayanti', major: true, isFullMoon: true },
       13: { hi: 'वरूथिनी एकादशी', en: 'Varuthini Ekadashi', major: false },
-      14: { hi: 'बैसाखी / मेष संक्रांति', en: 'Baisakhi / Mesha Sankranti', major: true },
-      17: { hi: 'वैशाख अमावस्या', en: 'Vaishakh Amavasya', major: false },
+      14: { hi: 'बैसाखी / मेष संक्रांति / अंबेडकर जयंती', en: 'Baisakhi / Mesha Sankranti', major: true },
+      17: { hi: 'वैशाख अमावस्या', en: 'Vaishakh Amavasya', major: false, isNewMoon: true },
       20: { hi: 'अक्षय तृतीया', en: 'Akshaya Tritiya', major: true },
       21: { hi: 'परशुराम जयंती', en: 'Parashurama Jayanti', major: false },
       24: { hi: 'गंगा सप्तमी', en: 'Ganga Saptami', major: false },
       27: { hi: 'मोहिनी एकादशी', en: 'Mohini Ekadashi', major: false },
-      30: { hi: 'नृसिंह जयंती', en: 'Narasimha Jayanti', major: true }
+      30: { hi: 'नृसिंह जयंती', en: 'Narasimha Jayanti', major: true },
     }
   },
   {
@@ -119,16 +118,15 @@ export const monthMetadata2026: Array<{
     name: 'MAY 2026',
     shortName: 'May',
     hinduMonths: 'वैशाख / ज्येष्ठ',
+    startTithi: 15,
     festivals: {
-      1: { hi: 'कूर्म जयंती', en: 'Kurma Jayanti', major: false },
-      2: { hi: 'बुद्ध पूर्णिमा / वैशाख पूर्णिमा', en: 'Buddha Purnima', major: true },
+      1: { hi: 'बुद्ध पूर्णिमा / वैशाख पूर्णिमा', en: 'Buddha Purnima', major: true, isFullMoon: true },
       4: { hi: 'नारद जयंती', en: 'Narada Jayanti', major: false },
-      13: { hi: 'अपरा एकादशी', en: 'Apara Ekadashi', major: false },
+      12: { hi: 'अपरा एकादशी', en: 'Apara Ekadashi', major: false },
       16: { hi: 'वट सावित्री व्रत (अमावस्या)', en: 'Vat Savitri Vrat', major: true },
-      17: { hi: 'शनि जयंती / ज्येष्ठ अमावस्या', en: 'Shani Jayanti', major: true },
-      26: { hi: 'गंगा दशहरा', en: 'Ganga Dussehra', major: true },
-      27: { hi: 'निर्जला एकादशी', en: 'Nirjala Ekadashi', major: true },
-      31: { hi: 'ज्येष्ठ पूर्णिमा / वट पूर्णिमा', en: 'Vat Purnima', major: false }
+      17: { hi: 'शनि जयंती / ज्येष्ठ अमावस्या', en: 'Shani Jayanti', major: true, isNewMoon: true },
+      26: { hi: 'गंगा दशहरा / निर्जला एकादशी', en: 'Ganga Dussehra / Nirjala Ekadashi', major: true },
+      31: { hi: 'ज्येष्ठ पूर्णिमा / वट पूर्णिमा', en: 'Vat Purnima', major: false, isFullMoon: true },
     }
   },
   {
@@ -136,14 +134,15 @@ export const monthMetadata2026: Array<{
     name: 'JUNE 2026',
     shortName: 'Jun',
     hinduMonths: 'ज्येष्ठ / आषाढ',
+    startTithi: 1,
     festivals: {
       1: { hi: 'कबीर दास जयंती', en: 'Kabir Jayanti', major: false },
-      11: { hi: 'योगिनी एकादशी', en: 'Yogini Ekadashi', major: false },
-      15: { hi: 'आषाढ अमावस्या', en: 'Ashadha Amavasya', major: false },
-      17: { hi: 'जगन्नाथ रथ यात्रा', en: 'Jagannath Puri Rath Yatra', major: true },
+      10: { hi: 'योगिनी एकादशी', en: 'Yogini Ekadashi', major: false },
+      15: { hi: 'आषाढ अमावस्या', en: 'Ashadha Amavasya', major: false, isNewMoon: true },
+      17: { hi: 'जगन्नाथ पुरी रथ यात्रा', en: 'Jagannath Puri Rath Yatra', major: true },
       21: { hi: 'अंतरराष्ट्रीय योग दिवस', en: 'International Yoga Day', major: false },
-      26: { hi: 'देवशयनी एकादशी', en: 'Devshayani Ekadashi', major: true },
-      30: { hi: 'कोकिला व्रत', en: 'Kokila Vrat', major: false }
+      25: { hi: 'देवशयनी एकादशी / आषाढ़ी एकादशी', en: 'Devshayani Ekadashi', major: true },
+      29: { hi: 'गुरु पूर्णिमा / व्यास पूजा', en: 'Guru Purnima', major: true, isFullMoon: true },
     }
   },
   {
@@ -151,18 +150,18 @@ export const monthMetadata2026: Array<{
     name: 'JULY 2026',
     shortName: 'Jul',
     hinduMonths: 'आषाढ / श्रावण',
+    startTithi: 2,
     festivals: {
-      1: { hi: 'गुरु पूर्णिमा / व्यास पूजा', en: 'Guru Purnima', major: true },
       6: { hi: 'सावन प्रथम सोमवार व्रत', en: 'First Sawan Somwar', major: true },
-      10: { hi: 'कामिका एकादशी', en: 'Kamika Ekadashi', major: false },
+      9: { hi: 'कामिका एकादशी', en: 'Kamika Ekadashi', major: false },
       13: { hi: 'सावन द्वितीय सोमवार व्रत', en: 'Second Sawan Somwar', major: false },
-      14: { hi: 'हरियाली अमावस्या', en: 'Hariyali Amavasya', major: false },
+      14: { hi: 'हरियाली अमावस्या', en: 'Hariyali Amavasya', major: false, isNewMoon: true },
       17: { hi: 'हरियाली तीज', en: 'Hariyali Teej', major: true },
       19: { hi: 'नाग पंचमी', en: 'Nag Panchami', major: true },
       20: { hi: 'सावन तृतीय सोमवार व्रत', en: 'Third Sawan Somwar', major: false },
       25: { hi: 'श्रावण पुत्रदा एकादशी', en: 'Shravana Putrada Ekadashi', major: false },
       27: { hi: 'सावन चतुर्थ सोमवार व्रत', en: 'Fourth Sawan Somwar', major: false },
-      30: { hi: 'श्रावणी पूर्णिमा पूर्व', en: 'Shravani Purnima Eve', major: false }
+      28: { hi: 'वरलक्ष्मी व्रतम्', en: 'Varalakshmi Vratam', major: false },
     }
   },
   {
@@ -170,16 +169,16 @@ export const monthMetadata2026: Array<{
     name: 'AUGUST 2026',
     shortName: 'Aug',
     hinduMonths: 'श्रावण / भाद्रपद',
+    startTithi: 3,
     festivals: {
       2: { hi: 'कजरी तीज', en: 'Kajari Teej', major: false },
-      8: { hi: 'अजा एकादशी', en: 'Aja Ekadashi', major: false },
-      13: { hi: 'भाद्रपद अमावस्या (कुशोत्पाटिनी)', en: 'Bhadrapada Amavasya', major: false },
-      15: { hi: 'स्वतंत्रता दिवस', en: 'Independence Day', major: false },
-      18: { hi: 'संतान सप्तमी व्रत', en: 'Santan Saptami', major: false },
-      24: { hi: 'परिवर्तिनी एकादशी', en: 'Parsva Ekadashi', major: false },
-      28: { hi: 'रक्षाबंधन / श्रावण पूर्णिमा', en: 'Raksha Bandhan', major: true },
+      9: { hi: 'कामिका एकादशी', en: 'Kamika Ekadashi', major: false },
+      12: { hi: 'श्रावणी अमावस्या', en: 'Shravana Amavasya', major: false, isNewMoon: true },
+      15: { hi: 'हरियाली तीज / स्वतंत्रता दिवस', en: 'Hariyali Teej / Independence Day', major: true },
+      17: { hi: 'नाग पंचमी', en: 'Nag Panchami', major: true },
+      23: { hi: 'श्रावण पुत्रदा एकादशी', en: 'Shravana Putrada Ekadashi', major: false },
+      28: { hi: 'रक्षाबंधन / श्रावण पूर्णिमा', en: 'Raksha Bandhan', major: true, isFullMoon: true },
       29: { hi: 'गायत्री जयंती', en: 'Gayatri Jayanti', major: false },
-      31: { hi: 'बड़ी तीज व्रत', en: 'Badi Teej', major: false }
     }
   },
   {
@@ -187,18 +186,18 @@ export const monthMetadata2026: Array<{
     name: 'SEPTEMBER 2026',
     shortName: 'Sep',
     hinduMonths: 'भाद्रपद / आश्विन',
+    startTithi: 7,
     festivals: {
       4: { hi: 'श्री कृष्ण जन्माष्टमी', en: 'Krishna Janmashtami', major: true },
-      5: { hi: 'दही हांडी उत्सव', en: 'Dahi Handi', major: false },
-      7: { hi: 'अजा एकादशी व्रत', en: 'Aja Ekadashi Vrat', major: false },
-      11: { hi: 'पिठोरी अमावस्या', en: 'Pithori Amavasya', major: false },
-      14: { hi: 'हरितालिका तीज', en: 'Haritalika Teej', major: true },
-      15: { hi: 'गणेश चतुर्थी (गणेशोत्सव प्रारंभ)', en: 'Ganesh Chaturthi', major: true },
-      16: { hi: 'ऋषि पंचमी', en: 'Rishi Panchami', major: false },
-      19: { hi: 'राधा अष्टमी', en: 'Radha Ashtami', major: false },
-      22: { hi: 'पद्मा एकादशी', en: 'Padma Ekadashi', major: false },
-      24: { hi: 'अनंत चतुर्दशी (गणेश विसर्जन)', en: 'Anant Chaturdashi', major: true },
-      27: { hi: 'पितृ पक्ष (श्राद्ध) प्रारंभ', en: 'Pitru Paksha Begins', major: true }
+      5: { hi: 'दही हांडी / शिक्षक दिवस', en: 'Dahi Handi / Teachers Day', major: false },
+      7: { hi: 'अजा एकादशी व्रत', en: 'Aja Ekadashi', major: false },
+      10: { hi: 'पिथौरी अमावस्या', en: 'Pithori Amavasya', major: false, isNewMoon: true },
+      14: { hi: 'हरितालिका तीज / गणेश चतुर्थी', en: 'Hartalika Teej / Ganesh Chaturthi', major: true },
+      15: { hi: 'ऋषि पंचमी', en: 'Rishi Panchami', major: false },
+      21: { hi: 'राधा अष्टमी', en: 'Radha Ashtami', major: false },
+      23: { hi: 'परिवर्तिनी एकादशी', en: 'Parsva Ekadashi', major: false },
+      25: { hi: 'अनंत चतुर्दशी (गणेश विसर्जन)', en: 'Anant Chaturdashi', major: true },
+      26: { hi: 'भाद्रपद पूर्णिमा / पितृ पक्ष प्रारंभ', en: 'Bhadrapada Purnima / Pitru Paksha Begins', major: true, isFullMoon: true },
     }
   },
   {
@@ -206,17 +205,19 @@ export const monthMetadata2026: Array<{
     name: 'OCTOBER 2026',
     shortName: 'Oct',
     hinduMonths: 'आश्विन / कार्तिक',
+    startTithi: 6,
     festivals: {
       2: { hi: 'महात्मा गांधी जयंती', en: 'Gandhi Jayanti', major: false },
-      6: { hi: 'इंदिरा एकादशी (श्राद्ध एकादशी)', en: 'Indira Ekadashi', major: false },
-      11: { hi: 'सर्वपितृ अमावस्या (पितृ विसर्जन)', en: 'Sarva Pitru Amavasya', major: true },
-      12: { hi: 'शारदीय नवरात्रि घटस्थापना', en: 'Sharad Navratri Begins', major: true },
-      19: { hi: 'दुर्गा महाअष्टमी पूजा', en: 'Maha Ashtami', major: true },
-      20: { hi: 'महानवमी / आयुध पूजा', en: 'Maha Navami / Ayudha Puja', major: true },
-      21: { hi: 'विजयादशमी / दशहरा उत्सव', en: 'Dussehra / Vijayadashami', major: true },
-      22: { hi: 'पापांकुशा एकादशी', en: 'Papankusha Ekadashi', major: false },
-      26: { hi: 'शरद पूर्णिमा / कोजागरी', en: 'Sharad Purnima', major: true },
-      29: { hi: 'करवा चौथ व्रत', en: 'Karwa Chauth', major: true }
+      6: { hi: 'इंदिरा एकादशी', en: 'Indira Ekadashi', major: false },
+      10: { hi: 'सर्वपितृ अमावस्या (महालया)', en: 'Sarva Pitru Amavasya / Mahalaya', major: true, isNewMoon: true },
+      11: { hi: 'शारदीय नवरात्रि प्रारंभ (घटस्थापना)', en: 'Sharad Navratri Begins (Ghatasthapana)', major: true },
+      18: { hi: 'दुर्गा महासप्तमी', en: 'Durga Maha Saptami', major: false },
+      19: { hi: 'दुर्गा महाअष्टमी / महानवमी', en: 'Durga Ashtami / Maha Navami', major: true },
+      20: { hi: 'विजयादशमी / दशहरा उत्सव', en: 'Dussehra / Vijayadashami', major: true },
+      22: { hi: 'पापांकुशा एकादशी व्रत', en: 'Papankusha Ekadashi', major: false },
+      25: { hi: 'शरद पूर्णिमा / कोजागरी', en: 'Sharad Purnima', major: true, isFullMoon: true },
+      26: { hi: 'महर्षि वाल्मीकि जयंती', en: 'Maharishi Valmiki Jayanti', major: false },
+      29: { hi: 'करवा चौथ व्रत', en: 'Karwa Chauth Vrat', major: true },
     }
   },
   {
@@ -224,17 +225,22 @@ export const monthMetadata2026: Array<{
     name: 'NOVEMBER 2026',
     shortName: 'Nov',
     hinduMonths: 'कार्तिक / मार्गशीर्ष',
+    startTithi: 8,
     festivals: {
-      2: { hi: 'अहोई अष्टमी व्रत', en: 'Ahoi Ashtami', major: false },
-      5: { hi: 'रमा एकादशी', en: 'Rama Ekadashi', major: false },
+      1: { hi: 'अहोई अष्टमी व्रत', en: 'Ahoi Ashtami', major: false },
+      5: { hi: 'रमा एकादशी / गोवत्स द्वादशी', en: 'Rama Ekadashi / Govatsa Dwadashi', major: false },
       6: { hi: 'धनतेरस / धन्वंतरि जयंती', en: 'Dhanteras', major: true },
-      7: { hi: 'नरक चतुर्दशी / छोटी दिवाली', en: 'Chhoti Diwali', major: false },
-      8: { hi: 'दीपावली (महालक्ष्मी पूजन)', en: 'Diwali (Lakshmi Puja)', major: true },
-      9: { hi: 'गोवर्धन पूजा / अन्नकूट', en: 'Govardhan Puja', major: true },
+      7: { hi: 'नरक चतुर्दशी / छोटी दिवाली / काली चौदस', en: 'Chhoti Diwali / Naraka Chaturdashi', major: true },
+      8: { hi: 'दीपावली (महालक्ष्मी पूजन)', en: 'Diwali (Lakshmi Puja)', major: true, isNewMoon: true },
+      9: { hi: 'गोवर्धन पूजा / अन्नकूट', en: 'Govardhan Puja / Annakut', major: true }, // Accurate: November 9!
       10: { hi: 'भाई दूज / यम द्वितीया', en: 'Bhai Dooj', major: true },
-      15: { hi: 'छठ पूजा (सूर्य षष्ठी)', en: 'Chhath Puja', major: true },
-      20: { hi: 'देवउठनी एकादशी / तुलसी विवाह', en: 'Devutthana Ekadashi', major: true },
-      24: { hi: 'कार्तिक पूर्णिमा / देव दीपावली', en: 'Dev Diwali / Kartik Purnima', major: true }
+      15: { hi: 'छठ पूजा (संध्या अर्घ्य / सूर्य षष्ठी)', en: 'Chhath Puja', major: true },
+      16: { hi: 'छठ पूजा (उषा अर्घ्य)', en: 'Chhath Puja Usha Arghya', major: false },
+      17: { hi: 'गोपाष्टमी उत्सव', en: 'Gopashtami', major: false },
+      18: { hi: 'आंवला नवमी / अक्षय नवमी', en: 'Amla Navami', major: false },
+      20: { hi: 'देवउठनी एकादशी व्रत', en: 'Devutthana Ekadashi', major: true },
+      21: { hi: 'तुलसी विवाह उत्सव', en: 'Tulsi Vivah', major: true },
+      24: { hi: 'कार्तिक पूर्णिमा / देव दीपावली', en: 'Dev Diwali / Kartik Purnima', major: true, isFullMoon: true },
     }
   },
   {
@@ -242,14 +248,15 @@ export const monthMetadata2026: Array<{
     name: 'DECEMBER 2026',
     shortName: 'Dec',
     hinduMonths: 'मार्गशीर्ष / पौष',
+    startTithi: 7,
     festivals: {
       4: { hi: 'उत्पन्ना एकादशी', en: 'Utpanna Ekadashi', major: false },
-      9: { hi: 'मार्गशीर्ष अमावस्या', en: 'Margashirsha Amavasya', major: false },
+      9: { hi: 'मार्गशीर्ष अमावस्या', en: 'Margashirsha Amavasya', major: false, isNewMoon: true },
       14: { hi: 'विवाह पंचमी (श्री राम जानकी विवाह)', en: 'Vivah Panchami', major: true },
       20: { hi: 'मोक्षदा एकादशी / गीता जयंती', en: 'Mokshada Ekadashi / Gita Jayanti', major: true },
-      23: { hi: 'मार्गशीर्ष पूर्णिमा / दत्तात्रेय जयंती', en: 'Dattatreya Jayanti', major: true },
+      23: { hi: 'मार्गशीर्ष पूर्णिमा / दत्तात्रेय जयंती', en: 'Dattatreya Jayanti', major: true, isFullMoon: true },
       25: { hi: 'क्रिसमस पर्व', en: 'Christmas Day', major: false },
-      31: { hi: 'सफला एकादशी', en: 'Saphala Ekadashi', major: false }
+      31: { hi: 'सफला एकादशी', en: 'Saphala Ekadashi', major: false },
     }
   }
 ];
@@ -263,20 +270,20 @@ export function buildYearCalendars(year: number = 2026): MonthCalendar[] {
       const dateObj = new Date(year, mData.month - 1, day);
       const dayOfWeek = daysMap[dateObj.getDay()];
       const fest = mData.festivals[day] || { hi: '', en: '', major: false };
-      const tithiIdx = (day - 1) % 15;
-      const isFullMoon = day === 15;
-      const isNewMoon = day === totalDays || (mData.month === 2 && day === 17);
+      
+      const tithiIdx = ((mData.startTithi || 1) + (day - 1) - 1) % 15;
+      const tithi = tithiNames[tithiIdx] || tithiNames[0];
 
       days.push({
         date: day,
         dayOfWeek,
-        tithiHindi: tithis[tithiIdx].hi,
-        tithiEnglish: tithis[tithiIdx].en,
+        tithiHindi: tithi.hi,
+        tithiEnglish: tithi.en,
         festivalHindi: fest.hi,
         festivalEnglish: fest.en,
-        isMajorFestival: fest.major,
-        isNewMoon,
-        isFullMoon
+        isMajorFestival: Boolean(fest.major),
+        isNewMoon: Boolean(fest.isNewMoon),
+        isFullMoon: Boolean(fest.isFullMoon),
       });
     }
 
