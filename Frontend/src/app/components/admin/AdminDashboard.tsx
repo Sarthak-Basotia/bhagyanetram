@@ -46,9 +46,26 @@ import {
   ShieldAlert,
   Loader2,
   Award,
-  Globe
+  Globe,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 import logoImage from 'figma:asset/d5457f2df4c5864ece0203437258a94768a0cf00.png';
+import panditPranavImg from 'figma:asset/Pandit-Pranav_2.jpeg';
+import gargiJiImg from 'figma:asset/Gargi_Ji.jpeg';
+import nidhiJiImg from 'figma:asset/Nidhi-Ji.png';
+
+const resolveAstrologerImage = (astro: any) => {
+  if (!astro) return panditPranavImg;
+  const img = astro.image;
+  if (img && (img.startsWith('data:image/') || img.startsWith('http://') || img.startsWith('https://'))) {
+    return img;
+  }
+  const name = (astro.name || '').toLowerCase();
+  if (name.includes('gargi')) return gargiJiImg;
+  if (name.includes('nidhi')) return nidhiJiImg;
+  return panditPranavImg;
+};
 
 type ActiveTab = 'overview' | 'astrologers' | 'blogs' | 'queries' | 'users';
 
@@ -870,11 +887,17 @@ export default function AdminDashboard() {
                       <div className="flex items-start justify-between gap-3 mb-4">
                         <div className="flex items-center gap-3">
                           <div className="w-14 h-14 rounded-xl overflow-hidden border border-gold-500/40 bg-cosmic-950 shrink-0 flex items-center justify-center">
-                            {astro.image ? (
-                              <img src={astro.image} alt={astro.name} className="w-full h-full object-cover" />
-                            ) : (
-                              <Sparkles className="w-6 h-6 text-gold-400" />
-                            )}
+                            <img
+                              src={resolveAstrologerImage(astro)}
+                              alt={astro.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const name = (astro.name || '').toLowerCase();
+                                if (name.includes('gargi')) e.currentTarget.src = gargiJiImg;
+                                else if (name.includes('nidhi')) e.currentTarget.src = nidhiJiImg;
+                                else e.currentTarget.src = panditPranavImg;
+                              }}
+                            />
                           </div>
                           <div>
                             <h4 className="font-display font-bold text-base text-white">{astro.name}</h4>
@@ -907,10 +930,6 @@ export default function AdminDashboard() {
                             <Star className="w-3 h-3 fill-gold-400 text-gold-400" />
                             {astro.rating} ({astro.reviews})
                           </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>Consultation Rate:</span>
-                          <span className="text-white font-bold">{astro.price || '₹25/min'}</span>
                         </div>
                       </div>
 
@@ -1444,27 +1463,88 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gold-300 mb-1">Photo Image URL / Path</label>
-                  <input
-                    type="text"
-                    value={astrologerForm.image}
-                    onChange={(e) => setAstrologerForm({ ...astrologerForm, image: e.target.value })}
-                    placeholder="e.g. /src/assets/Pandit-Pranav_2.jpeg or web URL"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
-                  />
-                </div>
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1.5 flex items-center justify-between">
+                  <span>Astrologer Profile Photo</span>
+                  <span className="text-[10px] text-ivory-200/60 font-normal">Saves directly to MongoDB</span>
+                </label>
 
-                <div>
-                  <label className="block text-xs font-semibold text-gold-300 mb-1">Consultation Charge</label>
-                  <input
-                    type="text"
-                    value={astrologerForm.price}
-                    onChange={(e) => setAstrologerForm({ ...astrologerForm, price: e.target.value })}
-                    placeholder="e.g. ₹25/min or ₹1100/visit"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
-                  />
+                <div className="p-3.5 rounded-xl bg-cosmic-950 border border-gold-500/30 flex flex-col sm:flex-row items-center gap-4">
+                  {/* Photo Preview */}
+                  <div className="w-18 h-18 rounded-xl overflow-hidden border-2 border-gold-500/40 bg-cosmic-900 shrink-0 flex items-center justify-center relative shadow-md">
+                    {astrologerForm.image ? (
+                      <img
+                        src={astrologerForm.image}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const name = (astrologerForm.name || '').toLowerCase();
+                          if (name.includes('gargi')) e.currentTarget.src = gargiJiImg;
+                          else if (name.includes('nidhi')) e.currentTarget.src = nidhiJiImg;
+                          else e.currentTarget.src = panditPranavImg;
+                        }}
+                      />
+                    ) : (
+                      <div className="text-center p-2 text-ivory-200/40 flex flex-col items-center">
+                        <ImageIcon className="w-6 h-6 text-gold-500/50 mb-1" />
+                        <span className="text-[9px]">No photo</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Upload Actions */}
+                  <div className="flex-1 w-full space-y-2">
+                    <div className="flex items-center gap-2">
+                      <label className="flex-1 py-2 px-3 rounded-lg bg-gold-500 hover:bg-gold-400 text-cosmic-950 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition shadow-sm">
+                        <Upload className="w-3.5 h-3.5" />
+                        <span>Upload Photo from Device</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              if (file.size > 8 * 1024 * 1024) {
+                                showToast('Please select a photo smaller than 8MB');
+                                return;
+                              }
+                              const reader = new FileReader();
+                              reader.onload = () => {
+                                if (typeof reader.result === 'string') {
+                                  setAstrologerForm({ ...astrologerForm, image: reader.result });
+                                  showToast('Photo loaded! It will be saved into MongoDB upon saving.');
+                                }
+                              };
+                              reader.readAsDataURL(file);
+                            }
+                          }}
+                        />
+                      </label>
+
+                      {astrologerForm.image && (
+                        <button
+                          type="button"
+                          onClick={() => setAstrologerForm({ ...astrologerForm, image: '' })}
+                          className="py-2 px-3 rounded-lg bg-red-500/20 text-red-300 border border-red-500/40 text-xs font-semibold hover:bg-red-500/30 cursor-pointer transition"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+
+                    <input
+                      type="text"
+                      value={astrologerForm.image.startsWith('data:image') ? '[Image stored as Base64 in database]' : astrologerForm.image}
+                      onChange={(e) => {
+                        if (!e.target.value.includes('stored as Base64')) {
+                          setAstrologerForm({ ...astrologerForm, image: e.target.value });
+                        }
+                      }}
+                      placeholder="Or enter external photo URL / data URI"
+                      className="w-full px-3 py-1.5 rounded-lg bg-cosmic-900 border border-gold-500/20 text-ivory-200/80 text-[11px] focus:border-gold-400 focus:outline-none"
+                    />
+                  </div>
                 </div>
               </div>
 

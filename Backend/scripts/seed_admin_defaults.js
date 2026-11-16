@@ -1,8 +1,26 @@
 import 'dotenv/config';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
 import Astrologer from '../models/Astrologer.js';
 import Blog from '../models/Blog.js';
 import User from '../models/User.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const getBase64Asset = (filename, mimeType = 'image/jpeg') => {
+  try {
+    const filePath = path.resolve(__dirname, '../../Frontend/src/assets', filename);
+    if (fs.existsSync(filePath)) {
+      return `data:${mimeType};base64,` + fs.readFileSync(filePath).toString('base64');
+    }
+  } catch {
+    // Proceed silently
+  }
+  return '';
+};
 
 const defaultAstrologers = [
   {
@@ -13,7 +31,7 @@ const defaultAstrologers = [
     languages: 'Hindi, English',
     rating: 4.9,
     reviews: '10K+',
-    image: '/src/assets/Pandit-Pranav_2.jpeg',
+    image: getBase64Asset('Pandit-Pranav_2.jpeg', 'image/jpeg'),
     available: true,
     price: '₹35/min',
     bio: 'Renowned expert in classical Parashari Astrology, Prashna Kundli, and residential & commercial Vastu Shastra corrections without structural demolition.',
@@ -27,7 +45,7 @@ const defaultAstrologers = [
     languages: 'Hindi',
     rating: 4.9,
     reviews: '2011',
-    image: '/src/assets/Gargi_Ji.jpeg',
+    image: getBase64Asset('Gargi_Ji.jpeg', 'image/jpeg'),
     available: true,
     price: '₹25/min',
     bio: 'Specialist in Hastarekha (Palmistry), planetary gemology remedies, marriage compatibility, and maternal health astrology.',
@@ -41,7 +59,7 @@ const defaultAstrologers = [
     languages: 'Hindi, English',
     rating: 4.9,
     reviews: '3156',
-    image: '/src/assets/Nidhi-Ji.png',
+    image: getBase64Asset('Nidhi-Ji.png', 'image/png'),
     available: true,
     price: '₹25/min',
     bio: 'Expert in career transition astrology, business wealth Vastu alignments, and Ashtakoota Kundli Milan.',

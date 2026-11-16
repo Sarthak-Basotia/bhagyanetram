@@ -132,9 +132,15 @@ export function HomePage() {
         if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
           const mapped = res.data.map((a: any) => {
             let resolvedImg = a.image;
-            if (!resolvedImg || resolvedImg.includes('Pandit-Pranav') || a.name?.includes('Pranav')) resolvedImg = panditPranav;
-            else if (resolvedImg.includes('Gargi_Ji') || resolvedImg.includes('gargi') || a.name?.includes('Gargi')) resolvedImg = gargiJi;
-            else if (resolvedImg.includes('Nidhi-Ji') || resolvedImg.includes('nidhi') || a.name?.includes('Nidhi')) resolvedImg = nidhiJi;
+            if (a.image && (a.image.startsWith('data:image/') || a.image.startsWith('http://') || a.image.startsWith('https://'))) {
+              resolvedImg = a.image;
+            } else if (!resolvedImg || resolvedImg.includes('Pandit-Pranav') || a.name?.includes('Pranav')) {
+              resolvedImg = panditPranav;
+            } else if (resolvedImg.includes('Gargi_Ji') || resolvedImg.includes('gargi') || a.name?.includes('Gargi')) {
+              resolvedImg = gargiJi;
+            } else if (resolvedImg.includes('Nidhi-Ji') || resolvedImg.includes('nidhi') || a.name?.includes('Nidhi')) {
+              resolvedImg = nidhiJi;
+            }
             return {
               ...a,
               image: resolvedImg,
@@ -610,22 +616,17 @@ export function HomePage() {
 
                   <div className="flex items-center gap-4 mb-6">
                     <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-gold-400 shrink-0 shadow-md bg-cosmic-900 flex items-center justify-center">
-                      {typeof astrologer.image === 'string' && astrologer.image.includes('gargi') ? (
-                        <div className="w-full h-full bg-gradient-to-br from-cosmic-900 to-cosmic-700 flex items-center justify-center text-gold-300">
-                          <svg className="w-12 h-12" viewBox="0 0 64 64" fill="none">
-                            <circle cx="32" cy="23" r="10" stroke="currentColor" strokeWidth="2" />
-                            <circle cx="32" cy="18.5" r="1.6" fill="#D96B38" />
-                            <path d="M14 54C14 43 22 37 32 37C42 37 50 43 50 54" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                            <path d="M22 22C22 14 42 14 42 22" stroke="#F0D57A" strokeWidth="1.5" />
-                          </svg>
-                        </div>
-                      ) : (
-                        <img
-                          src={astrologer.image}
-                          alt={astrologer.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      )}
+                      <img
+                        src={astrologer.image}
+                        alt={astrologer.name}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          const name = (astrologer.name || '').toLowerCase();
+                          if (name.includes('gargi')) e.currentTarget.src = gargiJi;
+                          else if (name.includes('nidhi')) e.currentTarget.src = nidhiJi;
+                          else e.currentTarget.src = panditPranav;
+                        }}
+                      />
                     </div>
                     <div>
                       <h3 className="font-display text-xl font-bold text-cosmic-900 group-hover:text-gold-700 transition-colors">

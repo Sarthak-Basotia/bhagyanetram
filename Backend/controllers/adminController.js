@@ -105,6 +105,19 @@ export const getAdminStats = async (req, res) => {
 // ==========================================
 // 3. ASTROLOGER MANAGEMENT (CRUD)
 // ==========================================
+export const getAllAstrologersAdmin = async (req, res) => {
+  try {
+    const astrologers = await Astrologer.find({}).sort({ order: 1, createdAt: 1 });
+    return res.status(200).json({
+      success: true,
+      data: astrologers,
+    });
+  } catch (error) {
+    console.error('Fetch All Astrologers Admin Error:', error);
+    return res.status(500).json({ error: 'Failed to retrieve astrologers.' });
+  }
+};
+
 export const createAstrologer = async (req, res) => {
   try {
     const {

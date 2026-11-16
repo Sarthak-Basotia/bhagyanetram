@@ -60,9 +60,20 @@ export const fetchAdminStats = async () => {
 
 // 3. Astrologer Management
 export const fetchAdminAstrologers = async () => {
-  const response = await fetch(`${API_BASE}/astrologers`);
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error || 'Failed to fetch astrologers');
+  try {
+    const response = await fetch(`${API_BASE}/admin/astrologers`, {
+      headers: getAdminHeaders(),
+    });
+    if (response.ok) {
+      return await response.json();
+    }
+  } catch {
+    // Fallback to public endpoint if admin endpoint is not reachable
+  }
+
+  const fallbackRes = await fetch(`${API_BASE}/astrologers`);
+  const data = await fallbackRes.json();
+  if (!fallbackRes.ok) throw new Error(data.error || 'Failed to fetch astrologers');
   return data;
 };
 

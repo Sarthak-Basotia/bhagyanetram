@@ -26,6 +26,7 @@ import { requireAuth, requireAdmin } from './middleware/authMiddleware.js';
 import {
   adminLogin,
   getAdminStats,
+  getAllAstrologersAdmin,
   createAstrologer,
   updateAstrologer,
   deleteAstrologer,
@@ -45,8 +46,9 @@ import { getPublicBlogs, getPublicBlogBySlug } from './controllers/blogControlle
 import { createPublicBooking } from './controllers/bookingController.js';
 
 const app = express();
-// Increased JSON limit for base64 images
-app.use(express.json({ limit: '10mb' }));
+// Increased JSON & URL-encoded limits for Base64 image storage in MongoDB
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 initializeFestivalQueue();
 
 app.use(cors({ origin: "*", credentials: true }));
@@ -92,6 +94,7 @@ app.post("/api/admin/login", adminLogin);
 app.get("/api/admin/stats", requireAdmin, getAdminStats);
 
 // Admin Astrologers
+app.get("/api/admin/astrologers", requireAdmin, getAllAstrologersAdmin);
 app.post("/api/admin/astrologers", requireAdmin, createAstrologer);
 app.put("/api/admin/astrologers/:id", requireAdmin, updateAstrologer);
 app.delete("/api/admin/astrologers/:id", requireAdmin, deleteAstrologer);
