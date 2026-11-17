@@ -22,6 +22,11 @@ import {
   createReviewApi,
   updateReviewApi,
   deleteReviewApi,
+  changeAdminPasswordApi,
+  fetchSubadminsApi,
+  createSubadminApi,
+  updateSubadminApi,
+  deleteSubadminApi,
 } from '../../../api/adminApi';
 import {
   LayoutDashboard,
@@ -58,7 +63,15 @@ import {
   ArrowUp,
   ArrowDown,
   FileSpreadsheet,
-  Image as ImageIcon
+  Image as ImageIcon,
+  KeyRound,
+  ShieldCheck,
+  UserPlus,
+  ChevronDown,
+  UserCheck,
+  UserX,
+  Lock,
+  EyeOff
 } from 'lucide-react';
 import logoImage from 'figma:asset/d5457f2df4c5864ece0203437258a94768a0cf00.png';
 import panditPranavImg from 'figma:asset/Pandit-Pranav_2.jpeg';
@@ -120,7 +133,7 @@ const exportToCSV = (filename: string, headers: string[], rows: (string | number
   URL.revokeObjectURL(url);
 };
 
-type ActiveTab = 'overview' | 'astrologers' | 'blogs' | 'queries' | 'users' | 'reviews';
+type ActiveTab = 'overview' | 'astrologers' | 'blogs' | 'queries' | 'users' | 'reviews' | 'subadmins';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -180,6 +193,34 @@ export default function AdminDashboard() {
   const [reviewStatusFilter, setReviewStatusFilter] = useState('all');
   const [reviewSortField, setReviewSortField] = useState<'createdAt' | 'rating' | 'name'>('createdAt');
   const [reviewSortOrder, setReviewSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  // Profile Dropdown & Security Modals
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
+  const [subadminsModalOpen, setSubadminsModalOpen] = useState(false);
+
+  // Change Password Form State
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [changePasswordLoading, setChangePasswordLoading] = useState(false);
+  const [changePasswordError, setChangePasswordError] = useState<string | null>(null);
+
+  // Subadmins State
+  const [subadmins, setSubadmins] = useState<any[]>([]);
+  const [subadminsLoading, setSubadminsLoading] = useState(false);
+  const [subadminModalTab, setSubadminModalTab] = useState<'list' | 'add'>('list');
+  const [subadminForm, setSubadminForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'subadmin',
+    permissions: ['astrologers', 'blogs', 'queries', 'reviews', 'users'],
+  });
+  const [showSubadminPassword, setShowSubadminPassword] = useState(false);
+  const [subadminActionLoading, setSubadminActionLoading] = useState(false);
 
   // Helper to toggle sort column
   const toggleSort = (
@@ -364,9 +405,24 @@ export default function AdminDashboard() {
     }
   };
 
+  const loadSubadmins = async () => {
+    setSubadminsLoading(true);
+    try {
+      const res = await fetchSubadminsApi();
+      if (res && res.success && Array.isArray(res.data)) {
+        setSubadmins(res.data);
+      }
+    } catch (err: any) {
+      console.warn('Error loading sub-admins:', err.message);
+    } finally {
+      setSubadminsLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadStats();
     loadReviews();
+    loadSubadmins();
   }, []);
 
   useEffect(() => {
@@ -375,10 +431,12 @@ export default function AdminDashboard() {
     if (activeTab === 'queries') loadQueries();
     if (activeTab === 'users') loadUsers();
     if (activeTab === 'reviews') loadReviews();
+    if (activeTab === 'subadmins') loadSubadmins();
     if (activeTab === 'overview') {
       loadStats();
       loadQueries();
       loadReviews();
+      loadSubadmins();
     }
   }, [activeTab, queryStatusFilter]);
 
@@ -842,6 +900,116 @@ export default function AdminDashboard() {
   };
 
   // ==========================================
+  // ADMIN SECURITY & SUB-ADMIN ACTIONS
+  // ==========================================
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setChangePasswordError(null);
+
+    if (!currentPassword) {
+      setChangePasswordError('Please enter your current password.');
+      return;
+    }
+    if (newPassword.length < 6) {
+      setChangePasswordError('New password must be at least 6 characters.');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setChangePasswordError('New password and confirmation password do not match.');
+      return;
+    }
+
+    setChangePasswordLoading(true);
+    try {
+      const res = await changeAdminPasswordApi({ currentPassword, newPassword });
+      if (res && res.success) {
+        showToast('Admin password changed successfully! Keep your new credentials safe.');
+        setChangePasswordModalOpen(false);
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
+      } else {
+        setChangePasswordError(res?.error || 'Failed to update password.');
+      }
+    } catch (err: any) {
+      setChangePasswordError(err.message || 'Failed to update password.');
+    } finally {
+      setChangePasswordLoading(false);
+    }
+  };
+
+  const handleCreateSubadmin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!subadminForm.name || !subadminForm.email || !subadminForm.password) {
+      showToast('Please fill all required sub-admin details.');
+      return;
+    }
+    if (subadminForm.password.length < 6) {
+      showToast('Password must be at least 6 characters long.');
+      return;
+    }
+
+    setSubadminActionLoading(true);
+    try {
+      const res = await createSubadminApi(subadminForm);
+      if (res && res.success) {
+        showToast(`Sub-admin "${subadminForm.name}" created successfully!`);
+        setSubadminForm({
+          name: '',
+          email: '',
+          password: '',
+          role: 'subadmin',
+          permissions: ['astrologers', 'blogs', 'queries', 'reviews', 'users'],
+        });
+        setSubadminModalTab('list');
+        await loadSubadmins();
+      }
+    } catch (err: any) {
+      showToast('Error creating sub-admin: ' + err.message);
+    } finally {
+      setSubadminActionLoading(false);
+    }
+  };
+
+  const handleToggleSubadminStatus = async (sub: any) => {
+    const newStatus = sub.status === 'active' ? 'inactive' : 'active';
+    try {
+      const res = await updateSubadminApi(sub._id || sub.id, { status: newStatus });
+      if (res && res.success) {
+        showToast(`Sub-admin status set to ${newStatus.toUpperCase()}`);
+        await loadSubadmins();
+      }
+    } catch (err: any) {
+      showToast('Error updating status: ' + err.message);
+    }
+  };
+
+  const handleDeleteSubadmin = async (id: string, name: string) => {
+    if (!window.confirm(`Are you sure you want to remove sub-admin "${name}"? This action cannot be undone.`)) {
+      return;
+    }
+    try {
+      const res = await deleteSubadminApi(id);
+      if (res && res.success) {
+        showToast(`Sub-admin "${name}" removed successfully.`);
+        await loadSubadmins();
+      }
+    } catch (err: any) {
+      showToast('Error removing sub-admin: ' + err.message);
+    }
+  };
+
+  const generateRandomPassword = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
+    let pass = '';
+    for (let i = 0; i < 10; i++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setSubadminForm((prev) => ({ ...prev, password: pass }));
+    setShowSubadminPassword(true);
+  };
+
+  // ==========================================
   // ASTROLOGER ACTIONS
   // ==========================================
   const handleOpenAddAstrologer = () => {
@@ -1301,6 +1469,26 @@ export default function AdminDashboard() {
                 {stats.totalReviews || reviews.length}
               </span>
             </button>
+
+            <button
+              onClick={() => {
+                setActiveTab('subadmins');
+                loadSubadmins();
+              }}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'subadmins'
+                  ? 'bg-gold-500 text-cosmic-950 shadow-gold-glow font-bold'
+                  : 'text-ivory-200/80 hover:bg-cosmic-800 hover:text-gold-300'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <ShieldCheck className="w-4 h-4" />
+                <span>Sub-Admins</span>
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20">
+                {subadmins.length}
+              </span>
+            </button>
           </nav>
         </div>
 
@@ -1331,7 +1519,7 @@ export default function AdminDashboard() {
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {/* Top Header Bar */}
-        <header className="h-16 border-b border-gold-500/20 bg-cosmic-900/60 backdrop-blur-md px-6 flex items-center justify-between shrink-0">
+        <header className="h-16 border-b border-gold-500/20 bg-cosmic-900/60 backdrop-blur-md px-6 flex items-center justify-between shrink-0 relative z-30">
           <div className="flex items-center gap-3">
             <h2 className="text-lg font-display font-bold text-white capitalize">
               {activeTab === 'overview' && 'Dashboard Overview'}
@@ -1340,16 +1528,143 @@ export default function AdminDashboard() {
               {activeTab === 'queries' && 'Customer Inquiries & Consultations'}
               {activeTab === 'users' && 'Registered User Accounts'}
               {activeTab === 'reviews' && 'Manage Client Reviews & Testimonials'}
+              {activeTab === 'subadmins' && 'Sub-Administrator Management'}
             </h2>
           </div>
 
-          <div className="flex items-center gap-4">
-            <div className="text-right hidden sm:block">
-              <span className="text-xs font-bold text-gold-300 block leading-tight">{adminUser.name}</span>
-              <span className="text-[10px] text-ivory-200/60 block">{adminUser.email}</span>
-            </div>
-            <div className="w-8 h-8 rounded-full bg-gold-500/20 border border-gold-500/40 text-gold-300 flex items-center justify-center font-bold text-xs">
-              AD
+          <div className="flex items-center gap-3">
+            {/* Quick Action: Change Password */}
+            <button
+              onClick={() => setChangePasswordModalOpen(true)}
+              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cosmic-950/80 border border-gold-500/30 text-gold-300 hover:bg-gold-500 hover:text-cosmic-950 transition text-xs font-semibold cursor-pointer shadow-sm"
+              title="Change Password"
+            >
+              <KeyRound className="w-3.5 h-3.5" />
+              <span>Change Password</span>
+            </button>
+
+            {/* Quick Action: Manage Subadmins */}
+            <button
+              onClick={() => {
+                loadSubadmins();
+                setSubadminsModalOpen(true);
+              }}
+              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cosmic-950/80 border border-gold-500/30 text-gold-300 hover:bg-gold-500 hover:text-cosmic-950 transition text-xs font-semibold cursor-pointer shadow-sm"
+              title="Add / Remove Sub-Admins"
+            >
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Sub-Admins</span>
+              {subadmins.length > 0 && (
+                <span className="ml-1 px-1.5 py-0.2 rounded-full bg-gold-500/20 text-gold-400 text-[10px] font-bold">
+                  {subadmins.length}
+                </span>
+              )}
+            </button>
+
+            {/* Admin Profile Dropdown Trigger (Highlighted by user) */}
+            <div className="relative">
+              <button
+                onClick={() => {
+                  setProfileDropdownOpen(!profileDropdownOpen);
+                  if (!profileDropdownOpen) loadSubadmins();
+                }}
+                className={`flex items-center gap-3 p-1.5 sm:px-3 sm:py-2 rounded-2xl border transition cursor-pointer select-none ${
+                  profileDropdownOpen
+                    ? 'bg-cosmic-800 border-gold-400 shadow-gold-card'
+                    : 'bg-cosmic-950/60 border-gold-500/30 hover:border-gold-400 hover:bg-cosmic-800/80'
+                }`}
+                title="Admin Account Options (Change Password & Sub-Admins)"
+              >
+                <div className="text-right hidden sm:block">
+                  <span className="text-xs font-bold text-gold-300 block leading-tight">
+                    {adminUser.name}
+                  </span>
+                  <span className="text-[10px] text-ivory-200/60 block">
+                    {adminUser.email}
+                  </span>
+                </div>
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-gold-500/30 to-gold-600/10 border border-gold-500/50 text-gold-300 flex items-center justify-center font-bold text-xs shadow-inner">
+                  AD
+                </div>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 text-gold-400 transition-transform ${
+                    profileDropdownOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+
+              {/* Profile Dropdown Menu */}
+              {profileDropdownOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setProfileDropdownOpen(false)}
+                  />
+                  <div className="absolute right-0 mt-2 w-72 bg-cosmic-900 border border-gold-500/40 rounded-2xl p-2 shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="px-3 py-2.5 border-b border-gold-500/15 mb-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-white truncate block">
+                          {adminUser.name}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full bg-gold-500/20 text-gold-300 font-bold text-[9px] uppercase tracking-wider">
+                          {adminUser.role || 'Super Admin'}
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-ivory-200/60 block truncate mt-0.5">
+                        {adminUser.email}
+                      </span>
+                    </div>
+
+                    <div className="space-y-1">
+                      <button
+                        onClick={() => {
+                          setProfileDropdownOpen(false);
+                          setChangePasswordModalOpen(true);
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-ivory-200 hover:bg-gold-500 hover:text-cosmic-950 font-medium transition cursor-pointer text-left group"
+                      >
+                        <KeyRound className="w-4 h-4 text-gold-400 group-hover:text-cosmic-950 shrink-0" />
+                        <div>
+                          <div className="font-semibold">Change Password</div>
+                          <div className="text-[10px] opacity-75">Update your account login password</div>
+                        </div>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setProfileDropdownOpen(false);
+                          loadSubadmins();
+                          setSubadminsModalOpen(true);
+                        }}
+                        className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-ivory-200 hover:bg-gold-500 hover:text-cosmic-950 font-medium transition cursor-pointer text-left group"
+                      >
+                        <div className="flex items-center gap-2.5">
+                          <ShieldCheck className="w-4 h-4 text-gold-400 group-hover:text-cosmic-950 shrink-0" />
+                          <div>
+                            <div className="font-semibold">Manage Sub-Admins</div>
+                            <div className="text-[10px] opacity-75">Add or remove sub-admin access</div>
+                          </div>
+                        </div>
+                        {subadmins.length > 0 && (
+                          <span className="px-1.5 py-0.5 rounded-full bg-cosmic-950/80 text-gold-300 text-[10px] font-bold">
+                            {subadmins.length}
+                          </span>
+                        )}
+                      </button>
+                    </div>
+
+                    <div className="border-t border-gold-500/15 mt-1.5 pt-1.5">
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-red-300 hover:bg-red-500/20 transition cursor-pointer text-left"
+                      >
+                        <LogOut className="w-4 h-4 text-red-400 shrink-0" />
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </header>
@@ -2647,6 +2962,155 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* =========================================================
+              TAB 7: SUB-ADMINISTRATOR MANAGEMENT
+          ========================================================= */}
+          {activeTab === 'subadmins' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="font-display font-bold text-xl text-white">Sub-Administrator Roster</h3>
+                  <p className="text-xs text-ivory-200/60 mt-0.5">
+                    Manage administrative team members, grant permissions, or remove access.
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={loadSubadmins}
+                    className="p-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-gold-400 hover:bg-cosmic-800 transition cursor-pointer"
+                    title="Refresh List"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      setSubadminModalTab('add');
+                      setSubadminsModalOpen(true);
+                    }}
+                    className="px-4 py-2.5 rounded-xl gold-btn text-cosmic-950 font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer"
+                  >
+                    <UserPlus className="w-4 h-4" />
+                    <span>Add New Sub-Admin</span>
+                  </button>
+                </div>
+              </div>
+
+              {subadminsLoading ? (
+                <div className="py-20 text-center text-gold-400 flex flex-col items-center justify-center">
+                  <Loader2 className="w-8 h-8 animate-spin mb-2" />
+                  <span className="text-xs font-semibold">Loading Sub-Admins...</span>
+                </div>
+              ) : (
+                <div className="bg-cosmic-900 border border-gold-500/30 rounded-2xl overflow-hidden shadow-gold-card">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="border-b border-gold-500/20 bg-cosmic-950/60 text-gold-400">
+                          <th className="p-4 font-semibold">Administrator</th>
+                          <th className="p-4 font-semibold">Role</th>
+                          <th className="p-4 font-semibold">Permissions</th>
+                          <th className="p-4 font-semibold">Status</th>
+                          <th className="p-4 font-semibold">Created Date</th>
+                          <th className="p-4 font-semibold text-right">Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gold-500/10">
+                        {subadmins.map((sub: any) => {
+                          const isPrimary = sub.role === 'superadmin' || sub.email === 'admin@bhagyanetram.com';
+                          return (
+                            <tr key={sub._id || sub.id} className="hover:bg-cosmic-800/40">
+                              <td className="p-4">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-9 h-9 rounded-full bg-gold-500/20 text-gold-300 font-bold flex items-center justify-center text-xs shrink-0 border border-gold-500/30">
+                                    {sub.name ? sub.name.slice(0, 2).toUpperCase() : 'AD'}
+                                  </div>
+                                  <div>
+                                    <div className="font-bold text-white text-sm flex items-center gap-2">
+                                      <span>{sub.name}</span>
+                                      {isPrimary && (
+                                        <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-bold">
+                                          Master Superadmin
+                                        </span>
+                                      )}
+                                    </div>
+                                    <span className="text-[11px] text-ivory-200/60 block">{sub.email}</span>
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="p-4">
+                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
+                                  sub.role === 'superadmin'
+                                    ? 'bg-gold-500/20 text-gold-300 border border-gold-500/40'
+                                    : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
+                                }`}>
+                                  {sub.role || 'subadmin'}
+                                </span>
+                              </td>
+                              <td className="p-4">
+                                <div className="flex flex-wrap gap-1 max-w-xs">
+                                  {Array.isArray(sub.permissions) && sub.permissions.length > 0 ? (
+                                    sub.permissions.map((p: string) => (
+                                      <span key={p} className="px-2 py-0.5 rounded-md bg-cosmic-950 text-[10px] text-ivory-200/80 border border-gold-500/15">
+                                        {p}
+                                      </span>
+                                    ))
+                                  ) : (
+                                    <span className="text-ivory-200/50 text-[10px]">All Modules</span>
+                                  )}
+                                </div>
+                              </td>
+                              <td className="p-4">
+                                <button
+                                  disabled={isPrimary}
+                                  onClick={() => handleToggleSubadminStatus(sub)}
+                                  className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase transition ${
+                                    sub.status === 'active'
+                                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30'
+                                      : 'bg-zinc-500/20 text-zinc-300 border border-zinc-500/40 hover:bg-zinc-500/30'
+                                  } ${isPrimary ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
+                                  title={isPrimary ? 'Primary Master account cannot be toggled' : 'Click to toggle status'}
+                                >
+                                  {sub.status || 'active'}
+                                </button>
+                              </td>
+                              <td className="p-4 text-ivory-200/60">
+                                {sub.createdAt ? new Date(sub.createdAt).toLocaleDateString('en-IN', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  year: 'numeric'
+                                }) : 'Primary'}
+                              </td>
+                              <td className="p-4 text-right">
+                                {!isPrimary && sub.email !== (adminUser.email || '').toLowerCase() ? (
+                                  <button
+                                    onClick={() => handleDeleteSubadmin(sub._id || sub.id, sub.name)}
+                                    className="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-300 transition cursor-pointer border border-red-500/20"
+                                    title="Remove Sub-Admin"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                ) : (
+                                  <span className="text-[10px] text-ivory-200/40 italic">Protected</span>
+                                )}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                        {subadmins.length === 0 && (
+                          <tr>
+                            <td colSpan={6} className="p-8 text-center text-ivory-200/50">
+                              No sub-admin accounts configured.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
         </div>
       </main>
 
@@ -3383,6 +3847,455 @@ export default function AdminDashboard() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: CHANGE ADMIN PASSWORD
+      ========================================================= */}
+      {changePasswordModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="w-full max-w-md bg-cosmic-900 border border-gold-500/40 rounded-3xl p-6 shadow-2xl relative my-8 animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-4 border-b border-gold-500/20 mb-5">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-gold-500/15 text-gold-400 border border-gold-500/30">
+                  <KeyRound className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-lg text-white">Change Admin Password</h3>
+                  <p className="text-[11px] text-ivory-200/60">Update credentials for {adminUser.email}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setChangePasswordModalOpen(false)}
+                className="p-1.5 rounded-full hover:bg-cosmic-800 text-ivory-200/70 hover:text-white cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {changePasswordError && (
+              <div className="mb-4 p-3 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 text-xs flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{changePasswordError}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1">
+                  Current Password *
+                </label>
+                <div className="relative">
+                  <input
+                    type={showCurrentPassword ? 'text' : 'password'}
+                    required
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="Enter current password"
+                    className="w-full pl-3.5 pr-10 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-ivory-200/60 hover:text-gold-400 cursor-pointer"
+                  >
+                    {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1">
+                  New Password *
+                </label>
+                <div className="relative">
+                  <input
+                    type={showNewPassword ? 'text' : 'password'}
+                    required
+                    minLength={6}
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Minimum 6 characters"
+                    className="w-full pl-3.5 pr-10 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-ivory-200/60 hover:text-gold-400 cursor-pointer"
+                  >
+                    {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1">
+                  Confirm New Password *
+                </label>
+                <input
+                  type="password"
+                  required
+                  minLength={6}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Re-enter new password"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                />
+              </div>
+
+              <div className="pt-2 flex items-center justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setChangePasswordModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl bg-cosmic-800 text-ivory-200 text-xs font-semibold hover:bg-cosmic-700 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={changePasswordLoading}
+                  className="px-5 py-2.5 rounded-xl gold-btn text-cosmic-950 font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer disabled:opacity-50"
+                >
+                  {changePasswordLoading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Updating...</span>
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="w-4 h-4" />
+                      <span>Update Password</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: MANAGE SUB-ADMINISTRATORS
+      ========================================================= */}
+      {subadminsModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="w-full max-w-3xl bg-cosmic-900 border border-gold-500/40 rounded-3xl p-6 shadow-2xl relative my-8 animate-in fade-in zoom-in-95 duration-150">
+            {/* Header */}
+            <div className="flex items-center justify-between pb-4 border-b border-gold-500/20 mb-5">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-gold-500/15 text-gold-400 border border-gold-500/30">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-lg text-white">Sub-Administrator Management</h3>
+                  <p className="text-xs text-ivory-200/60">
+                    Add, view, and remove sub-admin accounts with role-based access.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSubadminsModalOpen(false)}
+                className="p-1.5 rounded-full hover:bg-cosmic-800 text-ivory-200/70 hover:text-white cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Sub-tabs: List vs Add */}
+            <div className="flex items-center justify-between mb-4 border-b border-gold-500/15 pb-3">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSubadminModalTab('list')}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer ${
+                    subadminModalTab === 'list'
+                      ? 'bg-gold-500 text-cosmic-950 shadow-gold-glow'
+                      : 'bg-cosmic-950 text-gold-400 hover:bg-cosmic-800'
+                  }`}
+                >
+                  All Administrators ({subadmins.length})
+                </button>
+                <button
+                  onClick={() => setSubadminModalTab('add')}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                    subadminModalTab === 'add'
+                      ? 'bg-gold-500 text-cosmic-950 shadow-gold-glow'
+                      : 'bg-cosmic-950 text-gold-400 hover:bg-cosmic-800'
+                  }`}
+                >
+                  <UserPlus className="w-3.5 h-3.5" />
+                  <span>+ Add New Sub-Admin</span>
+                </button>
+              </div>
+
+              <button
+                onClick={loadSubadmins}
+                className="p-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-gold-400 hover:bg-cosmic-800 transition cursor-pointer"
+                title="Refresh Roster"
+              >
+                <RefreshCw className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* VIEW 1: Subadmins List */}
+            {subadminModalTab === 'list' && (
+              <div className="space-y-4">
+                {subadminsLoading ? (
+                  <div className="py-16 text-center text-gold-400 flex flex-col items-center justify-center">
+                    <Loader2 className="w-8 h-8 animate-spin mb-2" />
+                    <span className="text-xs font-semibold">Loading Sub-Admins...</span>
+                  </div>
+                ) : (
+                  <div className="bg-cosmic-950/80 border border-gold-500/25 rounded-2xl overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead>
+                          <tr className="border-b border-gold-500/20 bg-cosmic-950 text-gold-400">
+                            <th className="p-3.5 font-semibold">Administrator</th>
+                            <th className="p-3.5 font-semibold">Role</th>
+                            <th className="p-3.5 font-semibold">Permissions</th>
+                            <th className="p-3.5 font-semibold">Status</th>
+                            <th className="p-3.5 font-semibold text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gold-500/10">
+                          {subadmins.map((sub: any) => {
+                            const isPrimary = sub.role === 'superadmin' || sub.email === 'admin@bhagyanetram.com';
+                            return (
+                              <tr key={sub._id || sub.id} className="hover:bg-cosmic-900/60">
+                                <td className="p-3.5">
+                                  <div className="flex items-center gap-2.5">
+                                    <div className="w-8 h-8 rounded-full bg-gold-500/20 text-gold-300 font-bold flex items-center justify-center text-xs shrink-0 border border-gold-500/30">
+                                      {sub.name ? sub.name.slice(0, 2).toUpperCase() : 'AD'}
+                                    </div>
+                                    <div>
+                                      <div className="font-bold text-white text-sm flex items-center gap-1.5">
+                                        <span>{sub.name}</span>
+                                        {isPrimary && (
+                                          <span className="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-semibold">
+                                            Primary Master
+                                          </span>
+                                        )}
+                                      </div>
+                                      <span className="text-[11px] text-ivory-200/60 block">{sub.email}</span>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="p-3.5">
+                                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
+                                    sub.role === 'superadmin'
+                                      ? 'bg-gold-500/20 text-gold-300 border border-gold-500/40'
+                                      : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
+                                  }`}>
+                                    {sub.role || 'subadmin'}
+                                  </span>
+                                </td>
+                                <td className="p-3.5">
+                                  <div className="flex flex-wrap gap-1 max-w-xs">
+                                    {Array.isArray(sub.permissions) && sub.permissions.length > 0 ? (
+                                      sub.permissions.map((p: string) => (
+                                        <span key={p} className="px-1.5 py-0.5 rounded bg-cosmic-900 border border-gold-500/15 text-[10px] text-ivory-200/80">
+                                          {p}
+                                        </span>
+                                      ))
+                                    ) : (
+                                      <span className="text-ivory-200/50 text-[10px]">All Modules</span>
+                                    )}
+                                  </div>
+                                </td>
+                                <td className="p-3.5">
+                                  <button
+                                    disabled={isPrimary}
+                                    onClick={() => handleToggleSubadminStatus(sub)}
+                                    className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase transition ${
+                                      sub.status === 'active'
+                                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30'
+                                        : 'bg-zinc-500/20 text-zinc-300 border border-zinc-500/40 hover:bg-zinc-500/30'
+                                    } ${isPrimary ? 'cursor-default opacity-80' : 'cursor-pointer'}`}
+                                    title={isPrimary ? 'Primary Master account cannot be toggled' : 'Click to toggle status'}
+                                  >
+                                    {sub.status || 'active'}
+                                  </button>
+                                </td>
+                                <td className="p-3.5 text-right">
+                                  {!isPrimary && sub.email !== (adminUser.email || '').toLowerCase() ? (
+                                    <button
+                                      onClick={() => handleDeleteSubadmin(sub._id || sub.id, sub.name)}
+                                      className="p-1.5 rounded-lg bg-red-500/15 hover:bg-red-500/30 text-red-300 transition cursor-pointer border border-red-500/20"
+                                      title="Remove Sub-Admin"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  ) : (
+                                    <span className="text-[10px] text-ivory-200/40 italic">Protected</span>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* VIEW 2: Add New Subadmin Form */}
+            {subadminModalTab === 'add' && (
+              <form onSubmit={handleCreateSubadmin} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-gold-300 mb-1">
+                      Sub-Admin Full Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={subadminForm.name}
+                      onChange={(e) => setSubadminForm({ ...subadminForm, name: e.target.value })}
+                      placeholder="e.g. Rahul Sharma"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gold-300 mb-1">
+                      Email Address (Login Username) *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={subadminForm.email}
+                      onChange={(e) => setSubadminForm({ ...subadminForm, email: e.target.value })}
+                      placeholder="e.g. rahul@bhagyanetram.com"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-xs font-semibold text-gold-300">
+                        Login Password *
+                      </label>
+                      <button
+                        type="button"
+                        onClick={generateRandomPassword}
+                        className="text-[10px] text-gold-400 hover:underline cursor-pointer"
+                      >
+                        ⚡ Generate Random
+                      </button>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type={showSubadminPassword ? 'text' : 'password'}
+                        required
+                        minLength={6}
+                        value={subadminForm.password}
+                        onChange={(e) => setSubadminForm({ ...subadminForm, password: e.target.value })}
+                        placeholder="Min 6 characters"
+                        className="w-full pl-3.5 pr-10 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none font-mono"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowSubadminPassword(!showSubadminPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-ivory-200/60 hover:text-gold-400 cursor-pointer"
+                      >
+                        {showSubadminPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-gold-300 mb-1">
+                      Role & Access Level
+                    </label>
+                    <select
+                      value={subadminForm.role}
+                      onChange={(e) => setSubadminForm({ ...subadminForm, role: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:border-gold-400 focus:outline-none"
+                    >
+                      <option value="subadmin">Standard Sub-Admin</option>
+                      <option value="admin">Operations Admin</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Permissions checkboxes */}
+                <div className="bg-cosmic-950/70 border border-gold-500/20 rounded-2xl p-4">
+                  <label className="block text-xs font-bold text-gold-300 mb-2">
+                    Module Access Permissions
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs text-ivory-200">
+                    {[
+                      { key: 'astrologers', label: '🔮 Astrologers Directory' },
+                      { key: 'blogs', label: '✍️ Blogs & Wisdom' },
+                      { key: 'queries', label: '📩 Customer Queries' },
+                      { key: 'users', label: '👥 User Accounts' },
+                      { key: 'reviews', label: '⭐ Client Reviews' },
+                    ].map((m) => {
+                      const isChecked = subadminForm.permissions.includes(m.key);
+                      return (
+                        <label
+                          key={m.key}
+                          className="flex items-center gap-2 p-2 rounded-xl bg-cosmic-900 border border-gold-500/15 hover:border-gold-500/40 cursor-pointer transition select-none"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSubadminForm({
+                                  ...subadminForm,
+                                  permissions: [...subadminForm.permissions, m.key],
+                                });
+                              } else {
+                                setSubadminForm({
+                                  ...subadminForm,
+                                  permissions: subadminForm.permissions.filter((p) => p !== m.key),
+                                });
+                              }
+                            }}
+                            className="accent-gold-500 w-4 h-4 rounded cursor-pointer"
+                          />
+                          <span className="text-[11px] font-medium">{m.label}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="pt-2 flex items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setSubadminModalTab('list')}
+                    className="px-4 py-2.5 rounded-xl bg-cosmic-800 text-ivory-200 text-xs font-semibold hover:bg-cosmic-700 transition cursor-pointer"
+                  >
+                    Back to List
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={subadminActionLoading}
+                    className="px-5 py-2.5 rounded-xl gold-btn text-cosmic-950 font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer disabled:opacity-50"
+                  >
+                    {subadminActionLoading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Creating...</span>
+                      </>
+                    ) : (
+                      <>
+                        <UserPlus className="w-4 h-4" />
+                        <span>Create Sub-Admin Account</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}

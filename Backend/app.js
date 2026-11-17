@@ -40,6 +40,11 @@ import {
   getAllUsers,
   updateUser,
   deleteUser,
+  changeAdminPassword,
+  getSubadmins,
+  createSubadmin,
+  updateSubadmin,
+  deleteSubadmin,
 } from './controllers/adminController.js';
 import { getPublicAstrologers } from './controllers/astrologerController.js';
 import { getPublicBlogs, getPublicBlogBySlug, ensureDefaultBlogs } from './controllers/blogController.js';
@@ -131,6 +136,13 @@ app.get("/api/admin/reviews", requireAdmin, getAllReviewsAdmin);
 app.post("/api/admin/reviews", requireAdmin, createReview);
 app.put("/api/admin/reviews/:id", requireAdmin, updateReview);
 app.delete("/api/admin/reviews/:id", requireAdmin, deleteReview);
+
+// Admin Profile & Sub-admin Management
+app.post("/api/admin/change-password", requireAdmin, changeAdminPassword);
+app.get("/api/admin/subadmins", requireAdmin, getSubadmins);
+app.post("/api/admin/subadmins", requireAdmin, createSubadmin);
+app.patch("/api/admin/subadmins/:id", requireAdmin, updateSubadmin);
+app.delete("/api/admin/subadmins/:id", requireAdmin, deleteSubadmin);
 
 // ==========================================
 // HOROSCOPE ROUTES

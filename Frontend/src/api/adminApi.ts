@@ -268,3 +268,63 @@ export const deleteReviewApi = async (id: string) => {
   return data;
 };
 
+// 8. Admin Security & Sub-Administrator Management
+export const changeAdminPasswordApi = async (payload: { currentPassword: string; newPassword: string }) => {
+  const response = await fetch(`${API_BASE}/admin/change-password`, {
+    method: 'POST',
+    headers: getAdminHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Failed to update password');
+  return data;
+};
+
+export const fetchSubadminsApi = async () => {
+  const response = await fetch(`${API_BASE}/admin/subadmins`, {
+    headers: getAdminHeaders(),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Failed to load sub-admins');
+  return data;
+};
+
+export const createSubadminApi = async (payload: {
+  name: string;
+  email: string;
+  password: string;
+  role?: string;
+  permissions?: string[];
+}) => {
+  const response = await fetch(`${API_BASE}/admin/subadmins`, {
+    method: 'POST',
+    headers: getAdminHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Failed to create sub-admin');
+  return data;
+};
+
+export const updateSubadminApi = async (id: string, payload: any) => {
+  const response = await fetch(`${API_BASE}/admin/subadmins/${id}`, {
+    method: 'PATCH',
+    headers: getAdminHeaders(),
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Failed to update sub-admin');
+  return data;
+};
+
+export const deleteSubadminApi = async (id: string) => {
+  const response = await fetch(`${API_BASE}/admin/subadmins/${id}`, {
+    method: 'DELETE',
+    headers: getAdminHeaders(),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Failed to remove sub-admin');
+  return data;
+};
+
+

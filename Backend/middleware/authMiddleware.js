@@ -27,7 +27,12 @@ export const requireAdmin = (req, res, next) => {
   const token = authHeader.split(' ')[1];
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    if (decoded && decoded.role === 'admin') {
+    if (
+      decoded &&
+      (decoded.role === 'admin' ||
+        decoded.role === 'superadmin' ||
+        decoded.role === 'subadmin')
+    ) {
       req.user = decoded;
       return next();
     }

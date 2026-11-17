@@ -4,12 +4,34 @@ import Blog from '../models/Blog.js';
 import Booking from '../models/booking.js';
 import User from '../models/User.js';
 import Review from '../models/Review.js';
+import Admin from '../models/Admin.js';
 import { ensureDefaultBlogs } from './blogController.js';
 import { ensureDefaultReviews } from './reviewController.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'bhagyanetram_secret_key_123';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@bhagyanetram.com';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Admin@2026';
+
+// Ensure master admin exists in MongoDB
+export const ensureMasterAdmin = async () => {
+  try {
+    const count = await Admin.countDocuments({});
+    if (count === 0) {
+      const master = new Admin({
+        name: 'BhagyaNetram Administrator',
+        email: ADMIN_EMAIL.toLowerCase(),
+        role: 'superadmin',
+        permissions: ['astrologers', 'blogs', 'queries', 'users', 'reviews', 'subadmins'],
+        status: 'active',
+      });
+      master.setPassword(ADMIN_PASSWORD);
+      await master.save();
+      console.log('Master Admin auto-seeded successfully.');
+    }
+  } catch (err) {
+    console.warn('ensureMasterAdmin notice:', err.message);
+  }
+};
 
 // ==========================================
 // 1. ADMIN AUTHENTICATION
@@ -24,25 +46,57 @@ export const adminLogin = async (req, res) => {
 
     const cleanEmail = email.trim().toLowerCase();
 
-    // Check credentials against environment configuration or User model
+    // Ensure Master Admin exists
+    await ensureMasterAdmin();
+
+    // 1. Check in Admin collection (handles Master Admin & Sub-Admins)
+    let adminDoc = await Admin.findOne({ email: cleanEmail });
+
+    // 2. Check environment credentials fallback
     const isValidEnvAdmin =
       cleanEmail === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD;
 
-    let userAdmin = null;
-    if (!isValidEnvAdmin) {
-      userAdmin = await User.findOne({ email: cleanEmail, role: 'admin' });
+    if (!adminDoc && isValidEnvAdmin) {
+      adminDoc = new Admin({
+        name: 'BhagyaNetram Administrator',
+        email: cleanEmail,
+        role: 'superadmin',
+        permissions: ['astrologers', 'blogs', 'queries', 'users', 'reviews', 'subadmins'],
+        status: 'active',
+      });
+      adminDoc.setPassword(ADMIN_PASSWORD);
+      await adminDoc.save();
     }
 
-    if (!isValidEnvAdmin && !userAdmin) {
+    if (!adminDoc) {
       return res.status(401).json({ error: 'Invalid admin email or password.' });
     }
+
+    // Verify status
+    if (adminDoc.status === 'inactive') {
+      return res.status(403).json({ error: 'Your administrative account has been deactivated. Contact the Superadmin.' });
+    }
+
+    // Verify password
+    const isPasswordValid =
+      adminDoc.validatePassword(password) ||
+      (isValidEnvAdmin && adminDoc.role === 'superadmin');
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid admin email or password.' });
+    }
+
+    // Update lastLogin timestamp
+    adminDoc.lastLogin = new Date();
+    await adminDoc.save();
 
     // Generate Admin JWT
     const token = jwt.sign(
       {
-        userId: userAdmin ? userAdmin._id : 'admin-master',
+        userId: adminDoc._id,
         email: cleanEmail,
-        role: 'admin',
+        role: adminDoc.role || 'admin',
+        permissions: adminDoc.permissions || [],
       },
       JWT_SECRET,
       { expiresIn: '7d' }
@@ -53,9 +107,11 @@ export const adminLogin = async (req, res) => {
       message: 'Admin authentication successful.',
       token,
       admin: {
+        id: adminDoc._id,
         email: cleanEmail,
-        name: userAdmin ? userAdmin.name : 'BhagyaNetram Administrator',
-        role: 'admin',
+        name: adminDoc.name,
+        role: adminDoc.role || 'admin',
+        permissions: adminDoc.permissions || [],
       },
     });
   } catch (error) {
@@ -487,5 +543,220 @@ export const deleteUser = async (req, res) => {
   } catch (error) {
     console.error('Delete User Error:', error);
     return res.status(500).json({ error: 'Failed to delete user account.' });
+  }
+};
+
+// ==========================================
+// 8. CHANGE ADMIN PASSWORD
+// ==========================================
+export const changeAdminPassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ error: 'Current password and new password are required.' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ error: 'New password must be at least 6 characters long.' });
+    }
+
+    const email = (req.user?.email || '').toLowerCase();
+    let adminDoc = await Admin.findOne({ email });
+
+    // Fallback if not seeded yet
+    if (!adminDoc && email === ADMIN_EMAIL.toLowerCase()) {
+      if (currentPassword !== ADMIN_PASSWORD) {
+        return res.status(400).json({ error: 'Current password is incorrect.' });
+      }
+      adminDoc = new Admin({
+        name: 'BhagyaNetram Administrator',
+        email,
+        role: 'superadmin',
+        permissions: ['astrologers', 'blogs', 'queries', 'users', 'reviews', 'subadmins'],
+        status: 'active',
+      });
+      adminDoc.setPassword(newPassword);
+      await adminDoc.save();
+      return res.status(200).json({ success: true, message: 'Password updated successfully.' });
+    }
+
+    if (!adminDoc) {
+      return res.status(404).json({ error: 'Administrator account not found.' });
+    }
+
+    // Check current password
+    const isCurrentValid =
+      adminDoc.validatePassword(currentPassword) ||
+      (currentPassword === ADMIN_PASSWORD && adminDoc.role === 'superadmin');
+
+    if (!isCurrentValid) {
+      return res.status(400).json({ error: 'Current password is incorrect.' });
+    }
+
+    // Set new password
+    adminDoc.setPassword(newPassword);
+    await adminDoc.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Password changed successfully.',
+    });
+  } catch (error) {
+    console.error('Change Admin Password Error:', error);
+    return res.status(500).json({ error: 'Failed to update admin password.' });
+  }
+};
+
+// ==========================================
+// 9. SUB-ADMIN MANAGEMENT
+// ==========================================
+export const getSubadmins = async (req, res) => {
+  try {
+    await ensureMasterAdmin();
+    const admins = await Admin.find({})
+      .select('-passwordHash -salt')
+      .sort({ role: 1, createdAt: 1 });
+
+    return res.status(200).json({
+      success: true,
+      data: admins,
+    });
+  } catch (error) {
+    console.error('Get Subadmins Error:', error);
+    return res.status(500).json({ error: 'Failed to retrieve sub-admins.' });
+  }
+};
+
+export const createSubadmin = async (req, res) => {
+  try {
+    const { name, email, password, role = 'subadmin', permissions = [] } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'Name, email, and password are required.' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters long.' });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Check if email already exists
+    const existing = await Admin.findOne({ email: cleanEmail });
+    if (existing) {
+      return res.status(400).json({ error: 'An admin or sub-admin with this email already exists.' });
+    }
+
+    const defaultPerms =
+      permissions && permissions.length > 0
+        ? permissions
+        : ['astrologers', 'blogs', 'queries', 'reviews'];
+
+    const newAdmin = new Admin({
+      name: name.trim(),
+      email: cleanEmail,
+      role: role === 'superadmin' ? 'subadmin' : role, // Only primary master is superadmin
+      permissions: defaultPerms,
+      status: 'active',
+    });
+    newAdmin.setPassword(password);
+    await newAdmin.save();
+
+    const result = newAdmin.toObject();
+    delete result.passwordHash;
+    delete result.salt;
+
+    return res.status(201).json({
+      success: true,
+      message: `Sub-admin "${name}" created successfully.`,
+      data: result,
+    });
+  } catch (error) {
+    console.error('Create Subadmin Error:', error);
+    return res.status(500).json({ error: 'Failed to create sub-admin.' });
+  }
+};
+
+export const updateSubadmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, role, permissions, status, password } = req.body;
+
+    const targetAdmin = await Admin.findById(id);
+    if (!targetAdmin) {
+      return res.status(404).json({ error: 'Sub-admin not found.' });
+    }
+
+    // Protect primary superadmin from being demoted or deactivated
+    if (
+      targetAdmin.role === 'superadmin' &&
+      (status === 'inactive' || role === 'subadmin')
+    ) {
+      return res.status(400).json({
+        error: 'Primary Master Superadmin cannot be deactivated or demoted.',
+      });
+    }
+
+    if (name) targetAdmin.name = name.trim();
+    if (role && targetAdmin.role !== 'superadmin') targetAdmin.role = role;
+    if (Array.isArray(permissions)) targetAdmin.permissions = permissions;
+    if (status) targetAdmin.status = status;
+    if (password && password.length >= 6) {
+      targetAdmin.setPassword(password);
+    }
+
+    await targetAdmin.save();
+
+    const result = targetAdmin.toObject();
+    delete result.passwordHash;
+    delete result.salt;
+
+    return res.status(200).json({
+      success: true,
+      message: 'Sub-admin updated successfully.',
+      data: result,
+    });
+  } catch (error) {
+    console.error('Update Subadmin Error:', error);
+    return res.status(500).json({ error: 'Failed to update sub-admin.' });
+  }
+};
+
+export const deleteSubadmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const targetAdmin = await Admin.findById(id);
+    if (!targetAdmin) {
+      return res.status(404).json({ error: 'Sub-admin not found.' });
+    }
+
+    // Prevent deleting the primary superadmin
+    if (
+      targetAdmin.role === 'superadmin' ||
+      targetAdmin.email === ADMIN_EMAIL.toLowerCase()
+    ) {
+      return res.status(400).json({
+        error: 'Cannot remove the Primary Master Superadmin.',
+      });
+    }
+
+    // Prevent self-deletion
+    if (targetAdmin.email === (req.user?.email || '').toLowerCase()) {
+      return res.status(400).json({
+        error: 'You cannot remove your own active administrative account.',
+      });
+    }
+
+    await Admin.findByIdAndDelete(id);
+
+    return res.status(200).json({
+      success: true,
+      message: `Sub-admin "${targetAdmin.name}" removed successfully.`,
+    });
+  } catch (error) {
+    console.error('Delete Subadmin Error:', error);
+    return res.status(500).json({ error: 'Failed to delete sub-admin.' });
   }
 };
