@@ -327,4 +327,21 @@ export const deleteSubadminApi = async (id: string) => {
   return data;
 };
 
+// 10. Activity & Audit Logs
+export const fetchAdminLogsApi = async (params?: { category?: string; search?: string; limit?: number }) => {
+  const query = new URLSearchParams();
+  if (params?.category && params.category !== 'all') query.set('category', params.category);
+  if (params?.search && params.search.trim()) query.set('search', params.search.trim());
+  if (params?.limit) query.set('limit', String(params.limit));
+
+  const qs = query.toString() ? `?${query.toString()}` : '';
+  const response = await fetch(`${API_BASE}/admin/logs${qs}`, {
+    headers: getAdminHeaders(),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Failed to fetch activity logs');
+  return data;
+};
+
+
 

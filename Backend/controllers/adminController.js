@@ -5,6 +5,8 @@ import Booking from '../models/booking.js';
 import User from '../models/User.js';
 import Review from '../models/Review.js';
 import Admin from '../models/Admin.js';
+import AdminLog from '../models/AdminLog.js';
+import { logAdminActivity, seedInitialLogsIfEmpty } from '../services/logService.js';
 import { ensureDefaultBlogs } from './blogController.js';
 import { ensureDefaultReviews } from './reviewController.js';
 
@@ -90,11 +92,22 @@ export const adminLogin = async (req, res) => {
     adminDoc.lastLogin = new Date();
     await adminDoc.save();
 
+    // Log admin login activity
+    await logAdminActivity({
+      req,
+      admin: adminDoc,
+      action: 'LOGIN',
+      category: 'security',
+      description: `${adminDoc.name} (${(adminDoc.role || 'admin').toUpperCase()}) authenticated into Admin Command.`,
+      targetTitle: 'Admin Session',
+    });
+
     // Generate Admin JWT
     const token = jwt.sign(
       {
         userId: adminDoc._id,
         email: cleanEmail,
+        name: adminDoc.name,
         role: adminDoc.role || 'admin',
         permissions: adminDoc.permissions || [],
       },
@@ -221,6 +234,15 @@ export const createAstrologer = async (req, res) => {
       order: Number(order) || 0,
     });
 
+    await logAdminActivity({
+      req,
+      action: 'CREATE_ASTROLOGER',
+      category: 'astrologers',
+      description: `Added astrologer profile "${astrologer.name}" (${astrologer.specialization})`,
+      targetId: astrologer._id,
+      targetTitle: astrologer.name,
+    });
+
     return res.status(201).json({
       success: true,
       message: 'Astrologer created successfully.',
@@ -246,6 +268,15 @@ export const updateAstrologer = async (req, res) => {
       return res.status(404).json({ error: 'Astrologer profile not found.' });
     }
 
+    await logAdminActivity({
+      req,
+      action: 'UPDATE_ASTROLOGER',
+      category: 'astrologers',
+      description: `Updated profile details for astrologer "${astrologer.name}"`,
+      targetId: astrologer._id,
+      targetTitle: astrologer.name,
+    });
+
     return res.status(200).json({
       success: true,
       message: 'Astrologer profile updated successfully.',
@@ -265,6 +296,15 @@ export const deleteAstrologer = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ error: 'Astrologer not found.' });
     }
+
+    await logAdminActivity({
+      req,
+      action: 'DELETE_ASTROLOGER',
+      category: 'astrologers',
+      description: `Removed astrologer "${deleted.name}" from public directory`,
+      targetId: deleted._id,
+      targetTitle: deleted.name,
+    });
 
     return res.status(200).json({
       success: true,
@@ -324,6 +364,15 @@ export const createBlog = async (req, res) => {
       tags: tags || [],
     });
 
+    await logAdminActivity({
+      req,
+      action: 'CREATE_BLOG',
+      category: 'blogs',
+      description: `Published blog article "${blog.title}" in category "${blog.category}"`,
+      targetId: blog._id,
+      targetTitle: blog.title,
+    });
+
     return res.status(201).json({
       success: true,
       message: 'Blog article created successfully.',
@@ -349,6 +398,15 @@ export const updateBlog = async (req, res) => {
       return res.status(404).json({ error: 'Blog not found.' });
     }
 
+    await logAdminActivity({
+      req,
+      action: 'UPDATE_BLOG',
+      category: 'blogs',
+      description: `Updated blog article "${blog.title}"`,
+      targetId: blog._id,
+      targetTitle: blog.title,
+    });
+
     return res.status(200).json({
       success: true,
       message: 'Blog updated successfully.',
@@ -368,6 +426,15 @@ export const deleteBlog = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ error: 'Blog post not found.' });
     }
+
+    await logAdminActivity({
+      req,
+      action: 'DELETE_BLOG',
+      category: 'blogs',
+      description: `Deleted blog article "${deleted.title}"`,
+      targetId: deleted._id,
+      targetTitle: deleted.title,
+    });
 
     return res.status(200).json({
       success: true,
@@ -431,6 +498,16 @@ export const updateQueryStatus = async (req, res) => {
       return res.status(404).json({ error: 'Query not found.' });
     }
 
+    await logAdminActivity({
+      req,
+      action: 'UPDATE_QUERY_STATUS',
+      category: 'queries',
+      description: `Updated status for consultation request from "${query.name}" to ${(query.status || 'PENDING').toUpperCase()}`,
+      targetId: query._id,
+      targetTitle: query.name,
+      details: { status: query.status, adminNotes: query.adminNotes },
+    });
+
     return res.status(200).json({
       success: true,
       message: 'Query updated successfully.',
@@ -450,6 +527,15 @@ export const deleteQuery = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ error: 'Query not found.' });
     }
+
+    await logAdminActivity({
+      req,
+      action: 'DELETE_QUERY',
+      category: 'queries',
+      description: `Deleted consultation query from "${deleted.name}"`,
+      targetId: deleted._id,
+      targetTitle: deleted.name,
+    });
 
     return res.status(200).json({
       success: true,
@@ -515,6 +601,15 @@ export const updateUser = async (req, res) => {
       return res.status(404).json({ error: 'User account not found.' });
     }
 
+    await logAdminActivity({
+      req,
+      action: 'UPDATE_USER',
+      category: 'users',
+      description: `Updated user account details for "${user.name || user.phone}" (Credits: ${user.palmistryCredits})`,
+      targetId: user._id,
+      targetTitle: user.name || user.phone,
+    });
+
     return res.status(200).json({
       success: true,
       message: 'User account updated successfully.',
@@ -534,6 +629,15 @@ export const deleteUser = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ error: 'User account not found.' });
     }
+
+    await logAdminActivity({
+      req,
+      action: 'DELETE_USER',
+      category: 'users',
+      description: `Removed user account "${deleted.name || deleted.phone}"`,
+      targetId: deleted._id,
+      targetTitle: deleted.name || deleted.phone,
+    });
 
     return res.status(200).json({
       success: true,
@@ -597,6 +701,14 @@ export const changeAdminPassword = async (req, res) => {
     // Set new password
     adminDoc.setPassword(newPassword);
     await adminDoc.save();
+
+    await logAdminActivity({
+      req,
+      action: 'CHANGE_PASSWORD',
+      category: 'security',
+      description: `Password updated for admin account "${adminDoc.name}" (${email})`,
+      targetTitle: 'Security Credentials',
+    });
 
     return res.status(200).json({
       success: true,
@@ -663,6 +775,15 @@ export const createSubadmin = async (req, res) => {
     newAdmin.setPassword(password);
     await newAdmin.save();
 
+    await logAdminActivity({
+      req,
+      action: 'CREATE_SUBADMIN',
+      category: 'subadmins',
+      description: `Created new sub-admin "${newAdmin.name}" (${newAdmin.email}) with ${newAdmin.permissions.length} module permissions`,
+      targetId: newAdmin._id,
+      targetTitle: newAdmin.name,
+    });
+
     const result = newAdmin.toObject();
     delete result.passwordHash;
     delete result.salt;
@@ -708,6 +829,15 @@ export const updateSubadmin = async (req, res) => {
 
     await targetAdmin.save();
 
+    await logAdminActivity({
+      req,
+      action: 'UPDATE_SUBADMIN',
+      category: 'subadmins',
+      description: `Updated permissions or status for sub-admin "${targetAdmin.name}" (${targetAdmin.status.toUpperCase()})`,
+      targetId: targetAdmin._id,
+      targetTitle: targetAdmin.name,
+    });
+
     const result = targetAdmin.toObject();
     delete result.passwordHash;
     delete result.salt;
@@ -751,6 +881,15 @@ export const deleteSubadmin = async (req, res) => {
 
     await Admin.findByIdAndDelete(id);
 
+    await logAdminActivity({
+      req,
+      action: 'DELETE_SUBADMIN',
+      category: 'subadmins',
+      description: `Removed sub-admin "${targetAdmin.name}" (${targetAdmin.email}) from administrative roster`,
+      targetId: targetAdmin._id,
+      targetTitle: targetAdmin.name,
+    });
+
     return res.status(200).json({
       success: true,
       message: `Sub-admin "${targetAdmin.name}" removed successfully.`,
@@ -758,5 +897,72 @@ export const deleteSubadmin = async (req, res) => {
   } catch (error) {
     console.error('Delete Subadmin Error:', error);
     return res.status(500).json({ error: 'Failed to delete sub-admin.' });
+  }
+};
+
+// ==========================================
+// 10. ACTIVITY & AUDIT LOGS
+// ==========================================
+export const getAdminLogs = async (req, res) => {
+  try {
+    await seedInitialLogsIfEmpty();
+
+    const { category, search, limit = 200 } = req.query;
+    const currentUser = req.user || {};
+
+    const isSuperAdmin =
+      currentUser.role === 'superadmin' ||
+      (currentUser.email && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+
+    const filter = {};
+
+    // STRICT ROLE SEPARATION:
+    // Super admin can see ALL changes.
+    // Sub-admins can ONLY see changes made by them!
+    if (!isSuperAdmin) {
+      const userEmail = (currentUser.email || '').toLowerCase();
+      const userConditions = [{ adminEmail: userEmail }];
+      if (currentUser.userId) {
+        userConditions.push({ adminId: currentUser.userId });
+      }
+      filter.$or = userConditions;
+    }
+
+    if (category && category !== 'all') {
+      filter.category = category.toLowerCase();
+    }
+
+    if (search && search.trim()) {
+      const regex = new RegExp(search.trim(), 'i');
+      const searchConditions = [
+        { description: regex },
+        { adminName: regex },
+        { adminEmail: regex },
+        { action: regex },
+        { targetTitle: regex },
+      ];
+
+      if (filter.$or) {
+        filter.$and = [{ $or: filter.$or }, { $or: searchConditions }];
+        delete filter.$or;
+      } else {
+        filter.$or = searchConditions;
+      }
+    }
+
+    const logs = await AdminLog.find(filter)
+      .sort({ createdAt: -1 })
+      .limit(Number(limit));
+
+    return res.status(200).json({
+      success: true,
+      isSuperAdmin,
+      currentAdminEmail: currentUser.email,
+      total: logs.length,
+      data: logs,
+    });
+  } catch (error) {
+    console.error('Get Admin Logs Error:', error);
+    return res.status(500).json({ error: 'Failed to retrieve activity logs.' });
   }
 };

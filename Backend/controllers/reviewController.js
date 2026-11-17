@@ -1,4 +1,5 @@
 import Review from '../models/Review.js';
+import { logAdminActivity } from '../services/logService.js';
 
 export const defaultReviews = [
   {
@@ -106,6 +107,15 @@ export const createReview = async (req, res) => {
 
     await review.save();
 
+    await logAdminActivity({
+      req,
+      action: 'CREATE_REVIEW',
+      category: 'reviews',
+      description: `Created testimonial from "${review.name}" (${review.rating}★, ${review.location})`,
+      targetId: review._id,
+      targetTitle: review.name,
+    });
+
     return res.status(201).json({
       success: true,
       message: 'Review created successfully.',
@@ -142,6 +152,15 @@ export const updateReview = async (req, res) => {
       return res.status(404).json({ error: 'Review not found.' });
     }
 
+    await logAdminActivity({
+      req,
+      action: 'UPDATE_REVIEW',
+      category: 'reviews',
+      description: `Updated testimonial from "${review.name}" (Status: ${review.active ? 'ACTIVE' : 'HIDDEN'})`,
+      targetId: review._id,
+      targetTitle: review.name,
+    });
+
     return res.status(200).json({
       success: true,
       message: 'Review updated successfully.',
@@ -161,6 +180,15 @@ export const deleteReview = async (req, res) => {
     if (!deleted) {
       return res.status(404).json({ error: 'Review not found.' });
     }
+
+    await logAdminActivity({
+      req,
+      action: 'DELETE_REVIEW',
+      category: 'reviews',
+      description: `Deleted client testimonial by "${deleted.name}"`,
+      targetId: deleted._id,
+      targetTitle: deleted.name,
+    });
 
     return res.status(200).json({
       success: true,

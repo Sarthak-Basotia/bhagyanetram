@@ -45,7 +45,9 @@ import {
   createSubadmin,
   updateSubadmin,
   deleteSubadmin,
+  getAdminLogs,
 } from './controllers/adminController.js';
+import { seedInitialLogsIfEmpty } from './services/logService.js';
 import { getPublicAstrologers } from './controllers/astrologerController.js';
 import { getPublicBlogs, getPublicBlogBySlug, ensureDefaultBlogs } from './controllers/blogController.js';
 import { createPublicBooking } from './controllers/bookingController.js';
@@ -65,6 +67,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 initializeFestivalQueue();
 ensureDefaultBlogs();
 ensureDefaultReviews();
+seedInitialLogsIfEmpty();
 
 app.use(cors({ origin: "*", credentials: true }));
 
@@ -143,6 +146,9 @@ app.get("/api/admin/subadmins", requireAdmin, getSubadmins);
 app.post("/api/admin/subadmins", requireAdmin, createSubadmin);
 app.patch("/api/admin/subadmins/:id", requireAdmin, updateSubadmin);
 app.delete("/api/admin/subadmins/:id", requireAdmin, deleteSubadmin);
+
+// Admin Activity & Audit Logs
+app.get("/api/admin/logs", requireAdmin, getAdminLogs);
 
 // ==========================================
 // HOROSCOPE ROUTES

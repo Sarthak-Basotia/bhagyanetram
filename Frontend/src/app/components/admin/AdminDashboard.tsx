@@ -27,6 +27,7 @@ import {
   createSubadminApi,
   updateSubadminApi,
   deleteSubadminApi,
+  fetchAdminLogsApi,
 } from '../../../api/adminApi';
 import {
   LayoutDashboard,
@@ -71,7 +72,11 @@ import {
   UserCheck,
   UserX,
   Lock,
-  EyeOff
+  EyeOff,
+  History,
+  ClipboardList,
+  Activity,
+  FileText
 } from 'lucide-react';
 import logoImage from 'figma:asset/d5457f2df4c5864ece0203437258a94768a0cf00.png';
 import panditPranavImg from 'figma:asset/Pandit-Pranav_2.jpeg';
@@ -133,7 +138,7 @@ const exportToCSV = (filename: string, headers: string[], rows: (string | number
   URL.revokeObjectURL(url);
 };
 
-type ActiveTab = 'overview' | 'astrologers' | 'blogs' | 'queries' | 'users' | 'reviews' | 'subadmins';
+type ActiveTab = 'overview' | 'astrologers' | 'blogs' | 'queries' | 'users' | 'reviews' | 'subadmins' | 'logs';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -221,6 +226,17 @@ export default function AdminDashboard() {
   });
   const [showSubadminPassword, setShowSubadminPassword] = useState(false);
   const [subadminActionLoading, setSubadminActionLoading] = useState(false);
+
+  // Activity & Audit Logs State
+  const [logs, setLogs] = useState<any[]>([]);
+  const [logsLoading, setLogsLoading] = useState(false);
+  const [isLogsSuperAdmin, setIsLogsSuperAdmin] = useState(true);
+  const [logsSearch, setLogsSearch] = useState('');
+  const [logsCategoryFilter, setLogsCategoryFilter] = useState('all');
+  const [logsActionFilter, setLogsActionFilter] = useState('all');
+  const [logsSortField, setLogsSortField] = useState<'createdAt' | 'adminName' | 'category' | 'action'>('createdAt');
+  const [logsSortOrder, setLogsSortOrder] = useState<'asc' | 'desc'>('desc');
+  const [selectedLogDetail, setSelectedLogDetail] = useState<any | null>(null);
 
   // Helper to toggle sort column
   const toggleSort = (
@@ -419,10 +435,26 @@ export default function AdminDashboard() {
     }
   };
 
+  const loadLogs = async () => {
+    setLogsLoading(true);
+    try {
+      const res = await fetchAdminLogsApi();
+      if (res && res.success && Array.isArray(res.data)) {
+        setLogs(res.data);
+        setIsLogsSuperAdmin(Boolean(res.isSuperAdmin));
+      }
+    } catch (err: any) {
+      console.warn('Error loading activity logs:', err.message);
+    } finally {
+      setLogsLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadStats();
     loadReviews();
     loadSubadmins();
+    loadLogs();
   }, []);
 
   useEffect(() => {
@@ -432,11 +464,13 @@ export default function AdminDashboard() {
     if (activeTab === 'users') loadUsers();
     if (activeTab === 'reviews') loadReviews();
     if (activeTab === 'subadmins') loadSubadmins();
+    if (activeTab === 'logs') loadLogs();
     if (activeTab === 'overview') {
       loadStats();
       loadQueries();
       loadReviews();
       loadSubadmins();
+      loadLogs();
     }
   }, [activeTab, queryStatusFilter]);
 
@@ -655,9 +689,90 @@ export default function AdminDashboard() {
       });
   }, [reviews, reviewStatusFilter, reviewRatingFilter, reviewSearch, reviewSortField, reviewSortOrder]);
 
+  // 6. Activity & Audit Logs
+  const filteredAndSortedLogs = useMemo(() => {
+    return logs
+      .filter((l: any) => {
+        // Category filter
+        if (logsCategoryFilter !== 'all' && (l.category || '').toLowerCase() !== logsCategoryFilter.toLowerCase()) {
+          return false;
+        }
+
+        // Action filter
+        if (logsActionFilter !== 'all') {
+          const act = (l.action || '').toLowerCase();
+          if (logsActionFilter === 'create' && !act.includes('create') && !act.includes('init')) return false;
+          if (logsActionFilter === 'update' && !act.includes('update')) return false;
+          if (logsActionFilter === 'delete' && !act.includes('delete') && !act.includes('remove')) return false;
+          if (logsActionFilter === 'status' && !act.includes('status')) return false;
+          if (logsActionFilter === 'security' && !act.includes('password') && !act.includes('login') && l.category !== 'security') return false;
+        }
+
+        // Search term filter
+        if (logsSearch.trim()) {
+          const q = logsSearch.toLowerCase();
+          const descM = (l.description || '').toLowerCase().includes(q);
+          const adminM = (l.adminName || '').toLowerCase().includes(q);
+          const emailM = (l.adminEmail || '').toLowerCase().includes(q);
+          const actionM = (l.action || '').toLowerCase().includes(q);
+          const targetM = (l.targetTitle || '').toLowerCase().includes(q);
+          const catM = (l.category || '').toLowerCase().includes(q);
+          if (!descM && !adminM && !emailM && !actionM && !targetM && !catM) return false;
+        }
+
+        return true;
+      })
+      .sort((a: any, b: any) => {
+        let valA = a[logsSortField];
+        let valB = b[logsSortField];
+
+        if (logsSortField === 'createdAt') {
+          valA = new Date(valA || 0).getTime();
+          valB = new Date(valB || 0).getTime();
+        } else if (typeof valA === 'string') {
+          valA = (valA || '').toLowerCase();
+          valB = (valB || '').toLowerCase();
+        }
+
+        if (valA < valB) return logsSortOrder === 'asc' ? -1 : 1;
+        if (valA > valB) return logsSortOrder === 'asc' ? 1 : -1;
+        return 0;
+      });
+  }, [logs, logsCategoryFilter, logsActionFilter, logsSearch, logsSortField, logsSortOrder]);
+
   // ==========================================
   // CSV EXPORT HANDLERS
   // ==========================================
+  const exportLogsCSV = () => {
+    if (!filteredAndSortedLogs || filteredAndSortedLogs.length === 0) {
+      showToast('No activity logs available to export.');
+      return;
+    }
+    const headers = [
+      'Timestamp (IST)',
+      'Admin Name',
+      'Admin Email',
+      'Administrative Role',
+      'Category Module',
+      'Action Code',
+      'Event Description',
+      'Target Resource',
+      'Client IP / Device',
+    ];
+    const rows = filteredAndSortedLogs.map((l: any) => [
+      new Date(l.createdAt).toLocaleString('en-IN'),
+      l.adminName || 'Admin',
+      l.adminEmail || '',
+      (l.adminRole || 'subadmin').toUpperCase(),
+      (l.category || 'system').toUpperCase(),
+      l.action || '',
+      l.description || '',
+      l.targetTitle || l.targetId || '',
+      l.ip || '127.0.0.1',
+    ]);
+    exportToCSV(`bhagyanetram_audit_logs_${new Date().toISOString().slice(0, 10)}.csv`, headers, rows);
+    showToast(`Exported ${rows.length} audit log events to CSV.`);
+  };
   const exportQueriesCSV = (items?: any[]) => {
     const list = items || filteredAndSortedQueries;
     if (!list || list.length === 0) {
@@ -1470,6 +1585,27 @@ export default function AdminDashboard() {
               </span>
             </button>
 
+            {/* Activity & Audit Logs */}
+            <button
+              onClick={() => {
+                setActiveTab('logs');
+                loadLogs();
+              }}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'logs'
+                  ? 'bg-gold-500 text-cosmic-950 shadow-gold-glow font-bold'
+                  : 'text-ivory-200/80 hover:bg-cosmic-800 hover:text-gold-300'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <History className="w-4 h-4" />
+                <span>Activity Logs</span>
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20">
+                {logs.length}
+              </span>
+            </button>
+
             {/* <button
               onClick={() => {
                 setActiveTab('subadmins');
@@ -1529,6 +1665,7 @@ export default function AdminDashboard() {
               {activeTab === 'users' && 'Registered User Accounts'}
               {activeTab === 'reviews' && 'Manage Client Reviews & Testimonials'}
               {activeTab === 'subadmins' && 'Sub-Administrator Management'}
+              {activeTab === 'logs' && 'Administrative Activity & Audit Logs'}
             </h2>
           </div>
 
@@ -3111,6 +3248,375 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* =========================================================
+              TAB 8: ACTIVITY & AUDIT LOGS
+          ========================================================= */}
+          {activeTab === 'logs' && (
+            <div className="space-y-6">
+              {/* Header Banner */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2.5 mb-1">
+                    <h3 className="font-display font-bold text-xl text-white">
+                      Administrative Activity &amp; Audit Logs
+                    </h3>
+                    {isLogsSuperAdmin ? (
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-gold-500/20 text-gold-300 border border-gold-500/40 flex items-center gap-1.5 shadow-xs">
+                        <ShieldCheck className="w-3.5 h-3.5 text-gold-400" />
+                        <span>Super Admin (Full Organization Trail)</span>
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-cosmic-800 text-gold-300 border border-gold-500/30 flex items-center gap-1.5 shadow-xs">
+                        <ShieldAlert className="w-3.5 h-3.5 text-gold-400" />
+                        <span>Sub-Admin (My Activity Only)</span>
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-ivory-200/60">
+                    {isLogsSuperAdmin
+                      ? 'Comprehensive organization-wide audit trail. Super admin view displays every modification, deletion, and addition across the system.'
+                      : 'Personal administrative audit trail. Displays all actions, modifications, and updates performed by your account.'}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={exportLogsCSV}
+                    className="px-4 py-2 rounded-xl gold-btn text-cosmic-950 font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer hover:scale-[1.02] transition"
+                    title="Export filtered activity logs to CSV"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Export CSV</span>
+                  </button>
+                  <button
+                    onClick={loadLogs}
+                    className="p-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-gold-400 hover:bg-cosmic-800 transition cursor-pointer"
+                    title="Refresh Audit Logs"
+                  >
+                    <RefreshCw className={`w-4 h-4 ${logsLoading ? 'animate-spin' : ''}`} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Quick Metrics Cards */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div className="bg-cosmic-900/90 border border-gold-500/25 rounded-2xl p-4 shadow-gold-card">
+                  <span className="text-[11px] uppercase tracking-wider text-ivory-200/60 font-semibold block mb-1">
+                    Tracked Events
+                  </span>
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-2xl font-display font-bold text-white">
+                      {logs.length}
+                    </span>
+                    <span className="text-xs text-gold-400 font-medium">Recorded</span>
+                  </div>
+                </div>
+
+                <div className="bg-cosmic-900/90 border border-gold-500/25 rounded-2xl p-4 shadow-gold-card">
+                  <span className="text-[11px] uppercase tracking-wider text-ivory-200/60 font-semibold block mb-1">
+                    Content Updates
+                  </span>
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-2xl font-display font-bold text-white">
+                      {logs.filter((l) => l.category === 'blogs' || l.category === 'astrologers').length}
+                    </span>
+                    <span className="text-xs text-sky-400 font-medium">Blogs &amp; Astrologers</span>
+                  </div>
+                </div>
+
+                <div className="bg-cosmic-900/90 border border-gold-500/25 rounded-2xl p-4 shadow-gold-card">
+                  <span className="text-[11px] uppercase tracking-wider text-ivory-200/60 font-semibold block mb-1">
+                    Inquiries &amp; Reviews
+                  </span>
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-2xl font-display font-bold text-white">
+                      {logs.filter((l) => l.category === 'queries' || l.category === 'reviews').length}
+                    </span>
+                    <span className="text-xs text-emerald-400 font-medium">Clients</span>
+                  </div>
+                </div>
+
+                <div className="bg-cosmic-900/90 border border-gold-500/25 rounded-2xl p-4 shadow-gold-card">
+                  <span className="text-[11px] uppercase tracking-wider text-ivory-200/60 font-semibold block mb-1">
+                    Security &amp; Auth
+                  </span>
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-2xl font-display font-bold text-white">
+                      {logs.filter((l) => l.category === 'security' || l.category === 'subadmins').length}
+                    </span>
+                    <span className="text-xs text-purple-400 font-medium">Accounts</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Advanced Filter Toolbar */}
+              <div className="bg-cosmic-900/90 border border-gold-500/30 rounded-2xl p-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  {/* Category Filter Pills */}
+                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                    {[
+                      { key: 'all', label: 'All Modules' },
+                      { key: 'astrologers', label: 'Astrologers' },
+                      { key: 'blogs', label: 'Blogs' },
+                      { key: 'queries', label: 'Inquiries' },
+                      { key: 'reviews', label: 'Reviews' },
+                      { key: 'users', label: 'Users' },
+                      { key: 'subadmins', label: 'Sub-Admins' },
+                      { key: 'security', label: 'Security' },
+                    ].map((item) => (
+                      <button
+                        key={item.key}
+                        onClick={() => setLogsCategoryFilter(item.key)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition cursor-pointer border ${
+                          logsCategoryFilter === item.key
+                            ? 'bg-gold-500 text-cosmic-950 border-gold-500 font-bold shadow-xs'
+                            : 'bg-cosmic-950 text-ivory-200/70 border-gold-500/20 hover:bg-cosmic-800'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  <span className="text-xs text-gold-400 font-semibold ml-auto">
+                    {filteredAndSortedLogs.length} of {logs.length} Events
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-gold-500/15">
+                  {/* Search Input */}
+                  <div className="relative">
+                    <Search className="w-3.5 h-3.5 text-gold-500/60 absolute left-3 top-3" />
+                    <input
+                      type="text"
+                      value={logsSearch}
+                      onChange={(e) => setLogsSearch(e.target.value)}
+                      placeholder="Search log description, admin, action, target..."
+                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white placeholder-cosmic-600 text-xs focus:outline-none focus:border-gold-400"
+                    />
+                  </div>
+
+                  {/* Action Filter */}
+                  <div>
+                    <select
+                      value={logsActionFilter}
+                      onChange={(e) => setLogsActionFilter(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="all">All Action Types</option>
+                      <option value="create">Created / Added (CREATE_*)</option>
+                      <option value="update">Updated / Modified (UPDATE_*)</option>
+                      <option value="delete">Deleted / Removed (DELETE_*)</option>
+                      <option value="status">Status Changes (STATUS_*)</option>
+                      <option value="security">Security &amp; Auth (LOGIN, PASSWORD)</option>
+                    </select>
+                  </div>
+
+                  {/* Sort Selector */}
+                  <div>
+                    <select
+                      value={`${logsSortField}-${logsSortOrder}`}
+                      onChange={(e) => {
+                        const [field, order] = e.target.value.split('-');
+                        setLogsSortField(field as any);
+                        setLogsSortOrder(order as any);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="createdAt-desc">Timestamp: Newest First</option>
+                      <option value="createdAt-asc">Timestamp: Oldest First</option>
+                      <option value="adminName-asc">Admin Name: A to Z</option>
+                      <option value="adminName-desc">Admin Name: Z to A</option>
+                      <option value="category-asc">Category: A to Z</option>
+                      <option value="action-asc">Action: A to Z</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Audit Table */}
+              {logsLoading ? (
+                <div className="py-20 text-center text-gold-400 flex flex-col items-center justify-center">
+                  <Loader2 className="w-8 h-8 animate-spin mb-2" />
+                  <span className="text-xs font-semibold">Loading Activity Logs...</span>
+                </div>
+              ) : (
+                <div className="bg-cosmic-900 border border-gold-500/30 rounded-2xl overflow-hidden shadow-gold-card">
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-xs">
+                      <thead>
+                        <tr className="border-b border-gold-500/20 bg-cosmic-950/60 text-gold-400">
+                          <th
+                            onClick={() => toggleSort('createdAt', logsSortField, logsSortOrder, setLogsSortField, setLogsSortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Timestamp {renderSortIndicator('createdAt', logsSortField, logsSortOrder)}
+                          </th>
+                          <th
+                            onClick={() => toggleSort('adminName', logsSortField, logsSortOrder, setLogsSortField, setLogsSortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Admin User {renderSortIndicator('adminName', logsSortField, logsSortOrder)}
+                          </th>
+                          <th
+                            onClick={() => toggleSort('category', logsSortField, logsSortOrder, setLogsSortField, setLogsSortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Category {renderSortIndicator('category', logsSortField, logsSortOrder)}
+                          </th>
+                          <th
+                            onClick={() => toggleSort('action', logsSortField, logsSortOrder, setLogsSortField, setLogsSortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Action {renderSortIndicator('action', logsSortField, logsSortOrder)}
+                          </th>
+                          <th className="p-4 font-semibold">Modification Details</th>
+                          <th className="p-4 font-semibold">Target Resource</th>
+                          <th className="p-4 font-semibold">IP / Device</th>
+                          <th className="p-4 font-semibold text-right">Details</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gold-500/10 text-ivory-100">
+                        {filteredAndSortedLogs.map((log: any) => {
+                          const isSuper = (log.adminRole || '').toLowerCase() === 'superadmin' || log.adminEmail === 'admin@bhagyanetram.com';
+                          const actionUpper = (log.action || '').toUpperCase();
+                          const isCreate = actionUpper.includes('CREATE') || actionUpper.includes('INIT');
+                          const isDelete = actionUpper.includes('DELETE') || actionUpper.includes('REMOVE');
+                          const isUpdate = actionUpper.includes('UPDATE') || actionUpper.includes('CHANGE');
+                          const isAuth = actionUpper.includes('LOGIN') || actionUpper.includes('PASSWORD');
+
+                          return (
+                            <tr key={log._id || log.id || Math.random()} className="hover:bg-cosmic-800/40 transition">
+                              {/* Timestamp */}
+                              <td className="p-4 whitespace-nowrap">
+                                <div className="text-white font-medium">
+                                  {new Date(log.createdAt).toLocaleDateString('en-IN', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                    year: 'numeric',
+                                  })}
+                                </div>
+                                <div className="text-[10px] text-ivory-200/50 flex items-center gap-1 mt-0.5">
+                                  <Clock className="w-3 h-3 text-gold-400/60" />
+                                  <span>
+                                    {new Date(log.createdAt).toLocaleTimeString('en-IN', {
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                    })}
+                                  </span>
+                                </div>
+                              </td>
+
+                              {/* Admin */}
+                              <td className="p-4">
+                                <div className="flex items-center gap-2.5">
+                                  <div className="w-7 h-7 rounded-full bg-cosmic-950 border border-gold-500/40 flex items-center justify-center text-gold-400 font-bold text-[10px]">
+                                    {(log.adminName || 'A').slice(0, 2).toUpperCase()}
+                                  </div>
+                                  <div>
+                                    <div className="font-semibold text-white text-xs flex items-center gap-1.5">
+                                      <span>{log.adminName || 'Admin'}</span>
+                                      {isSuper ? (
+                                        <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-gold-500/20 text-gold-400 border border-gold-500/30">
+                                          SUPER ADMIN
+                                        </span>
+                                      ) : (
+                                        <span className="px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30">
+                                          SUB ADMIN
+                                        </span>
+                                      )}
+                                    </div>
+                                    <span className="text-[10px] text-ivory-200/60 block">
+                                      {log.adminEmail}
+                                    </span>
+                                  </div>
+                                </div>
+                              </td>
+
+                              {/* Category */}
+                              <td className="p-4 whitespace-nowrap">
+                                <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-cosmic-950 border border-gold-500/20 text-gold-300">
+                                  {log.category || 'system'}
+                                </span>
+                              </td>
+
+                              {/* Action */}
+                              <td className="p-4 whitespace-nowrap">
+                                <span
+                                  className={`px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider ${
+                                    isCreate
+                                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                      : isDelete
+                                      ? 'bg-red-500/20 text-red-300 border border-red-500/30'
+                                      : isUpdate
+                                      ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
+                                      : isAuth
+                                      ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                                      : 'bg-gold-500/20 text-gold-300 border border-gold-500/30'
+                                  }`}
+                                >
+                                  {log.action}
+                                </span>
+                              </td>
+
+                              {/* Description */}
+                              <td className="p-4 max-w-xs md:max-w-md">
+                                <p className="text-xs text-ivory-100/90 leading-snug">
+                                  {log.description}
+                                </p>
+                              </td>
+
+                              {/* Target */}
+                              <td className="p-4 whitespace-nowrap">
+                                {log.targetTitle ? (
+                                  <span className="px-2 py-0.5 rounded-lg bg-cosmic-950/80 text-gold-300 border border-gold-500/20 text-[11px] font-medium">
+                                    {log.targetTitle}
+                                  </span>
+                                ) : (
+                                  <span className="text-ivory-200/40 text-[11px]">—</span>
+                                )}
+                              </td>
+
+                              {/* IP */}
+                              <td className="p-4 whitespace-nowrap text-[11px] text-ivory-200/60 font-mono">
+                                {log.ip || '127.0.0.1'}
+                              </td>
+
+                              {/* Details button */}
+                              <td className="p-4 text-right whitespace-nowrap">
+                                <button
+                                  onClick={() => setSelectedLogDetail(log)}
+                                  className="p-1.5 rounded-lg bg-cosmic-950 border border-gold-500/20 text-gold-400 hover:text-white hover:bg-gold-500/20 transition cursor-pointer"
+                                  title="Inspect Log Metadata"
+                                >
+                                  <Eye className="w-3.5 h-3.5" />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+
+                        {filteredAndSortedLogs.length === 0 && (
+                          <tr>
+                            <td colSpan={8} className="p-12 text-center text-ivory-200/50">
+                              <History className="w-8 h-8 text-gold-500/40 mx-auto mb-2" />
+                              <p className="text-sm font-semibold text-white">No activity logs found</p>
+                              <p className="text-xs text-ivory-200/60 mt-1">
+                                {isLogsSuperAdmin
+                                  ? 'No administrative changes match the selected filter criteria.'
+                                  : 'No activity records found under your sub-admin account for this filter.'}
+                              </p>
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
         </div>
       </main>
 
@@ -4296,6 +4802,97 @@ export default function AdminDashboard() {
                 </div>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: INSPECT ACTIVITY LOG DETAIL
+      ========================================================= */}
+      {selectedLogDetail && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-lg bg-cosmic-900 border border-gold-500/40 rounded-3xl p-6 shadow-2xl relative my-8">
+            <div className="flex items-center justify-between pb-4 border-b border-gold-500/20 mb-5">
+              <div className="flex items-center gap-2">
+                <History className="w-5 h-5 text-gold-400" />
+                <h3 className="font-display font-bold text-lg text-white">
+                  Activity Audit Event Details
+                </h3>
+              </div>
+              <button
+                onClick={() => setSelectedLogDetail(null)}
+                className="p-1.5 rounded-full hover:bg-cosmic-800 text-ivory-200/70 hover:text-white cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-4 text-xs">
+              <div className="p-3.5 rounded-2xl bg-cosmic-950 border border-gold-500/20 space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-ivory-200/60 font-medium">Action Code:</span>
+                  <span className="font-bold text-gold-300 font-mono">{selectedLogDetail.action}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-ivory-200/60 font-medium">Category Module:</span>
+                  <span className="uppercase text-gold-400 font-bold">{selectedLogDetail.category}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-ivory-200/60 font-medium">Performed By:</span>
+                  <span className="text-white font-semibold">
+                    {selectedLogDetail.adminName} ({selectedLogDetail.adminEmail})
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-ivory-200/60 font-medium">Admin Role:</span>
+                  <span className="uppercase text-amber-300 font-semibold">{selectedLogDetail.adminRole}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-ivory-200/60 font-medium">Timestamp (IST):</span>
+                  <span className="text-ivory-100 font-mono">
+                    {new Date(selectedLogDetail.createdAt).toLocaleString('en-IN')}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-ivory-200/60 font-medium">Client IP / Device:</span>
+                  <span className="text-ivory-100 font-mono">{selectedLogDetail.ip || '127.0.0.1'}</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-gold-400 font-semibold mb-1">Description:</label>
+                <p className="p-3 rounded-xl bg-cosmic-950 border border-gold-500/20 text-ivory-100 leading-relaxed">
+                  {selectedLogDetail.description}
+                </p>
+              </div>
+
+              {selectedLogDetail.targetTitle && (
+                <div>
+                  <label className="block text-gold-400 font-semibold mb-1">Target Resource:</label>
+                  <p className="p-2.5 rounded-xl bg-cosmic-950 border border-gold-500/20 text-gold-300 font-medium">
+                    {selectedLogDetail.targetTitle} {selectedLogDetail.targetId ? `(ID: ${selectedLogDetail.targetId})` : ''}
+                  </p>
+                </div>
+              )}
+
+              {selectedLogDetail.details && (
+                <div>
+                  <label className="block text-gold-400 font-semibold mb-1">Extended JSON Metadata:</label>
+                  <pre className="p-3 rounded-xl bg-cosmic-950 border border-gold-500/20 text-emerald-300 font-mono text-[11px] overflow-x-auto max-h-40">
+                    {JSON.stringify(selectedLogDetail.details, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={() => setSelectedLogDetail(null)}
+                className="px-5 py-2 rounded-xl gold-btn text-cosmic-950 font-bold text-xs cursor-pointer shadow-md"
+              >
+                Close
+              </button>
+            </div>
           </div>
         </div>
       )}
