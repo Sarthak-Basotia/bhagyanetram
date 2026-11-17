@@ -385,6 +385,34 @@ export default function AdminDashboard() {
   const [logsSortOrder, setLogsSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedLogDetail, setSelectedLogDetail] = useState<any | null>(null);
 
+  // Profile Dropdown & Security Modals
+  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
+  const [subadminsModalOpen, setSubadminsModalOpen] = useState(false);
+
+  // Change Password Form State
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [changePasswordLoading, setChangePasswordLoading] = useState(false);
+  const [changePasswordError, setChangePasswordError] = useState<string | null>(null);
+
+  // Subadmins State
+  const [subadmins, setSubadmins] = useState<any[]>([]);
+  const [subadminsLoading, setSubadminsLoading] = useState(false);
+  const [subadminModalTab, setSubadminModalTab] = useState<'list' | 'add'>('list');
+  const [subadminForm, setSubadminForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    role: 'subadmin',
+    permissions: ['astrologers', 'blogs', 'queries', 'reviews', 'users'],
+  });
+  const [showSubadminPassword, setShowSubadminPassword] = useState(false);
+  const [subadminActionLoading, setSubadminActionLoading] = useState(false);
+
   // Helper to toggle sort column
   const toggleSort = (
     field: any,
