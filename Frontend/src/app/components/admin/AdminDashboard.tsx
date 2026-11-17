@@ -138,6 +138,154 @@ const exportToCSV = (filename: string, headers: string[], rows: (string | number
   URL.revokeObjectURL(url);
 };
 
+// ==========================================
+// DATE FILTER UTILITY & MATCHING LOGIC
+// ==========================================
+const matchesDateFilter = (
+  rawDate: any,
+  datePreset: string,
+  startDate?: string,
+  endDate?: string
+): boolean => {
+  if (!datePreset || datePreset === 'all') {
+    if (!startDate && !endDate) return true;
+  }
+
+  if (!rawDate) return false;
+  const d = new Date(rawDate);
+  if (isNaN(d.getTime())) return false;
+
+  const now = new Date();
+
+  if (datePreset === 'today') {
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+    const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+    return d >= startOfToday && d <= endOfToday;
+  }
+
+  if (datePreset === 'yesterday') {
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const startOfYesterday = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 0, 0, 0, 0);
+    const endOfYesterday = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate(), 23, 59, 59, 999);
+    return d >= startOfYesterday && d <= endOfYesterday;
+  }
+
+  if (datePreset === 'last7') {
+    const sevenDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 7, 0, 0, 0, 0);
+    return d >= sevenDaysAgo && d <= now;
+  }
+
+  if (datePreset === 'last30') {
+    const thirtyDaysAgo = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30, 0, 0, 0, 0);
+    return d >= thirtyDaysAgo && d <= now;
+  }
+
+  if (datePreset === 'thisMonth') {
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+    return d >= startOfMonth && d <= endOfMonth;
+  }
+
+  // Custom or manual date range bounds
+  if (startDate) {
+    const s = new Date(startDate + 'T00:00:00');
+    if (!isNaN(s.getTime()) && d < s) return false;
+  }
+  if (endDate) {
+    const e = new Date(endDate + 'T23:59:59.999');
+    if (!isNaN(e.getTime()) && d > e) return false;
+  }
+
+  return true;
+};
+
+// Reusable Date Filter UI Bar
+const TableDateFilter = ({
+  preset,
+  setPreset,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
+  compact = false,
+}: {
+  preset: string;
+  setPreset: (v: string) => void;
+  startDate: string;
+  setStartDate: (v: string) => void;
+  endDate: string;
+  setEndDate: (v: string) => void;
+  compact?: boolean;
+}) => {
+  const isFiltered = preset !== 'all' || Boolean(startDate) || Boolean(endDate);
+
+  return (
+    <div className={`flex flex-wrap items-center gap-1.5 ${compact ? 'text-[11px]' : 'text-xs'}`}>
+      <div className="relative">
+        <Calendar className="w-3.5 h-3.5 text-gold-500/70 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+        <select
+          value={preset}
+          onChange={(e) => {
+            const val = e.target.value;
+            setPreset(val);
+            if (val !== 'custom') {
+              setStartDate('');
+              setEndDate('');
+            }
+          }}
+          className={`pl-8 pr-2.5 py-1.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white font-medium focus:outline-none focus:border-gold-400 cursor-pointer ${
+            preset !== 'all' ? 'border-gold-500 text-gold-300 font-semibold' : ''
+          }`}
+        >
+          <option value="all">📅 All Dates</option>
+          <option value="today">Today</option>
+          <option value="yesterday">Yesterday</option>
+          <option value="last7">Last 7 Days</option>
+          <option value="last30">Last 30 Days</option>
+          <option value="thisMonth">This Month</option>
+          <option value="custom">Custom Range...</option>
+        </select>
+      </div>
+
+      {preset === 'custom' && (
+        <div className="flex items-center gap-1 bg-cosmic-950 px-2.5 py-1 rounded-xl border border-gold-500/30">
+          <span className="text-[10px] text-gold-400 font-semibold uppercase">From</span>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="bg-transparent text-white text-xs focus:outline-none [color-scheme:dark]"
+            title="Filter from date"
+          />
+          <span className="text-[10px] text-gold-400 font-semibold uppercase ml-1">To</span>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="bg-transparent text-white text-xs focus:outline-none [color-scheme:dark]"
+            title="Filter to date"
+          />
+        </div>
+      )}
+
+      {isFiltered && (
+        <button
+          onClick={() => {
+            setPreset('all');
+            setStartDate('');
+            setEndDate('');
+          }}
+          className="p-1 rounded-lg text-gold-400 hover:text-white hover:bg-cosmic-800 transition cursor-pointer"
+          title="Reset Date Filter"
+        >
+          <X className="w-3.5 h-3.5" />
+        </button>
+      )}
+    </div>
+  );
+};
+
 type ActiveTab = 'overview' | 'astrologers' | 'blogs' | 'queries' | 'users' | 'reviews' | 'subadmins' | 'logs';
 
 export default function AdminDashboard() {
@@ -170,11 +318,17 @@ export default function AdminDashboard() {
   const [queryStatusFilter, setQueryStatusFilter] = useState('all');
   const [queryServiceFilter, setQueryServiceFilter] = useState('all');
   const [querySearch, setQuerySearch] = useState('');
+  const [queryDatePreset, setQueryDatePreset] = useState('all');
+  const [queryStartDate, setQueryStartDate] = useState('');
+  const [queryEndDate, setQueryEndDate] = useState('');
   const [querySortField, setQuerySortField] = useState<'createdAt' | 'name' | 'services' | 'status'>('createdAt');
   const [querySortOrder, setQuerySortOrder] = useState<'asc' | 'desc'>('desc');
 
   // Overview Table Filters & Sort
   const [overviewStatusFilter, setOverviewStatusFilter] = useState('all');
+  const [overviewDatePreset, setOverviewDatePreset] = useState('all');
+  const [overviewStartDate, setOverviewStartDate] = useState('');
+  const [overviewEndDate, setOverviewEndDate] = useState('');
   const [overviewSortField, setOverviewSortField] = useState<'createdAt' | 'name' | 'services' | 'status'>('createdAt');
   const [overviewSortOrder, setOverviewSortOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -182,6 +336,9 @@ export default function AdminDashboard() {
   const [userSearch, setUserSearch] = useState('');
   const [userStatusFilter, setUserStatusFilter] = useState('all');
   const [userCreditsFilter, setUserCreditsFilter] = useState('all');
+  const [userDatePreset, setUserDatePreset] = useState('all');
+  const [userStartDate, setUserStartDate] = useState('');
+  const [userEndDate, setUserEndDate] = useState('');
   const [userSortField, setUserSortField] = useState<'createdAt' | 'name' | 'palmistryCredits' | 'status'>('createdAt');
   const [userSortOrder, setUserSortOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -189,6 +346,9 @@ export default function AdminDashboard() {
   const [blogSearch, setBlogSearch] = useState('');
   const [blogCategoryFilter, setBlogCategoryFilter] = useState('all');
   const [blogStatusFilter, setBlogStatusFilter] = useState('all');
+  const [blogDatePreset, setBlogDatePreset] = useState('all');
+  const [blogStartDate, setBlogStartDate] = useState('');
+  const [blogEndDate, setBlogEndDate] = useState('');
   const [blogSortField, setBlogSortField] = useState<'createdAt' | 'title' | 'views' | 'category' | 'published'>('createdAt');
   const [blogSortOrder, setBlogSortOrder] = useState<'asc' | 'desc'>('desc');
 
@@ -196,36 +356,20 @@ export default function AdminDashboard() {
   const [reviewSearch, setReviewSearch] = useState('');
   const [reviewRatingFilter, setReviewRatingFilter] = useState('all');
   const [reviewStatusFilter, setReviewStatusFilter] = useState('all');
+  const [reviewDatePreset, setReviewDatePreset] = useState('all');
+  const [reviewStartDate, setReviewStartDate] = useState('');
+  const [reviewEndDate, setReviewEndDate] = useState('');
   const [reviewSortField, setReviewSortField] = useState<'createdAt' | 'rating' | 'name'>('createdAt');
   const [reviewSortOrder, setReviewSortOrder] = useState<'asc' | 'desc'>('desc');
 
-  // Profile Dropdown & Security Modals
-  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [changePasswordModalOpen, setChangePasswordModalOpen] = useState(false);
-  const [subadminsModalOpen, setSubadminsModalOpen] = useState(false);
-
-  // Change Password Form State
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [changePasswordLoading, setChangePasswordLoading] = useState(false);
-  const [changePasswordError, setChangePasswordError] = useState<string | null>(null);
-
-  // Subadmins State
-  const [subadmins, setSubadmins] = useState<any[]>([]);
-  const [subadminsLoading, setSubadminsLoading] = useState(false);
-  const [subadminModalTab, setSubadminModalTab] = useState<'list' | 'add'>('list');
-  const [subadminForm, setSubadminForm] = useState({
-    name: '',
-    email: '',
-    password: '',
-    role: 'subadmin',
-    permissions: ['astrologers', 'blogs', 'queries', 'reviews', 'users'],
-  });
-  const [showSubadminPassword, setShowSubadminPassword] = useState(false);
-  const [subadminActionLoading, setSubadminActionLoading] = useState(false);
+  // Astrologers Filters & Sort
+  const [astrologerSearch, setAstrologerSearch] = useState('');
+  const [astrologerStatusFilter, setAstrologerStatusFilter] = useState('all');
+  const [astrologerDatePreset, setAstrologerDatePreset] = useState('all');
+  const [astrologerStartDate, setAstrologerStartDate] = useState('');
+  const [astrologerEndDate, setAstrologerEndDate] = useState('');
+  const [astrologerSortField, setAstrologerSortField] = useState<'createdAt' | 'name' | 'rating' | 'experience'>('rating');
+  const [astrologerSortOrder, setAstrologerSortOrder] = useState<'asc' | 'desc'>('desc');
 
   // Activity & Audit Logs State
   const [logs, setLogs] = useState<any[]>([]);
@@ -234,6 +378,9 @@ export default function AdminDashboard() {
   const [logsSearch, setLogsSearch] = useState('');
   const [logsCategoryFilter, setLogsCategoryFilter] = useState('all');
   const [logsActionFilter, setLogsActionFilter] = useState('all');
+  const [logsDatePreset, setLogsDatePreset] = useState('all');
+  const [logsStartDate, setLogsStartDate] = useState('');
+  const [logsEndDate, setLogsEndDate] = useState('');
   const [logsSortField, setLogsSortField] = useState<'createdAt' | 'adminName' | 'category' | 'action'>('createdAt');
   const [logsSortOrder, setLogsSortOrder] = useState<'asc' | 'desc'>('desc');
   const [selectedLogDetail, setSelectedLogDetail] = useState<any | null>(null);
@@ -502,6 +649,10 @@ export default function AdminDashboard() {
           const svcM = (Array.isArray(q.services) ? q.services.join(' ') : (q.services || '')).toLowerCase().includes(term);
           if (!nameM && !phoneM && !emailM && !astroM && !svcM) return false;
         }
+        // Date Filter
+        if (!matchesDateFilter(q.createdAt, queryDatePreset, queryStartDate, queryEndDate)) {
+          return false;
+        }
         return true;
       })
       .sort((a: any, b: any) => {
@@ -525,7 +676,7 @@ export default function AdminDashboard() {
         if (valA > valB) return querySortOrder === 'asc' ? 1 : -1;
         return 0;
       });
-  }, [queries, queryStatusFilter, queryServiceFilter, querySearch, querySortField, querySortOrder]);
+  }, [queries, queryStatusFilter, queryServiceFilter, querySearch, querySortField, querySortOrder, queryDatePreset, queryStartDate, queryEndDate]);
 
   // 2. Overview Recent Inquiries
   const overviewFilteredAndSortedQueries = useMemo(() => {
@@ -534,6 +685,9 @@ export default function AdminDashboard() {
         if (overviewStatusFilter !== 'all') {
           const currentStatus = (q.status || 'pending').toLowerCase();
           if (currentStatus !== overviewStatusFilter.toLowerCase()) return false;
+        }
+        if (!matchesDateFilter(q.createdAt, overviewDatePreset, overviewStartDate, overviewEndDate)) {
+          return false;
         }
         return true;
       })
@@ -553,7 +707,7 @@ export default function AdminDashboard() {
         if (valA > valB) return overviewSortOrder === 'asc' ? 1 : -1;
         return 0;
       });
-  }, [queries, overviewStatusFilter, overviewSortField, overviewSortOrder]);
+  }, [queries, overviewStatusFilter, overviewSortField, overviewSortOrder, overviewDatePreset, overviewStartDate, overviewEndDate]);
 
   // 3. User Accounts
   const filteredAndSortedUsers = useMemo(() => {
@@ -576,6 +730,11 @@ export default function AdminDashboard() {
           const phoneM = (u.phone || '').toLowerCase().includes(term);
           if (!nameM && !emailM && !phoneM) return false;
         }
+
+        // Date filter
+        if (!matchesDateFilter(u.createdAt, userDatePreset, userStartDate, userEndDate)) {
+          return false;
+        }
         return true;
       })
       .sort((a: any, b: any) => {
@@ -597,7 +756,7 @@ export default function AdminDashboard() {
         if (valA > valB) return userSortOrder === 'asc' ? 1 : -1;
         return 0;
       });
-  }, [users, userStatusFilter, userCreditsFilter, userSearch, userSortField, userSortOrder]);
+  }, [users, userStatusFilter, userCreditsFilter, userSearch, userSortField, userSortOrder, userDatePreset, userStartDate, userEndDate]);
 
   // 4. Blogs
   const filteredAndSortedBlogs = useMemo(() => {
@@ -618,6 +777,11 @@ export default function AdminDashboard() {
           const slugM = (b.slug || '').toLowerCase().includes(term);
           const authorM = (b.author || '').toLowerCase().includes(term);
           if (!titleM && !slugM && !authorM) return false;
+        }
+
+        // Date filter
+        if (!matchesDateFilter(b.createdAt || b.date, blogDatePreset, blogStartDate, blogEndDate)) {
+          return false;
         }
         return true;
       })
@@ -643,7 +807,7 @@ export default function AdminDashboard() {
         if (valA > valB) return blogSortOrder === 'asc' ? 1 : -1;
         return 0;
       });
-  }, [blogs, blogCategoryFilter, blogStatusFilter, blogSearch, blogSortField, blogSortOrder]);
+  }, [blogs, blogCategoryFilter, blogStatusFilter, blogSearch, blogSortField, blogSortOrder, blogDatePreset, blogStartDate, blogEndDate]);
 
   // 5. Reviews
   const filteredAndSortedReviews = useMemo(() => {
@@ -666,6 +830,11 @@ export default function AdminDashboard() {
           const textM = (r.text || '').toLowerCase().includes(term);
           if (!nameM && !cityM && !textM) return false;
         }
+
+        // Date filter
+        if (!matchesDateFilter(r.createdAt || r.date, reviewDatePreset, reviewStartDate, reviewEndDate)) {
+          return false;
+        }
         return true;
       })
       .sort((a: any, b: any) => {
@@ -687,7 +856,7 @@ export default function AdminDashboard() {
         if (valA > valB) return reviewSortOrder === 'asc' ? 1 : -1;
         return 0;
       });
-  }, [reviews, reviewStatusFilter, reviewRatingFilter, reviewSearch, reviewSortField, reviewSortOrder]);
+  }, [reviews, reviewStatusFilter, reviewRatingFilter, reviewSearch, reviewSortField, reviewSortOrder, reviewDatePreset, reviewStartDate, reviewEndDate]);
 
   // 6. Activity & Audit Logs
   const filteredAndSortedLogs = useMemo(() => {
@@ -720,6 +889,10 @@ export default function AdminDashboard() {
           if (!descM && !adminM && !emailM && !actionM && !targetM && !catM) return false;
         }
 
+        // Date filter
+        if (!matchesDateFilter(l.createdAt, logsDatePreset, logsStartDate, logsEndDate)) {
+          return false;
+        }
         return true;
       })
       .sort((a: any, b: any) => {
@@ -738,7 +911,52 @@ export default function AdminDashboard() {
         if (valA > valB) return logsSortOrder === 'asc' ? 1 : -1;
         return 0;
       });
-  }, [logs, logsCategoryFilter, logsActionFilter, logsSearch, logsSortField, logsSortOrder]);
+  }, [logs, logsCategoryFilter, logsActionFilter, logsSearch, logsSortField, logsSortOrder, logsDatePreset, logsStartDate, logsEndDate]);
+
+  // 7. Astrologers
+  const filteredAndSortedAstrologers = useMemo(() => {
+    return astrologers
+      .filter((a: any) => {
+        if (astrologerStatusFilter === 'active' && a.available === false) return false;
+        if (astrologerStatusFilter === 'offline' && a.available !== false) return false;
+
+        if (astrologerSearch.trim()) {
+          const q = astrologerSearch.toLowerCase();
+          const nameM = (a.name || '').toLowerCase().includes(q);
+          const specM = (a.specialization || '').toLowerCase().includes(q);
+          const titleM = (a.title || '').toLowerCase().includes(q);
+          const langM = (a.languages || '').toLowerCase().includes(q);
+          if (!nameM && !specM && !titleM && !langM) return false;
+        }
+
+        if (!matchesDateFilter(a.createdAt, astrologerDatePreset, astrologerStartDate, astrologerEndDate)) {
+          return false;
+        }
+        return true;
+      })
+      .sort((a: any, b: any) => {
+        let valA = a[astrologerSortField];
+        let valB = b[astrologerSortField];
+
+        if (astrologerSortField === 'createdAt') {
+          valA = new Date(valA || 0).getTime();
+          valB = new Date(valB || 0).getTime();
+        } else if (astrologerSortField === 'rating') {
+          valA = Number(valA || 0);
+          valB = Number(valB || 0);
+        } else if (astrologerSortField === 'experience') {
+          valA = parseInt(String(valA || '0'), 10) || 0;
+          valB = parseInt(String(valB || '0'), 10) || 0;
+        } else if (typeof valA === 'string') {
+          valA = (valA || '').toLowerCase();
+          valB = (valB || '').toLowerCase();
+        }
+
+        if (valA < valB) return astrologerSortOrder === 'asc' ? -1 : 1;
+        if (valA > valB) return astrologerSortOrder === 'asc' ? 1 : -1;
+        return 0;
+      });
+  }, [astrologers, astrologerStatusFilter, astrologerSearch, astrologerDatePreset, astrologerStartDate, astrologerEndDate, astrologerSortField, astrologerSortOrder]);
 
   // ==========================================
   // CSV EXPORT HANDLERS
@@ -891,7 +1109,7 @@ export default function AdminDashboard() {
   };
 
   const exportAstrologersCSV = () => {
-    if (!astrologers || astrologers.length === 0) {
+    if (!filteredAndSortedAstrologers || filteredAndSortedAstrologers.length === 0) {
       showToast('No astrologer profiles available to export.');
       return;
     }
@@ -905,8 +1123,9 @@ export default function AdminDashboard() {
       'Reviews Count',
       'Status',
       'Short Bio',
+      'Added Date',
     ];
-    const rows = astrologers.map((a: any) => [
+    const rows = filteredAndSortedAstrologers.map((a: any) => [
       a.name || '',
       a.title || '',
       a.specialization || '',
@@ -914,8 +1133,9 @@ export default function AdminDashboard() {
       a.languages || '',
       a.rating || 4.9,
       a.reviews || '100+',
-      a.available ? 'ACTIVE' : 'OFFLINE',
+      a.available !== false ? 'ACTIVE' : 'OFFLINE',
       a.bio || '',
+      a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-IN') : 'N/A',
     ]);
     exportToCSV(`bhagyanetram_astrologers_${new Date().toISOString().slice(0, 10)}.csv`, headers, rows);
     showToast(`Exported ${rows.length} astrologer profiles to CSV file.`);
@@ -1961,6 +2181,17 @@ export default function AdminDashboard() {
                       ))}
                     </div>
 
+                    {/* Date Filter */}
+                    <TableDateFilter
+                      preset={overviewDatePreset}
+                      setPreset={setOverviewDatePreset}
+                      startDate={overviewStartDate}
+                      setStartDate={setOverviewStartDate}
+                      endDate={overviewEndDate}
+                      setEndDate={setOverviewEndDate}
+                      compact
+                    />
+
                     {/* CSV Export Button */}
                     <button
                       onClick={() => exportQueriesCSV(overviewFilteredAndSortedQueries)}
@@ -2106,14 +2337,101 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
+              {/* Filter, Sort & Search Toolbar */}
+              <div className="bg-cosmic-900 border border-gold-500/20 rounded-2xl p-4 space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {/* Search Input */}
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gold-500/60" />
+                    <input
+                      type="text"
+                      value={astrologerSearch}
+                      onChange={(e) => setAstrologerSearch(e.target.value)}
+                      placeholder="Search name, specialization, language..."
+                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white placeholder-cosmic-600 focus:outline-none focus:border-gold-400 text-xs"
+                    />
+                  </div>
+
+                  {/* Availability Status Filter */}
+                  <div>
+                    <select
+                      value={astrologerStatusFilter}
+                      onChange={(e) => setAstrologerStatusFilter(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="all">All Availability Status</option>
+                      <option value="active">Active Only</option>
+                      <option value="offline">Offline Only</option>
+                    </select>
+                  </div>
+
+                  {/* Date Filter */}
+                  <div>
+                    <TableDateFilter
+                      preset={astrologerDatePreset}
+                      setPreset={setAstrologerDatePreset}
+                      startDate={astrologerStartDate}
+                      setStartDate={setAstrologerStartDate}
+                      endDate={astrologerEndDate}
+                      setEndDate={setAstrologerEndDate}
+                    />
+                  </div>
+
+                  {/* Sort Selector */}
+                  <div>
+                    <select
+                      value={`${astrologerSortField}-${astrologerSortOrder}`}
+                      onChange={(e) => {
+                        const [field, order] = e.target.value.split('-');
+                        setAstrologerSortField(field as any);
+                        setAstrologerSortOrder(order as any);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="createdAt-desc">Added: Newest First</option>
+                      <option value="createdAt-asc">Added: Oldest First</option>
+                      <option value="rating-desc">Rating: Highest First</option>
+                      <option value="rating-asc">Rating: Lowest First</option>
+                      <option value="name-asc">Name: A to Z</option>
+                      <option value="name-desc">Name: Z to A</option>
+                      <option value="experience-desc">Experience: High to Low</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-gold-500/15 text-[11px] text-ivory-200/60">
+                  <span>Showing {filteredAndSortedAstrologers.length} of {astrologers.length} astrologers</span>
+                  {astrologerStatusFilter !== 'all' || astrologerSearch || astrologerDatePreset !== 'all' || astrologerStartDate || astrologerEndDate ? (
+                    <button
+                      onClick={() => {
+                        setAstrologerStatusFilter('all');
+                        setAstrologerSearch('');
+                        setAstrologerDatePreset('all');
+                        setAstrologerStartDate('');
+                        setAstrologerEndDate('');
+                      }}
+                      className="text-gold-400 hover:underline cursor-pointer"
+                    >
+                      Clear Filters
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+
               {loading ? (
                 <div className="py-20 text-center text-gold-400 flex flex-col items-center justify-center">
                   <Loader2 className="w-8 h-8 animate-spin mb-2" />
                   <span className="text-xs font-semibold">Loading Astrologers...</span>
                 </div>
+              ) : filteredAndSortedAstrologers.length === 0 ? (
+                <div className="col-span-full py-16 text-center text-ivory-200/60 bg-cosmic-900 border border-gold-500/20 rounded-2xl p-6">
+                  {astrologers.length === 0
+                    ? 'No astrologers found. Click "+ Add New Astrologer" above to create your first profile.'
+                    : 'No astrologer profiles match the selected filters or date range.'}
+                </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {astrologers.map((astro: any) => (
+                  {filteredAndSortedAstrologers.map((astro: any) => (
                     <div
                       key={astro._id || astro.id}
                       className="bg-cosmic-900 border border-gold-500/30 rounded-2xl p-5 shadow-gold-card flex flex-col justify-between relative overflow-hidden"
@@ -2186,11 +2504,6 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                   ))}
-                  {astrologers.length === 0 && (
-                    <div className="col-span-full py-16 text-center text-ivory-200/60 bg-cosmic-900/40 rounded-2xl border border-gold-500/20">
-                      No astrologers found. Click "+ Add New Astrologer" above to create your first profile.
-                    </div>
-                  )}
                 </div>
               )}
             </div>
@@ -2236,7 +2549,7 @@ export default function AdminDashboard() {
 
               {/* Filter, Sort & Search Toolbar */}
               <div className="bg-cosmic-900 border border-gold-500/20 rounded-2xl p-4 space-y-3">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                   {/* Search Input */}
                   <div className="relative">
                     <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gold-500/60" />
@@ -2278,6 +2591,18 @@ export default function AdminDashboard() {
                     </select>
                   </div>
 
+                  {/* Date Filter */}
+                  <div>
+                    <TableDateFilter
+                      preset={blogDatePreset}
+                      setPreset={setBlogDatePreset}
+                      startDate={blogStartDate}
+                      setStartDate={setBlogStartDate}
+                      endDate={blogEndDate}
+                      setEndDate={setBlogEndDate}
+                    />
+                  </div>
+
                   {/* Sort Selector */}
                   <div>
                     <select
@@ -2303,12 +2628,15 @@ export default function AdminDashboard() {
 
                 <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-gold-500/15 text-[11px] text-ivory-200/60">
                   <span>Showing {filteredAndSortedBlogs.length} of {blogs.length} articles</span>
-                  {blogCategoryFilter !== 'all' || blogStatusFilter !== 'all' || blogSearch ? (
+                  {blogCategoryFilter !== 'all' || blogStatusFilter !== 'all' || blogSearch || blogDatePreset !== 'all' || blogStartDate || blogEndDate ? (
                     <button
                       onClick={() => {
                         setBlogCategoryFilter('all');
                         setBlogStatusFilter('all');
                         setBlogSearch('');
+                        setBlogDatePreset('all');
+                        setBlogStartDate('');
+                        setBlogEndDate('');
                       }}
                       className="text-gold-400 hover:underline cursor-pointer"
                     >
@@ -2493,7 +2821,7 @@ export default function AdminDashboard() {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-gold-500/15">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t border-gold-500/15">
                   {/* Search Field */}
                   <div className="relative">
                     <Search className="w-3.5 h-3.5 text-gold-500/60 absolute left-3 top-3" />
@@ -2524,6 +2852,18 @@ export default function AdminDashboard() {
                     </select>
                   </div>
 
+                  {/* Date Filter */}
+                  <div>
+                    <TableDateFilter
+                      preset={queryDatePreset}
+                      setPreset={setQueryDatePreset}
+                      startDate={queryStartDate}
+                      setStartDate={setQueryStartDate}
+                      endDate={queryEndDate}
+                      setEndDate={setQueryEndDate}
+                    />
+                  </div>
+
                   {/* Sort Order Selector */}
                   <div>
                     <select
@@ -2544,6 +2884,24 @@ export default function AdminDashboard() {
                     </select>
                   </div>
                 </div>
+
+                {queryStatusFilter !== 'all' || queryServiceFilter !== 'all' || querySearch || queryDatePreset !== 'all' || queryStartDate || queryEndDate ? (
+                  <div className="flex justify-end pt-1">
+                    <button
+                      onClick={() => {
+                        setQueryStatusFilter('all');
+                        setQueryServiceFilter('all');
+                        setQuerySearch('');
+                        setQueryDatePreset('all');
+                        setQueryStartDate('');
+                        setQueryEndDate('');
+                      }}
+                      className="text-[11px] text-gold-400 hover:underline cursor-pointer"
+                    >
+                      Clear Filters
+                    </button>
+                  </div>
+                ) : null}
               </div>
 
               {loading ? (
@@ -2695,7 +3053,7 @@ export default function AdminDashboard() {
 
               {/* Filter Bar & Search */}
               <div className="bg-cosmic-900/90 border border-gold-500/30 rounded-2xl p-4">
-                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                   {/* Search input */}
                   <div className="relative">
                     <Search className="w-3.5 h-3.5 text-gold-500/60 absolute left-3 top-3" />
@@ -2734,6 +3092,18 @@ export default function AdminDashboard() {
                     </select>
                   </div>
 
+                  {/* Date Filter */}
+                  <div>
+                    <TableDateFilter
+                      preset={userDatePreset}
+                      setPreset={setUserDatePreset}
+                      startDate={userStartDate}
+                      setStartDate={setUserStartDate}
+                      endDate={userEndDate}
+                      setEndDate={setUserEndDate}
+                    />
+                  </div>
+
                   {/* Sort Selector */}
                   <div>
                     <select
@@ -2758,12 +3128,15 @@ export default function AdminDashboard() {
 
                 <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-gold-500/15 text-[11px] text-ivory-200/60">
                   <span>Showing {filteredAndSortedUsers.length} of {users.length} registered users</span>
-                  {userStatusFilter !== 'all' || userCreditsFilter !== 'all' || userSearch ? (
+                  {userStatusFilter !== 'all' || userCreditsFilter !== 'all' || userSearch || userDatePreset !== 'all' || userStartDate || userEndDate ? (
                     <button
                       onClick={() => {
                         setUserStatusFilter('all');
                         setUserCreditsFilter('all');
                         setUserSearch('');
+                        setUserDatePreset('all');
+                        setUserStartDate('');
+                        setUserEndDate('');
                       }}
                       className="text-gold-400 hover:underline cursor-pointer"
                     >
@@ -2916,7 +3289,7 @@ export default function AdminDashboard() {
 
               {/* Filter, Sort & Search Toolbar */}
               <div className="bg-cosmic-900 border border-gold-500/20 rounded-2xl p-4 space-y-3">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                   {/* Search Input */}
                   <div className="relative">
                     <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gold-500/60" />
@@ -2958,6 +3331,18 @@ export default function AdminDashboard() {
                     </select>
                   </div>
 
+                  {/* Date Filter */}
+                  <div>
+                    <TableDateFilter
+                      preset={reviewDatePreset}
+                      setPreset={setReviewDatePreset}
+                      startDate={reviewStartDate}
+                      setStartDate={setReviewStartDate}
+                      endDate={reviewEndDate}
+                      setEndDate={setReviewEndDate}
+                    />
+                  </div>
+
                   {/* Sort Selector */}
                   <div>
                     <select
@@ -2981,12 +3366,15 @@ export default function AdminDashboard() {
 
                 <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-gold-500/15 text-[11px] text-ivory-200/60">
                   <span>Showing {filteredAndSortedReviews.length} of {reviews.length} reviews</span>
-                  {reviewRatingFilter !== 'all' || reviewStatusFilter !== 'all' || reviewSearch ? (
+                  {reviewRatingFilter !== 'all' || reviewStatusFilter !== 'all' || reviewSearch || reviewDatePreset !== 'all' || reviewStartDate || reviewEndDate ? (
                     <button
                       onClick={() => {
                         setReviewRatingFilter('all');
                         setReviewStatusFilter('all');
                         setReviewSearch('');
+                        setReviewDatePreset('all');
+                        setReviewStartDate('');
+                        setReviewEndDate('');
                       }}
                       className="text-gold-400 hover:underline cursor-pointer"
                     >
@@ -3383,7 +3771,7 @@ export default function AdminDashboard() {
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-gold-500/15">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-2 border-t border-gold-500/15">
                   {/* Search Input */}
                   <div className="relative">
                     <Search className="w-3.5 h-3.5 text-gold-500/60 absolute left-3 top-3" />
@@ -3412,6 +3800,18 @@ export default function AdminDashboard() {
                     </select>
                   </div>
 
+                  {/* Date Filter */}
+                  <div>
+                    <TableDateFilter
+                      preset={logsDatePreset}
+                      setPreset={setLogsDatePreset}
+                      startDate={logsStartDate}
+                      setStartDate={setLogsStartDate}
+                      endDate={logsEndDate}
+                      setEndDate={setLogsEndDate}
+                    />
+                  </div>
+
                   {/* Sort Selector */}
                   <div>
                     <select
@@ -3432,6 +3832,24 @@ export default function AdminDashboard() {
                     </select>
                   </div>
                 </div>
+
+                {logsCategoryFilter !== 'all' || logsActionFilter !== 'all' || logsSearch || logsDatePreset !== 'all' || logsStartDate || logsEndDate ? (
+                  <div className="flex justify-end pt-1">
+                    <button
+                      onClick={() => {
+                        setLogsCategoryFilter('all');
+                        setLogsActionFilter('all');
+                        setLogsSearch('');
+                        setLogsDatePreset('all');
+                        setLogsStartDate('');
+                        setLogsEndDate('');
+                      }}
+                      className="text-[11px] text-gold-400 hover:underline cursor-pointer"
+                    >
+                      Clear Filters
+                    </button>
+                  </div>
+                ) : null}
               </div>
 
               {/* Audit Table */}
