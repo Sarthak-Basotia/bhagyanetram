@@ -44,7 +44,7 @@ import AdminProtectedRoute from './components/admin/AdminProtectedRoute';
 
 function AppContent() {
   const location = useLocation();
-  const isAdminRoute = location.pathname.startsWith('/admin');
+  const isAdminRoute = location.pathname.startsWith('/pranav-admin');
   const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
@@ -101,9 +101,9 @@ function AppContent() {
           <Route path="/palmistry" element={<PalmistryPage />} />
 
           {/* ADMIN PORTAL ROUTES */}
-          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/pranav-admin/login" element={<AdminLoginPage />} />
           <Route
-            path="/admin"
+            path="/pranav-admin"
             element={
               <AdminProtectedRoute>
                 <AdminDashboard />

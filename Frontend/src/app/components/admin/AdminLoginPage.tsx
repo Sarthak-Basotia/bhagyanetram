@@ -15,7 +15,7 @@ export default function AdminLoginPage() {
   useEffect(() => {
     // If already logged in as admin, redirect directly to dashboard
     if (getAdminToken()) {
-      navigate('/admin');
+      navigate('/pranav-admin');
     }
   }, [navigate]);
 
@@ -28,7 +28,7 @@ export default function AdminLoginPage() {
       const res = await adminLoginApi({ email, password });
       if (res.success && res.token) {
         setAdminSession(res.token, res.admin);
-        navigate('/admin');
+        navigate('/pranav-admin');
       } else {
         setError(res.error || 'Authentication failed. Please verify credentials.');
       }

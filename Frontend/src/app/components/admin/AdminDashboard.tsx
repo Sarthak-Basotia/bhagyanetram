@@ -164,7 +164,7 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     clearAdminSession();
-    navigate('/admin/login');
+    navigate('/pranav-admin/login');
   };
 
   // Load Initial Data

@@ -10,7 +10,7 @@ export default function AdminProtectedRoute({ children }: AdminProtectedRoutePro
   const token = getAdminToken();
 
   if (!token) {
-    return <Navigate to="/admin/login" replace />;
+    return <Navigate to="/pranav-admin/login" replace />;
   }
 
   return <>{children}</>;
