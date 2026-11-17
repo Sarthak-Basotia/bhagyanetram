@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import {
   clearAdminSession,
@@ -53,6 +53,11 @@ import {
   Award,
   Globe,
   Upload,
+  Download,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  FileSpreadsheet,
   Image as ImageIcon
 } from 'lucide-react';
 import logoImage from 'figma:asset/d5457f2df4c5864ece0203437258a94768a0cf00.png';
@@ -88,6 +93,33 @@ const DEFAULT_WEBSITE_BLOG = {
   tags: ['Vastu Shastra', 'Main Entrance', 'Gomti Chakra', 'Home Remedies'],
 };
 
+// ==========================================
+// CSV EXPORT UTILITY (RFC 4180 + UTF-8 BOM)
+// ==========================================
+const exportToCSV = (filename: string, headers: string[], rows: (string | number | undefined | null)[][]) => {
+  const sanitize = (val: any) => {
+    if (val === null || val === undefined) return '""';
+    const str = String(val).replace(/"/g, '""');
+    return `"${str}"`;
+  };
+
+  const csvContent = [
+    headers.map(sanitize).join(','),
+    ...rows.map((row) => row.map(sanitize).join(',')),
+  ].join('\r\n');
+
+  // Prepend UTF-8 BOM (\uFEFF) so Excel/Numbers automatically parses UTF-8 correctly
+  const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename.endsWith('.csv') ? filename : `${filename}.csv`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+};
+
 type ActiveTab = 'overview' | 'astrologers' | 'blogs' | 'queries' | 'users' | 'reviews';
 
 export default function AdminDashboard() {
@@ -118,10 +150,64 @@ export default function AdminDashboard() {
 
   // Search & Filter states
   const [queryStatusFilter, setQueryStatusFilter] = useState('all');
+  const [queryServiceFilter, setQueryServiceFilter] = useState('all');
   const [querySearch, setQuerySearch] = useState('');
+  const [querySortField, setQuerySortField] = useState<'createdAt' | 'name' | 'services' | 'status'>('createdAt');
+  const [querySortOrder, setQuerySortOrder] = useState<'asc' | 'desc'>('desc');
+
+  // Overview Table Filters & Sort
+  const [overviewStatusFilter, setOverviewStatusFilter] = useState('all');
+  const [overviewSortField, setOverviewSortField] = useState<'createdAt' | 'name' | 'services' | 'status'>('createdAt');
+  const [overviewSortOrder, setOverviewSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  // Users Filters & Sort
   const [userSearch, setUserSearch] = useState('');
+  const [userStatusFilter, setUserStatusFilter] = useState('all');
+  const [userCreditsFilter, setUserCreditsFilter] = useState('all');
+  const [userSortField, setUserSortField] = useState<'createdAt' | 'name' | 'palmistryCredits' | 'status'>('createdAt');
+  const [userSortOrder, setUserSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  // Blogs Filters & Sort
   const [blogSearch, setBlogSearch] = useState('');
+  const [blogCategoryFilter, setBlogCategoryFilter] = useState('all');
+  const [blogStatusFilter, setBlogStatusFilter] = useState('all');
+  const [blogSortField, setBlogSortField] = useState<'createdAt' | 'title' | 'views' | 'category' | 'published'>('createdAt');
+  const [blogSortOrder, setBlogSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  // Reviews Filters & Sort
   const [reviewSearch, setReviewSearch] = useState('');
+  const [reviewRatingFilter, setReviewRatingFilter] = useState('all');
+  const [reviewStatusFilter, setReviewStatusFilter] = useState('all');
+  const [reviewSortField, setReviewSortField] = useState<'createdAt' | 'rating' | 'name'>('createdAt');
+  const [reviewSortOrder, setReviewSortOrder] = useState<'asc' | 'desc'>('desc');
+
+  // Helper to toggle sort column
+  const toggleSort = (
+    field: any,
+    currentField: any,
+    currentOrder: 'asc' | 'desc',
+    setField: (f: any) => void,
+    setOrder: (o: 'asc' | 'desc') => void
+  ) => {
+    if (field === currentField) {
+      setOrder(currentOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setField(field);
+      setOrder('asc');
+    }
+  };
+
+  // Helper to render sort indicator icon
+  const renderSortIndicator = (field: string, currentField: string, currentOrder: 'asc' | 'desc') => {
+    if (field !== currentField) {
+      return <ArrowUpDown className="w-3 h-3 opacity-30 inline-block ml-1" />;
+    }
+    return currentOrder === 'asc' ? (
+      <ArrowUp className="w-3 h-3 text-gold-400 inline-block ml-1" />
+    ) : (
+      <ArrowDown className="w-3 h-3 text-gold-400 inline-block ml-1" />
+    );
+  };
 
   // Modals state
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -295,6 +381,372 @@ export default function AdminDashboard() {
       loadReviews();
     }
   }, [activeTab, queryStatusFilter]);
+
+  // ==========================================
+  // FILTERED & SORTED MEMOIZED DATA
+  // ==========================================
+
+  // 1. Queries (Inquiries)
+  const filteredAndSortedQueries = useMemo(() => {
+    return queries
+      .filter((q: any) => {
+        // Status Filter
+        if (queryStatusFilter !== 'all') {
+          const currentStatus = (q.status || 'pending').toLowerCase();
+          if (currentStatus !== queryStatusFilter.toLowerCase()) return false;
+        }
+        // Service Filter
+        if (queryServiceFilter !== 'all') {
+          const svc = Array.isArray(q.services) ? q.services.join(' ') : (q.services || '');
+          if (!svc.toLowerCase().includes(queryServiceFilter.toLowerCase())) return false;
+        }
+        // Search Filter (name, phone, email, astrologer, message)
+        if (querySearch.trim()) {
+          const term = querySearch.toLowerCase();
+          const nameM = (q.name || '').toLowerCase().includes(term);
+          const phoneM = (q.phone || '').toLowerCase().includes(term);
+          const emailM = (q.email || '').toLowerCase().includes(term);
+          const astroM = (q.astrologerName || '').toLowerCase().includes(term);
+          const svcM = (Array.isArray(q.services) ? q.services.join(' ') : (q.services || '')).toLowerCase().includes(term);
+          if (!nameM && !phoneM && !emailM && !astroM && !svcM) return false;
+        }
+        return true;
+      })
+      .sort((a: any, b: any) => {
+        let valA = a[querySortField];
+        let valB = b[querySortField];
+
+        if (querySortField === 'createdAt') {
+          valA = new Date(valA || 0).getTime();
+          valB = new Date(valB || 0).getTime();
+        } else if (querySortField === 'services') {
+          valA = Array.isArray(valA) ? valA.join(', ') : (valA || '');
+          valB = Array.isArray(valB) ? valB.join(', ') : (valB || '');
+          valA = valA.toLowerCase();
+          valB = valB.toLowerCase();
+        } else if (typeof valA === 'string') {
+          valA = (valA || '').toLowerCase();
+          valB = (valB || '').toLowerCase();
+        }
+
+        if (valA < valB) return querySortOrder === 'asc' ? -1 : 1;
+        if (valA > valB) return querySortOrder === 'asc' ? 1 : -1;
+        return 0;
+      });
+  }, [queries, queryStatusFilter, queryServiceFilter, querySearch, querySortField, querySortOrder]);
+
+  // 2. Overview Recent Inquiries
+  const overviewFilteredAndSortedQueries = useMemo(() => {
+    return queries
+      .filter((q: any) => {
+        if (overviewStatusFilter !== 'all') {
+          const currentStatus = (q.status || 'pending').toLowerCase();
+          if (currentStatus !== overviewStatusFilter.toLowerCase()) return false;
+        }
+        return true;
+      })
+      .sort((a: any, b: any) => {
+        let valA = a[overviewSortField];
+        let valB = b[overviewSortField];
+
+        if (overviewSortField === 'createdAt') {
+          valA = new Date(valA || 0).getTime();
+          valB = new Date(valB || 0).getTime();
+        } else if (typeof valA === 'string') {
+          valA = (valA || '').toLowerCase();
+          valB = (valB || '').toLowerCase();
+        }
+
+        if (valA < valB) return overviewSortOrder === 'asc' ? -1 : 1;
+        if (valA > valB) return overviewSortOrder === 'asc' ? 1 : -1;
+        return 0;
+      });
+  }, [queries, overviewStatusFilter, overviewSortField, overviewSortOrder]);
+
+  // 3. User Accounts
+  const filteredAndSortedUsers = useMemo(() => {
+    return users
+      .filter((u: any) => {
+        // Status filter
+        if (userStatusFilter !== 'all') {
+          const st = (u.status || 'active').toLowerCase();
+          if (st !== userStatusFilter.toLowerCase()) return false;
+        }
+        // Credits filter
+        if (userCreditsFilter === 'has_credits' && (u.palmistryCredits || 0) <= 0) return false;
+        if (userCreditsFilter === 'zero_credits' && (u.palmistryCredits || 0) > 0) return false;
+
+        // Search filter
+        if (userSearch.trim()) {
+          const term = userSearch.toLowerCase();
+          const nameM = (u.name || '').toLowerCase().includes(term);
+          const emailM = (u.email || '').toLowerCase().includes(term);
+          const phoneM = (u.phone || '').toLowerCase().includes(term);
+          if (!nameM && !emailM && !phoneM) return false;
+        }
+        return true;
+      })
+      .sort((a: any, b: any) => {
+        let valA = a[userSortField];
+        let valB = b[userSortField];
+
+        if (userSortField === 'createdAt') {
+          valA = new Date(valA || 0).getTime();
+          valB = new Date(valB || 0).getTime();
+        } else if (userSortField === 'palmistryCredits') {
+          valA = Number(valA ?? 0);
+          valB = Number(valB ?? 0);
+        } else if (typeof valA === 'string') {
+          valA = (valA || '').toLowerCase();
+          valB = (valB || '').toLowerCase();
+        }
+
+        if (valA < valB) return userSortOrder === 'asc' ? -1 : 1;
+        if (valA > valB) return userSortOrder === 'asc' ? 1 : -1;
+        return 0;
+      });
+  }, [users, userStatusFilter, userCreditsFilter, userSearch, userSortField, userSortOrder]);
+
+  // 4. Blogs
+  const filteredAndSortedBlogs = useMemo(() => {
+    return blogs
+      .filter((b: any) => {
+        // Category filter
+        if (blogCategoryFilter !== 'all') {
+          if ((b.category || '').toLowerCase() !== blogCategoryFilter.toLowerCase()) return false;
+        }
+        // Status filter
+        if (blogStatusFilter === 'published' && !b.published) return false;
+        if (blogStatusFilter === 'draft' && b.published) return false;
+
+        // Search filter
+        if (blogSearch.trim()) {
+          const term = blogSearch.toLowerCase();
+          const titleM = (b.title || '').toLowerCase().includes(term);
+          const slugM = (b.slug || '').toLowerCase().includes(term);
+          const authorM = (b.author || '').toLowerCase().includes(term);
+          if (!titleM && !slugM && !authorM) return false;
+        }
+        return true;
+      })
+      .sort((a: any, b: any) => {
+        let valA = a[blogSortField];
+        let valB = b[blogSortField];
+
+        if (blogSortField === 'createdAt') {
+          valA = new Date(valA || a.date || 0).getTime();
+          valB = new Date(valB || b.date || 0).getTime();
+        } else if (blogSortField === 'views') {
+          valA = Number(valA || 0);
+          valB = Number(valB || 0);
+        } else if (blogSortField === 'published') {
+          valA = valA ? 1 : 0;
+          valB = valB ? 1 : 0;
+        } else if (typeof valA === 'string') {
+          valA = (valA || '').toLowerCase();
+          valB = (valB || '').toLowerCase();
+        }
+
+        if (valA < valB) return blogSortOrder === 'asc' ? -1 : 1;
+        if (valA > valB) return blogSortOrder === 'asc' ? 1 : -1;
+        return 0;
+      });
+  }, [blogs, blogCategoryFilter, blogStatusFilter, blogSearch, blogSortField, blogSortOrder]);
+
+  // 5. Reviews
+  const filteredAndSortedReviews = useMemo(() => {
+    return reviews
+      .filter((r: any) => {
+        // Status filter
+        if (reviewStatusFilter === 'active' && r.active === false) return false;
+        if (reviewStatusFilter === 'hidden' && r.active !== false) return false;
+
+        // Rating filter
+        if (reviewRatingFilter !== 'all') {
+          if (Math.floor(r.rating || 5) !== Number(reviewRatingFilter)) return false;
+        }
+
+        // Search filter
+        if (reviewSearch.trim()) {
+          const term = reviewSearch.toLowerCase();
+          const nameM = (r.name || '').toLowerCase().includes(term);
+          const cityM = (r.location || '').toLowerCase().includes(term);
+          const textM = (r.text || '').toLowerCase().includes(term);
+          if (!nameM && !cityM && !textM) return false;
+        }
+        return true;
+      })
+      .sort((a: any, b: any) => {
+        let valA = a[reviewSortField];
+        let valB = b[reviewSortField];
+
+        if (reviewSortField === 'createdAt') {
+          valA = new Date(valA || 0).getTime();
+          valB = new Date(valB || 0).getTime();
+        } else if (reviewSortField === 'rating') {
+          valA = Number(valA || 5);
+          valB = Number(valB || 5);
+        } else if (typeof valA === 'string') {
+          valA = (valA || '').toLowerCase();
+          valB = (valB || '').toLowerCase();
+        }
+
+        if (valA < valB) return reviewSortOrder === 'asc' ? -1 : 1;
+        if (valA > valB) return reviewSortOrder === 'asc' ? 1 : -1;
+        return 0;
+      });
+  }, [reviews, reviewStatusFilter, reviewRatingFilter, reviewSearch, reviewSortField, reviewSortOrder]);
+
+  // ==========================================
+  // CSV EXPORT HANDLERS
+  // ==========================================
+  const exportQueriesCSV = (items?: any[]) => {
+    const list = items || filteredAndSortedQueries;
+    if (!list || list.length === 0) {
+      showToast('No customer inquiries available to export.');
+      return;
+    }
+    const headers = [
+      'Received Date & Time',
+      'Client Name',
+      'Mobile Phone',
+      'Email Address',
+      'Service Requested',
+      'Preferred Astrologer',
+      'Preferred Date',
+      'Preferred Time',
+      'Status',
+      'Message / Inquiry Details',
+    ];
+    const rows = list.map((q: any) => [
+      new Date(q.createdAt).toLocaleString('en-IN'),
+      q.name || '',
+      q.phone || '',
+      q.email || '',
+      Array.isArray(q.services) ? q.services.join(', ') : (q.services || 'General Consultation'),
+      q.astrologerName || 'Any Available',
+      q.preferredDate || '',
+      q.preferredTime || '',
+      (q.status || 'pending').toUpperCase(),
+      q.message || '',
+    ]);
+    exportToCSV(`bhagyanetram_inquiries_${new Date().toISOString().slice(0, 10)}.csv`, headers, rows);
+    showToast(`Exported ${rows.length} consultation inquiries to CSV file.`);
+  };
+
+  const exportUsersCSV = () => {
+    if (!filteredAndSortedUsers || filteredAndSortedUsers.length === 0) {
+      showToast('No user accounts available to export.');
+      return;
+    }
+    const headers = [
+      'User Name',
+      'Email Address',
+      'Mobile Phone',
+      'Palmistry Credits',
+      'Account Status',
+      'Role',
+      'Registered Date',
+    ];
+    const rows = filteredAndSortedUsers.map((u: any) => [
+      u.name || '',
+      u.email || '',
+      u.phone || '',
+      u.palmistryCredits ?? 3,
+      (u.status || 'active').toUpperCase(),
+      u.role || 'user',
+      new Date(u.createdAt).toLocaleDateString('en-IN'),
+    ]);
+    exportToCSV(`bhagyanetram_users_${new Date().toISOString().slice(0, 10)}.csv`, headers, rows);
+    showToast(`Exported ${rows.length} user accounts to CSV file.`);
+  };
+
+  const exportBlogsCSV = () => {
+    if (!filteredAndSortedBlogs || filteredAndSortedBlogs.length === 0) {
+      showToast('No articles available to export.');
+      return;
+    }
+    const headers = [
+      'Article Title',
+      'Public URL',
+      'Category',
+      'Author',
+      'Published Date',
+      'Views Count',
+      'Status',
+      'Summary / Excerpt',
+    ];
+    const rows = filteredAndSortedBlogs.map((b: any) => [
+      b.title || '',
+      `https://bhagyanetram.com/blog/${b.slug || ''}`,
+      b.category || 'General',
+      b.author || 'Bhagya Netram',
+      b.date || '',
+      b.views || 0,
+      b.published ? 'PUBLISHED' : 'DRAFT',
+      b.excerpt || '',
+    ]);
+    exportToCSV(`bhagyanetram_blogs_${new Date().toISOString().slice(0, 10)}.csv`, headers, rows);
+    showToast(`Exported ${rows.length} blog articles to CSV file.`);
+  };
+
+  const exportReviewsCSV = () => {
+    if (!filteredAndSortedReviews || filteredAndSortedReviews.length === 0) {
+      showToast('No reviews available to export.');
+      return;
+    }
+    const headers = [
+      'Client Name',
+      'Avatar Initials',
+      'Location / City',
+      'Rating (Stars)',
+      'Display Date',
+      'Featured on Website',
+      'Testimonial Quote',
+    ];
+    const rows = filteredAndSortedReviews.map((r: any) => [
+      r.name || '',
+      r.initials || '',
+      r.location || 'India',
+      `${r.rating || 5} Stars`,
+      r.date || 'Recently',
+      r.active !== false ? 'YES (VISIBLE)' : 'NO (HIDDEN)',
+      r.text || '',
+    ]);
+    exportToCSV(`bhagyanetram_reviews_${new Date().toISOString().slice(0, 10)}.csv`, headers, rows);
+    showToast(`Exported ${rows.length} client reviews to CSV file.`);
+  };
+
+  const exportAstrologersCSV = () => {
+    if (!astrologers || astrologers.length === 0) {
+      showToast('No astrologer profiles available to export.');
+      return;
+    }
+    const headers = [
+      'Astrologer Name',
+      'Title / Designation',
+      'Specialization',
+      'Experience',
+      'Languages',
+      'Rating',
+      'Reviews Count',
+      'Status',
+      'Short Bio',
+    ];
+    const rows = astrologers.map((a: any) => [
+      a.name || '',
+      a.title || '',
+      a.specialization || '',
+      a.experience || '',
+      a.languages || '',
+      a.rating || 4.9,
+      a.reviews || '100+',
+      a.available ? 'ACTIVE' : 'OFFLINE',
+      a.bio || '',
+    ]);
+    exportToCSV(`bhagyanetram_astrologers_${new Date().toISOString().slice(0, 10)}.csv`, headers, rows);
+    showToast(`Exported ${rows.length} astrologer profiles to CSV file.`);
+  };
 
   // ==========================================
   // REVIEW & TESTIMONIAL ACTIONS
@@ -1026,34 +1478,90 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Recent Inquiries Preview */}
+              {/* Recent Inquiries Preview with Filter, Sort & CSV Export */}
               <div className="bg-cosmic-900/80 border border-gold-500/25 rounded-2xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-display font-bold text-base text-white flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4 text-gold-400" />
-                    <span>Recent Customer Consultation Requests</span>
-                  </h3>
-                  <button
-                    onClick={() => setActiveTab('queries')}
-                    className="text-xs text-gold-400 hover:text-gold-300 font-semibold"
-                  >
-                    View All Inquiries →
-                  </button>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                  <div>
+                    <h3 className="font-display font-bold text-base text-white flex items-center gap-2">
+                      <MessageSquare className="w-4 h-4 text-gold-400" />
+                      <span>Recent Customer Consultation Requests</span>
+                    </h3>
+                    <span className="text-[11px] text-ivory-200/50 block mt-0.5">
+                      Showing {overviewFilteredAndSortedQueries.length} of {queries.length} requests
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    {/* Status Filter Pills */}
+                    <div className="flex items-center gap-1 bg-cosmic-950 p-1 rounded-xl border border-gold-500/20">
+                      {['all', 'pending', 'contacted', 'resolved'].map((st) => (
+                        <button
+                          key={st}
+                          onClick={() => setOverviewStatusFilter(st)}
+                          className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase transition cursor-pointer ${
+                            overviewStatusFilter === st
+                              ? 'bg-gold-500 text-cosmic-950 shadow-xs'
+                              : 'text-ivory-200/70 hover:text-white hover:bg-cosmic-800'
+                          }`}
+                        >
+                          {st}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* CSV Export Button */}
+                    <button
+                      onClick={() => exportQueriesCSV(overviewFilteredAndSortedQueries)}
+                      className="px-3 py-1.5 rounded-xl bg-cosmic-800 hover:bg-gold-500 hover:text-cosmic-950 text-gold-300 font-semibold text-xs flex items-center gap-1.5 border border-gold-500/30 transition cursor-pointer"
+                      title="Export filtered records to CSV"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Export CSV</span>
+                    </button>
+
+                    <button
+                      onClick={() => setActiveTab('queries')}
+                      className="text-xs text-gold-400 hover:text-gold-300 font-semibold ml-1 cursor-pointer"
+                    >
+                      View All →
+                    </button>
+                  </div>
                 </div>
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
                     <thead>
                       <tr className="border-b border-gold-500/20 text-gold-400">
-                        <th className="pb-3 font-semibold">Client Name</th>
+                        <th
+                          onClick={() => toggleSort('name', overviewSortField, overviewSortOrder, setOverviewSortField, setOverviewSortOrder)}
+                          className="pb-3 font-semibold cursor-pointer select-none hover:text-gold-300"
+                        >
+                          Client Name {renderSortIndicator('name', overviewSortField, overviewSortOrder)}
+                        </th>
                         <th className="pb-3 font-semibold">Contact Info</th>
-                        <th className="pb-3 font-semibold">Service</th>
-                        <th className="pb-3 font-semibold">Status</th>
+                        <th
+                          onClick={() => toggleSort('services', overviewSortField, overviewSortOrder, setOverviewSortField, setOverviewSortOrder)}
+                          className="pb-3 font-semibold cursor-pointer select-none hover:text-gold-300"
+                        >
+                          Service {renderSortIndicator('services', overviewSortField, overviewSortOrder)}
+                        </th>
+                        <th
+                          onClick={() => toggleSort('status', overviewSortField, overviewSortOrder, setOverviewSortField, setOverviewSortOrder)}
+                          className="pb-3 font-semibold cursor-pointer select-none hover:text-gold-300"
+                        >
+                          Status {renderSortIndicator('status', overviewSortField, overviewSortOrder)}
+                        </th>
+                        <th
+                          onClick={() => toggleSort('createdAt', overviewSortField, overviewSortOrder, setOverviewSortField, setOverviewSortOrder)}
+                          className="pb-3 font-semibold cursor-pointer select-none hover:text-gold-300"
+                        >
+                          Received {renderSortIndicator('createdAt', overviewSortField, overviewSortOrder)}
+                        </th>
                         <th className="pb-3 font-semibold text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gold-500/10">
-                      {queries.slice(0, 5).map((q: any) => (
+                      {overviewFilteredAndSortedQueries.slice(0, 8).map((q: any) => (
                         <tr key={q._id || q.id} className="hover:bg-cosmic-800/40">
                           <td className="py-3 font-bold text-white">{q.name}</td>
                           <td className="py-3 text-ivory-200/80">
@@ -1076,6 +1584,14 @@ export default function AdminDashboard() {
                               {q.status || 'pending'}
                             </span>
                           </td>
+                          <td className="py-3 text-ivory-200/60 whitespace-nowrap">
+                            {new Date(q.createdAt).toLocaleDateString('en-IN', {
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </td>
                           <td className="py-3 text-right">
                             <button
                               onClick={() => handleOpenQueryDetails(q)}
@@ -1086,10 +1602,10 @@ export default function AdminDashboard() {
                           </td>
                         </tr>
                       ))}
-                      {queries.length === 0 && (
+                      {overviewFilteredAndSortedQueries.length === 0 && (
                         <tr>
-                          <td colSpan={5} className="py-6 text-center text-ivory-200/50">
-                            No recent customer queries found.
+                          <td colSpan={6} className="py-6 text-center text-ivory-200/50">
+                            No consultation inquiries found matching filter.
                           </td>
                         </tr>
                       )}
@@ -1113,6 +1629,14 @@ export default function AdminDashboard() {
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
+                  <button
+                    onClick={exportAstrologersCSV}
+                    className="px-3.5 py-2.5 rounded-xl bg-cosmic-900 border border-gold-500/40 text-gold-300 hover:bg-gold-500 hover:text-cosmic-950 font-semibold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+                    title="Export astrologers directory to CSV"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Export CSV</span>
+                  </button>
                   <button
                     onClick={loadAstrologers}
                     className="p-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-gold-400 hover:bg-cosmic-800 transition cursor-pointer"
@@ -1234,6 +1758,14 @@ export default function AdminDashboard() {
                 </div>
                 <div className="flex items-center gap-3">
                   <button
+                    onClick={exportBlogsCSV}
+                    className="px-3.5 py-2.5 rounded-xl bg-cosmic-900 border border-gold-500/40 text-gold-300 hover:bg-gold-500 hover:text-cosmic-950 font-semibold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+                    title="Export all filtered articles to CSV"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Export CSV</span>
+                  </button>
+                  <button
                     onClick={loadBlogs}
                     className="p-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-gold-400 hover:bg-cosmic-800 transition cursor-pointer"
                     title="Refresh List"
@@ -1250,6 +1782,90 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
+              {/* Filter, Sort & Search Toolbar */}
+              <div className="bg-cosmic-900 border border-gold-500/20 rounded-2xl p-4 space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  {/* Search Input */}
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gold-500/60" />
+                    <input
+                      type="text"
+                      value={blogSearch}
+                      onChange={(e) => setBlogSearch(e.target.value)}
+                      placeholder="Search title, slug, author..."
+                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white placeholder-cosmic-600 focus:outline-none focus:border-gold-400 text-xs"
+                    />
+                  </div>
+
+                  {/* Category Filter */}
+                  <div>
+                    <select
+                      value={blogCategoryFilter}
+                      onChange={(e) => setBlogCategoryFilter(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="all">All Categories</option>
+                      <option value="Astrology">Astrology</option>
+                      <option value="Vastu Shastra">Vastu Shastra</option>
+                      <option value="Spiritual Practices">Spiritual Practices</option>
+                      <option value="Remedies">Remedies</option>
+                      <option value="Kundli">Kundli</option>
+                    </select>
+                  </div>
+
+                  {/* Status Filter */}
+                  <div>
+                    <select
+                      value={blogStatusFilter}
+                      onChange={(e) => setBlogStatusFilter(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="all">All Publish Status</option>
+                      <option value="published">Published Only</option>
+                      <option value="draft">Drafts Only</option>
+                    </select>
+                  </div>
+
+                  {/* Sort Selector */}
+                  <div>
+                    <select
+                      value={`${blogSortField}-${blogSortOrder}`}
+                      onChange={(e) => {
+                        const [field, order] = e.target.value.split('-');
+                        setBlogSortField(field as any);
+                        setBlogSortOrder(order as any);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="createdAt-desc">Date: Newest First</option>
+                      <option value="createdAt-asc">Date: Oldest First</option>
+                      <option value="title-asc">Title: A to Z</option>
+                      <option value="title-desc">Title: Z to A</option>
+                      <option value="views-desc">Views: Highest</option>
+                      <option value="views-asc">Views: Lowest</option>
+                      <option value="category-asc">Category: A to Z</option>
+                      <option value="published-desc">Status: Published First</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-gold-500/15 text-[11px] text-ivory-200/60">
+                  <span>Showing {filteredAndSortedBlogs.length} of {blogs.length} articles</span>
+                  {blogCategoryFilter !== 'all' || blogStatusFilter !== 'all' || blogSearch ? (
+                    <button
+                      onClick={() => {
+                        setBlogCategoryFilter('all');
+                        setBlogStatusFilter('all');
+                        setBlogSearch('');
+                      }}
+                      className="text-gold-400 hover:underline cursor-pointer"
+                    >
+                      Clear Filters
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+
               {loading ? (
                 <div className="py-20 text-center text-gold-400 flex flex-col items-center justify-center">
                   <Loader2 className="w-8 h-8 animate-spin mb-2" />
@@ -1261,17 +1877,42 @@ export default function AdminDashboard() {
                     <table className="w-full text-left text-xs">
                       <thead>
                         <tr className="border-b border-gold-500/20 bg-cosmic-950/60 text-gold-400">
-                          <th className="p-4 font-semibold">Article Title</th>
-                          <th className="p-4 font-semibold">Category</th>
+                          <th
+                            onClick={() => toggleSort('title', blogSortField, blogSortOrder, setBlogSortField, setBlogSortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Article Title {renderSortIndicator('title', blogSortField, blogSortOrder)}
+                          </th>
+                          <th
+                            onClick={() => toggleSort('category', blogSortField, blogSortOrder, setBlogSortField, setBlogSortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Category {renderSortIndicator('category', blogSortField, blogSortOrder)}
+                          </th>
                           <th className="p-4 font-semibold">Author</th>
-                          <th className="p-4 font-semibold">Date</th>
-                          <th className="p-4 font-semibold">Views</th>
-                          <th className="p-4 font-semibold">Status</th>
+                          <th
+                            onClick={() => toggleSort('createdAt', blogSortField, blogSortOrder, setBlogSortField, setBlogSortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Date {renderSortIndicator('createdAt', blogSortField, blogSortOrder)}
+                          </th>
+                          <th
+                            onClick={() => toggleSort('views', blogSortField, blogSortOrder, setBlogSortField, setBlogSortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Views {renderSortIndicator('views', blogSortField, blogSortOrder)}
+                          </th>
+                          <th
+                            onClick={() => toggleSort('published', blogSortField, blogSortOrder, setBlogSortField, setBlogSortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Status {renderSortIndicator('published', blogSortField, blogSortOrder)}
+                          </th>
                           <th className="p-4 font-semibold text-right">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gold-500/10">
-                        {blogs.map((b: any) => (
+                        {filteredAndSortedBlogs.map((b: any) => (
                           <tr key={b._id || b.id} className="hover:bg-cosmic-800/40">
                             <td className="p-4">
                               <span className="font-bold text-white text-sm block max-w-sm truncate">
@@ -1328,10 +1969,10 @@ export default function AdminDashboard() {
                             </td>
                           </tr>
                         ))}
-                        {blogs.length === 0 && (
+                        {filteredAndSortedBlogs.length === 0 && (
                           <tr>
                             <td colSpan={7} className="p-8 text-center text-ivory-200/50">
-                              No blog articles found. Click "+ Create Blog Post" above to write an article.
+                              No blog articles found matching your criteria.
                             </td>
                           </tr>
                         )}
@@ -1358,6 +1999,14 @@ export default function AdminDashboard() {
 
                 <div className="flex items-center gap-2">
                   <button
+                    onClick={() => exportQueriesCSV()}
+                    className="px-4 py-2 rounded-xl gold-btn text-cosmic-950 font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer hover:scale-[1.02] transition"
+                    title="Export filtered inquiries to CSV"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Export CSV</span>
+                  </button>
+                  <button
                     onClick={loadQueries}
                     className="p-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-gold-400 hover:bg-cosmic-800 transition cursor-pointer"
                     title="Refresh List"
@@ -1367,34 +2016,81 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Filter Tabs & Search */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-                  {['all', 'pending', 'contacted', 'in_progress', 'resolved'].map((st) => (
-                    <button
-                      key={st}
-                      onClick={() => setQueryStatusFilter(st)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold capitalize whitespace-nowrap transition cursor-pointer border ${
-                        queryStatusFilter === st
-                          ? 'bg-gold-500 text-cosmic-950 border-gold-500 font-bold shadow-xs'
-                          : 'bg-cosmic-900 text-ivory-200/70 border-gold-500/20 hover:bg-cosmic-800'
-                      }`}
-                    >
-                      {st.replace('_', ' ')}
-                    </button>
-                  ))}
+              {/* Advanced Filter Bar & Search */}
+              <div className="bg-cosmic-900/90 border border-gold-500/30 rounded-2xl p-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  {/* Status Filter Buttons */}
+                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                    {['all', 'pending', 'contacted', 'in_progress', 'resolved'].map((st) => (
+                      <button
+                        key={st}
+                        onClick={() => setQueryStatusFilter(st)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-semibold capitalize whitespace-nowrap transition cursor-pointer border ${
+                          queryStatusFilter === st
+                            ? 'bg-gold-500 text-cosmic-950 border-gold-500 font-bold shadow-xs'
+                            : 'bg-cosmic-950 text-ivory-200/70 border-gold-500/20 hover:bg-cosmic-800'
+                        }`}
+                      >
+                        {st.replace('_', ' ')}
+                      </button>
+                    ))}
+                  </div>
+
+                  <span className="text-xs text-gold-400 font-semibold ml-auto">
+                    {filteredAndSortedQueries.length} of {queries.length} Inquiries
+                  </span>
                 </div>
 
-                <div className="relative min-w-[240px]">
-                  <Search className="w-3.5 h-3.5 text-gold-500/60 absolute left-3 top-3" />
-                  <input
-                    type="text"
-                    value={querySearch}
-                    onChange={(e) => setQuerySearch(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && loadQueries()}
-                    placeholder="Search name, phone, email..."
-                    className="w-full pl-9 pr-3 py-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-white placeholder-cosmic-600 text-xs focus:outline-none focus:border-gold-400"
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-gold-500/15">
+                  {/* Search Field */}
+                  <div className="relative">
+                    <Search className="w-3.5 h-3.5 text-gold-500/60 absolute left-3 top-3" />
+                    <input
+                      type="text"
+                      value={querySearch}
+                      onChange={(e) => setQuerySearch(e.target.value)}
+                      placeholder="Search name, phone, email, query..."
+                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white placeholder-cosmic-600 text-xs focus:outline-none focus:border-gold-400"
+                    />
+                  </div>
+
+                  {/* Service Category Filter */}
+                  <div>
+                    <select
+                      value={queryServiceFilter}
+                      onChange={(e) => setQueryServiceFilter(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="all">All Services</option>
+                      <option value="horoscope">Horoscope &amp; Kundli</option>
+                      <option value="vastu">Vastu Shastra</option>
+                      <option value="palmistry">Palmistry (Hastarekha)</option>
+                      <option value="tarot">Tarot Reading</option>
+                      <option value="numerology">Numerology</option>
+                      <option value="gemstone">Gemstone Guidance</option>
+                      <option value="matching">Kundli Matching</option>
+                    </select>
+                  </div>
+
+                  {/* Sort Order Selector */}
+                  <div>
+                    <select
+                      value={`${querySortField}-${querySortOrder}`}
+                      onChange={(e) => {
+                        const [field, order] = e.target.value.split('-');
+                        setQuerySortField(field as any);
+                        setQuerySortOrder(order as any);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="createdAt-desc">Received: Newest First</option>
+                      <option value="createdAt-asc">Received: Oldest First</option>
+                      <option value="name-asc">Client Name: A to Z</option>
+                      <option value="name-desc">Client Name: Z to A</option>
+                      <option value="services-asc">Service Category: A to Z</option>
+                      <option value="status-asc">Status: Ascending</option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -1409,17 +2105,37 @@ export default function AdminDashboard() {
                     <table className="w-full text-left text-xs">
                       <thead>
                         <tr className="border-b border-gold-500/20 bg-cosmic-950/60 text-gold-400">
-                          <th className="p-4 font-semibold">Received</th>
-                          <th className="p-4 font-semibold">Client Name</th>
+                          <th
+                            onClick={() => toggleSort('createdAt', querySortField, querySortOrder, setQuerySortField, setQuerySortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Received {renderSortIndicator('createdAt', querySortField, querySortOrder)}
+                          </th>
+                          <th
+                            onClick={() => toggleSort('name', querySortField, querySortOrder, setQuerySortField, setQuerySortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Client Name {renderSortIndicator('name', querySortField, querySortOrder)}
+                          </th>
                           <th className="p-4 font-semibold">Contact</th>
-                          <th className="p-4 font-semibold">Service Requested</th>
+                          <th
+                            onClick={() => toggleSort('services', querySortField, querySortOrder, setQuerySortField, setQuerySortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Service Requested {renderSortIndicator('services', querySortField, querySortOrder)}
+                          </th>
                           <th className="p-4 font-semibold">Astrologer</th>
-                          <th className="p-4 font-semibold">Status</th>
+                          <th
+                            onClick={() => toggleSort('status', querySortField, querySortOrder, setQuerySortField, setQuerySortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Status {renderSortIndicator('status', querySortField, querySortOrder)}
+                          </th>
                           <th className="p-4 font-semibold text-right">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gold-500/10">
-                        {queries.map((q: any) => (
+                        {filteredAndSortedQueries.map((q: any) => (
                           <tr key={q._id || q.id} className="hover:bg-cosmic-800/40">
                             <td className="p-4 text-ivory-200/60 whitespace-nowrap">
                               {new Date(q.createdAt).toLocaleDateString('en-IN', {
@@ -1478,7 +2194,7 @@ export default function AdminDashboard() {
                             </td>
                           </tr>
                         ))}
-                        {queries.length === 0 && (
+                        {filteredAndSortedQueries.length === 0 && (
                           <tr>
                             <td colSpan={7} className="p-8 text-center text-ivory-200/50">
                               No inquiries found matching this criteria.
@@ -1506,18 +2222,15 @@ export default function AdminDashboard() {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="relative min-w-[240px]">
-                    <Search className="w-3.5 h-3.5 text-gold-500/60 absolute left-3 top-3" />
-                    <input
-                      type="text"
-                      value={userSearch}
-                      onChange={(e) => setUserSearch(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && loadUsers()}
-                      placeholder="Search user name or phone..."
-                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-white placeholder-cosmic-600 text-xs focus:outline-none focus:border-gold-400"
-                    />
-                  </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={exportUsersCSV}
+                    className="px-4 py-2 rounded-xl gold-btn text-cosmic-950 font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer hover:scale-[1.02] transition"
+                    title="Export user accounts to CSV"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Export Users CSV</span>
+                  </button>
                   <button
                     onClick={loadUsers}
                     className="p-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-gold-400 hover:bg-cosmic-800 transition cursor-pointer"
@@ -1525,6 +2238,86 @@ export default function AdminDashboard() {
                   >
                     <RefreshCw className="w-4 h-4" />
                   </button>
+                </div>
+              </div>
+
+              {/* Filter Bar & Search */}
+              <div className="bg-cosmic-900/90 border border-gold-500/30 rounded-2xl p-4">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                  {/* Search input */}
+                  <div className="relative">
+                    <Search className="w-3.5 h-3.5 text-gold-500/60 absolute left-3 top-3" />
+                    <input
+                      type="text"
+                      value={userSearch}
+                      onChange={(e) => setUserSearch(e.target.value)}
+                      placeholder="Search name, phone, email..."
+                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white placeholder-cosmic-600 text-xs focus:outline-none focus:border-gold-400"
+                    />
+                  </div>
+
+                  {/* Status Filter */}
+                  <div>
+                    <select
+                      value={userStatusFilter}
+                      onChange={(e) => setUserStatusFilter(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="all">All Account Status</option>
+                      <option value="active">Active Only</option>
+                      <option value="suspended">Suspended Only</option>
+                    </select>
+                  </div>
+
+                  {/* Credits Filter */}
+                  <div>
+                    <select
+                      value={userCreditsFilter}
+                      onChange={(e) => setUserCreditsFilter(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="all">All Credits</option>
+                      <option value="has_credits">Has Credits (&gt;0)</option>
+                      <option value="zero_credits">Zero Credits (0)</option>
+                    </select>
+                  </div>
+
+                  {/* Sort Selector */}
+                  <div>
+                    <select
+                      value={`${userSortField}-${userSortOrder}`}
+                      onChange={(e) => {
+                        const [field, order] = e.target.value.split('-');
+                        setUserSortField(field as any);
+                        setUserSortOrder(order as any);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="createdAt-desc">Joined: Newest First</option>
+                      <option value="createdAt-asc">Joined: Oldest First</option>
+                      <option value="name-asc">User Name: A to Z</option>
+                      <option value="name-desc">User Name: Z to A</option>
+                      <option value="palmistryCredits-desc">Credits: High to Low</option>
+                      <option value="palmistryCredits-asc">Credits: Low to High</option>
+                      <option value="status-asc">Status: Ascending</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-gold-500/15 text-[11px] text-ivory-200/60">
+                  <span>Showing {filteredAndSortedUsers.length} of {users.length} registered users</span>
+                  {userStatusFilter !== 'all' || userCreditsFilter !== 'all' || userSearch ? (
+                    <button
+                      onClick={() => {
+                        setUserStatusFilter('all');
+                        setUserCreditsFilter('all');
+                        setUserSearch('');
+                      }}
+                      className="text-gold-400 hover:underline cursor-pointer"
+                    >
+                      Clear Filters
+                    </button>
+                  ) : null}
                 </div>
               </div>
 
@@ -1539,17 +2332,37 @@ export default function AdminDashboard() {
                     <table className="w-full text-left text-xs">
                       <thead>
                         <tr className="border-b border-gold-500/20 bg-cosmic-950/60 text-gold-400">
-                          <th className="p-4 font-semibold">Name</th>
+                          <th
+                            onClick={() => toggleSort('name', userSortField, userSortOrder, setUserSortField, setUserSortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Name {renderSortIndicator('name', userSortField, userSortOrder)}
+                          </th>
                           <th className="p-4 font-semibold">Email</th>
                           <th className="p-4 font-semibold">Phone</th>
-                          <th className="p-4 font-semibold">Palmistry Credits</th>
-                          <th className="p-4 font-semibold">Status</th>
-                          <th className="p-4 font-semibold">Joined Date</th>
+                          <th
+                            onClick={() => toggleSort('palmistryCredits', userSortField, userSortOrder, setUserSortField, setUserSortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Palmistry Credits {renderSortIndicator('palmistryCredits', userSortField, userSortOrder)}
+                          </th>
+                          <th
+                            onClick={() => toggleSort('status', userSortField, userSortOrder, setUserSortField, setUserSortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Status {renderSortIndicator('status', userSortField, userSortOrder)}
+                          </th>
+                          <th
+                            onClick={() => toggleSort('createdAt', userSortField, userSortOrder, setUserSortField, setUserSortOrder)}
+                            className="p-4 font-semibold cursor-pointer select-none hover:text-gold-300"
+                          >
+                            Joined Date {renderSortIndicator('createdAt', userSortField, userSortOrder)}
+                          </th>
                           <th className="p-4 font-semibold text-right">Actions</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gold-500/10">
-                        {users.map((u: any) => (
+                        {filteredAndSortedUsers.map((u: any) => (
                           <tr key={u._id || u.id} className="hover:bg-cosmic-800/40">
                             <td className="p-4 font-bold text-white">{u.name}</td>
                             <td className="p-4 text-ivory-200/80">{u.email}</td>
@@ -1596,10 +2409,10 @@ export default function AdminDashboard() {
                             </td>
                           </tr>
                         ))}
-                        {users.length === 0 && (
+                        {filteredAndSortedUsers.length === 0 && (
                           <tr>
                             <td colSpan={7} className="p-8 text-center text-ivory-200/50">
-                              No user accounts registered yet.
+                              No user accounts found matching this criteria.
                             </td>
                           </tr>
                         )}
@@ -1625,6 +2438,14 @@ export default function AdminDashboard() {
                 </div>
                 <div className="flex items-center gap-3">
                   <button
+                    onClick={exportReviewsCSV}
+                    className="px-3.5 py-2.5 rounded-xl bg-cosmic-900 border border-gold-500/40 text-gold-300 hover:bg-gold-500 hover:text-cosmic-950 font-semibold text-xs flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+                    title="Export all filtered reviews to CSV"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Export CSV</span>
+                  </button>
+                  <button
                     onClick={loadReviews}
                     className="p-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-gold-400 hover:bg-cosmic-800 transition cursor-pointer"
                     title="Refresh List"
@@ -1641,16 +2462,86 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Search filter */}
-              <div className="relative max-w-md">
-                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gold-500/60" />
-                <input
-                  type="text"
-                  value={reviewSearch}
-                  onChange={(e) => setReviewSearch(e.target.value)}
-                  placeholder="Search by client name, city, or quote..."
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-cosmic-900 border border-gold-500/30 text-white placeholder-cosmic-600 focus:outline-none focus:border-gold-400 text-xs"
-                />
+              {/* Filter, Sort & Search Toolbar */}
+              <div className="bg-cosmic-900 border border-gold-500/20 rounded-2xl p-4 space-y-3">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                  {/* Search Input */}
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gold-500/60" />
+                    <input
+                      type="text"
+                      value={reviewSearch}
+                      onChange={(e) => setReviewSearch(e.target.value)}
+                      placeholder="Search name, city, quote..."
+                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white placeholder-cosmic-600 focus:outline-none focus:border-gold-400 text-xs"
+                    />
+                  </div>
+
+                  {/* Rating Filter */}
+                  <div>
+                    <select
+                      value={reviewRatingFilter}
+                      onChange={(e) => setReviewRatingFilter(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="all">All Star Ratings</option>
+                      <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+                      <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+                      <option value="3">⭐⭐⭐ (3 Stars)</option>
+                      <option value="2">⭐⭐ (2 Stars)</option>
+                      <option value="1">⭐ (1 Star)</option>
+                    </select>
+                  </div>
+
+                  {/* Visibility Status Filter */}
+                  <div>
+                    <select
+                      value={reviewStatusFilter}
+                      onChange={(e) => setReviewStatusFilter(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="all">All Visibility Status</option>
+                      <option value="active">Active (Visible on Site)</option>
+                      <option value="hidden">Hidden (Draft/Archived)</option>
+                    </select>
+                  </div>
+
+                  {/* Sort Selector */}
+                  <div>
+                    <select
+                      value={`${reviewSortField}-${reviewSortOrder}`}
+                      onChange={(e) => {
+                        const [field, order] = e.target.value.split('-');
+                        setReviewSortField(field as any);
+                        setReviewSortOrder(order as any);
+                      }}
+                      className="w-full px-3 py-2 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white text-xs focus:outline-none focus:border-gold-400"
+                    >
+                      <option value="createdAt-desc">Date: Newest First</option>
+                      <option value="createdAt-asc">Date: Oldest First</option>
+                      <option value="rating-desc">Rating: Highest First</option>
+                      <option value="rating-asc">Rating: Lowest First</option>
+                      <option value="name-asc">Client Name: A to Z</option>
+                      <option value="name-desc">Client Name: Z to A</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-gold-500/15 text-[11px] text-ivory-200/60">
+                  <span>Showing {filteredAndSortedReviews.length} of {reviews.length} reviews</span>
+                  {reviewRatingFilter !== 'all' || reviewStatusFilter !== 'all' || reviewSearch ? (
+                    <button
+                      onClick={() => {
+                        setReviewRatingFilter('all');
+                        setReviewStatusFilter('all');
+                        setReviewSearch('');
+                      }}
+                      className="text-gold-400 hover:underline cursor-pointer"
+                    >
+                      Clear Filters
+                    </button>
+                  ) : null}
+                </div>
               </div>
 
               {loading ? (
@@ -1660,17 +2551,7 @@ export default function AdminDashboard() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {reviews
-                    .filter((r: any) => {
-                      if (!reviewSearch.trim()) return true;
-                      const q = reviewSearch.toLowerCase();
-                      return (
-                        r.name?.toLowerCase().includes(q) ||
-                        r.location?.toLowerCase().includes(q) ||
-                        r.text?.toLowerCase().includes(q)
-                      );
-                    })
-                    .map((review: any) => (
+                  {filteredAndSortedReviews.map((review: any) => (
                       <div
                         key={review._id || review.id}
                         className="bg-cosmic-900 border border-gold-500/30 rounded-2xl p-6 shadow-gold-card flex flex-col justify-between relative overflow-hidden"
@@ -1717,9 +2598,9 @@ export default function AdminDashboard() {
                         <div>
                           <div className="flex items-center justify-between pt-4 border-t border-gold-500/20 mb-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-full bg-cosmic-950 border border-gold-500/40 text-gold-300 font-display font-bold flex items-center justify-center text-xs shadow-inner">
+                              {/* <div className="w-10 h-10 rounded-full bg-cosmic-950 border border-gold-500/40 text-gold-300 font-display font-bold flex items-center justify-center text-xs shadow-inner">
                                 {review.initials || (review.name ? review.name.slice(0, 2).toUpperCase() : '✦')}
-                              </div>
+                              </div> */}
                               <div>
                                 <h4 className="font-display font-bold text-white text-sm">
                                   {review.name}
@@ -1754,9 +2635,11 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                     ))}
-                  {reviews.length === 0 && (
+                  {filteredAndSortedReviews.length === 0 && (
                     <div className="col-span-full py-16 text-center text-ivory-200/50 bg-cosmic-900/50 rounded-2xl border border-gold-500/20">
-                      No reviews found. Click "+ Add New Review" to publish a client testimonial.
+                      {reviews.length === 0
+                        ? 'No reviews found. Click "+ Add New Review" to publish a client testimonial.'
+                        : 'No reviews found matching your filter criteria.'}
                     </div>
                   )}
                 </div>

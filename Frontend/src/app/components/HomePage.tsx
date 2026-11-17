@@ -1246,9 +1246,9 @@ export function HomePage() {
 
                 <div className="flex items-center justify-between pt-4 border-t border-ivory-200">
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-full bg-cosmic-900 text-gold-300 font-display font-bold flex items-center justify-center text-sm">
+                    {/* <div className="w-11 h-11 rounded-full bg-cosmic-900 text-gold-300 font-display font-bold flex items-center justify-center text-sm">
                       {testimonial.initials || (testimonial.name ? testimonial.name.slice(0, 2).toUpperCase() : '✦')}
-                    </div>
+                    </div> */}
                     <div>
                       <div className="font-display font-bold text-cosmic-900 text-sm">{testimonial.name}</div>
                       <div className="text-xs text-cosmic-700/75">{testimonial.location || 'India'}</div>
