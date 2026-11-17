@@ -3,7 +3,9 @@ import Astrologer from '../models/Astrologer.js';
 import Blog from '../models/Blog.js';
 import Booking from '../models/booking.js';
 import User from '../models/User.js';
+import Review from '../models/Review.js';
 import { ensureDefaultBlogs } from './blogController.js';
+import { ensureDefaultReviews } from './reviewController.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'bhagyanetram_secret_key_123';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@bhagyanetram.com';
@@ -68,6 +70,7 @@ export const adminLogin = async (req, res) => {
 export const getAdminStats = async (req, res) => {
   try {
     await ensureDefaultBlogs();
+    await ensureDefaultReviews();
 
     const [
       totalAstrologers,
@@ -76,6 +79,7 @@ export const getAdminStats = async (req, res) => {
       pendingQueries,
       resolvedQueries,
       totalUsers,
+      totalReviews,
       recentQueries,
     ] = await Promise.all([
       Astrologer.countDocuments({}),
@@ -84,6 +88,7 @@ export const getAdminStats = async (req, res) => {
       Booking.countDocuments({ status: 'pending' }),
       Booking.countDocuments({ status: 'resolved' }),
       User.countDocuments({}),
+      Review.countDocuments({}),
       Booking.find({}).sort({ createdAt: -1 }).limit(6),
     ]);
 
@@ -96,6 +101,7 @@ export const getAdminStats = async (req, res) => {
         pendingQueries,
         resolvedQueries,
         totalUsers,
+        totalReviews,
       },
       recentQueries,
     });

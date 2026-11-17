@@ -44,6 +44,14 @@ import {
 import { getPublicAstrologers } from './controllers/astrologerController.js';
 import { getPublicBlogs, getPublicBlogBySlug, ensureDefaultBlogs } from './controllers/blogController.js';
 import { createPublicBooking } from './controllers/bookingController.js';
+import {
+  getPublicReviews,
+  getAllReviewsAdmin,
+  createReview,
+  updateReview,
+  deleteReview,
+  ensureDefaultReviews,
+} from './controllers/reviewController.js';
 
 const app = express();
 // Increased JSON & URL-encoded limits for Base64 image storage in MongoDB
@@ -51,6 +59,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 initializeFestivalQueue();
 ensureDefaultBlogs();
+ensureDefaultReviews();
 
 app.use(cors({ origin: "*", credentials: true }));
 
@@ -81,11 +90,12 @@ app.get("/api/astrology/festivals", getFestivals);
 app.post("/api/astrology/transit", getPlanetTransit);
 
 // ==========================================
-// PUBLIC: ASTROLOGERS, BLOGS & BOOKINGS
+// PUBLIC: ASTROLOGERS, BLOGS, REVIEWS & BOOKINGS
 // ==========================================
 app.get("/api/astrologers", getPublicAstrologers);
 app.get("/api/blogs", getPublicBlogs);
 app.get("/api/blogs/:slug", getPublicBlogBySlug);
+app.get("/api/reviews", getPublicReviews);
 app.post("/api/bookings", createPublicBooking);
 
 // ==========================================
@@ -115,6 +125,12 @@ app.delete("/api/admin/queries/:id", requireAdmin, deleteQuery);
 app.get("/api/admin/users", requireAdmin, getAllUsers);
 app.patch("/api/admin/users/:id", requireAdmin, updateUser);
 app.delete("/api/admin/users/:id", requireAdmin, deleteUser);
+
+// Admin Reviews & Testimonials
+app.get("/api/admin/reviews", requireAdmin, getAllReviewsAdmin);
+app.post("/api/admin/reviews", requireAdmin, createReview);
+app.put("/api/admin/reviews/:id", requireAdmin, updateReview);
+app.delete("/api/admin/reviews/:id", requireAdmin, deleteReview);
 
 // ==========================================
 // HOROSCOPE ROUTES

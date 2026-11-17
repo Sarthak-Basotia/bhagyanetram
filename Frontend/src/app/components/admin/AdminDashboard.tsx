@@ -18,6 +18,10 @@ import {
   fetchAdminUsers,
   updateUserApi,
   deleteUserApi,
+  fetchAdminReviews,
+  createReviewApi,
+  updateReviewApi,
+  deleteReviewApi,
 } from '../../../api/adminApi';
 import {
   LayoutDashboard,
@@ -25,6 +29,7 @@ import {
   Sparkles,
   BookOpen,
   MessageSquare,
+  Quote,
   LogOut,
   Plus,
   Pencil,
@@ -83,7 +88,7 @@ const DEFAULT_WEBSITE_BLOG = {
   tags: ['Vastu Shastra', 'Main Entrance', 'Gomti Chakra', 'Home Remedies'],
 };
 
-type ActiveTab = 'overview' | 'astrologers' | 'blogs' | 'queries' | 'users';
+type ActiveTab = 'overview' | 'astrologers' | 'blogs' | 'queries' | 'users' | 'reviews';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
@@ -98,6 +103,7 @@ export default function AdminDashboard() {
     pendingQueries: 0,
     resolvedQueries: 0,
     totalUsers: 0,
+    totalReviews: 3,
   });
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
@@ -108,12 +114,28 @@ export default function AdminDashboard() {
   const [blogs, setBlogs] = useState<any[]>([DEFAULT_WEBSITE_BLOG]);
   const [queries, setQueries] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<any[]>([]);
 
   // Search & Filter states
   const [queryStatusFilter, setQueryStatusFilter] = useState('all');
   const [querySearch, setQuerySearch] = useState('');
   const [userSearch, setUserSearch] = useState('');
   const [blogSearch, setBlogSearch] = useState('');
+  const [reviewSearch, setReviewSearch] = useState('');
+
+  // Modals state
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [editingReview, setEditingReview] = useState<any | null>(null);
+  const [reviewForm, setReviewForm] = useState({
+    name: '',
+    initials: '',
+    location: '',
+    text: '',
+    rating: 5,
+    date: 'Recently',
+    active: true,
+    order: 0,
+  });
 
   // Modals state
   const [astrologerModalOpen, setAstrologerModalOpen] = useState(false);
@@ -175,6 +197,7 @@ export default function AdminDashboard() {
         setStats({
           ...res.stats,
           totalBlogs: res.stats.totalBlogs > 0 ? res.stats.totalBlogs : 1,
+          totalReviews: res.stats.totalReviews || reviews.length,
         });
       }
     } catch (err: any) {
@@ -241,8 +264,23 @@ export default function AdminDashboard() {
     }
   };
 
+  const loadReviews = async () => {
+    setLoading(true);
+    try {
+      const res = await fetchAdminReviews();
+      if (res && res.success && Array.isArray(res.data)) {
+        setReviews(res.data);
+      }
+    } catch (err: any) {
+      showToast('Error loading reviews: ' + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadStats();
+    loadReviews();
   }, []);
 
   useEffect(() => {
@@ -250,11 +288,106 @@ export default function AdminDashboard() {
     if (activeTab === 'blogs') loadBlogs();
     if (activeTab === 'queries') loadQueries();
     if (activeTab === 'users') loadUsers();
+    if (activeTab === 'reviews') loadReviews();
     if (activeTab === 'overview') {
       loadStats();
       loadQueries();
+      loadReviews();
     }
   }, [activeTab, queryStatusFilter]);
+
+  // ==========================================
+  // REVIEW & TESTIMONIAL ACTIONS
+  // ==========================================
+  const handleOpenAddReview = () => {
+    setEditingReview(null);
+    setReviewForm({
+      name: '',
+      initials: '',
+      location: 'Mumbai',
+      text: '',
+      rating: 5,
+      date: 'Just now',
+      active: true,
+      order: reviews.length + 1,
+    });
+    setReviewModalOpen(true);
+  };
+
+  const handleOpenEditReview = (review: any) => {
+    setEditingReview(review);
+    setReviewForm({
+      name: review.name || '',
+      initials: review.initials || '',
+      location: review.location || '',
+      text: review.text || '',
+      rating: review.rating || 5,
+      date: review.date || 'Recently',
+      active: review.active !== false,
+      order: review.order || 0,
+    });
+    setReviewModalOpen(true);
+  };
+
+  const handleToggleReviewActive = async (review: any) => {
+    setActionLoading(true);
+    try {
+      const id = review._id || review.id;
+      const updatedActive = !review.active;
+      await updateReviewApi(id, { active: updatedActive });
+      showToast(`Review by "${review.name}" marked as ${updatedActive ? 'Visible' : 'Hidden'}.`);
+      loadReviews();
+      loadStats();
+    } catch (err: any) {
+      showToast('Error updating review status: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleSaveReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewForm.name.trim() || !reviewForm.text.trim()) {
+      showToast('Please enter both client name and review text.');
+      return;
+    }
+
+    setActionLoading(true);
+    try {
+      if (editingReview) {
+        const id = editingReview._id || editingReview.id;
+        const res = await updateReviewApi(id, reviewForm);
+        showToast(res.message || 'Review updated successfully!');
+      } else {
+        const res = await createReviewApi(reviewForm);
+        showToast(res.message || 'New review published successfully!');
+      }
+      setReviewModalOpen(false);
+      loadReviews();
+      loadStats();
+    } catch (err: any) {
+      showToast('Error saving review: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleDeleteReview = async (id: string, name: string) => {
+    if (!window.confirm(`Are you sure you want to remove the review by "${name}"?`)) {
+      return;
+    }
+    setActionLoading(true);
+    try {
+      await deleteReviewApi(id);
+      showToast(`Review by "${name}" removed successfully.`);
+      loadReviews();
+      loadStats();
+    } catch (err: any) {
+      showToast('Error deleting review: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
 
   // ==========================================
   // ASTROLOGER ACTIONS
@@ -699,6 +832,23 @@ export default function AdminDashboard() {
                 {stats.totalUsers || users.length}
               </span>
             </button>
+
+            <button
+              onClick={() => setActiveTab('reviews')}
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                activeTab === 'reviews'
+                  ? 'bg-gold-500 text-cosmic-950 shadow-gold-glow font-bold'
+                  : 'text-ivory-200/80 hover:bg-cosmic-800 hover:text-gold-300'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Quote className="w-4 h-4" />
+                <span>Client Reviews</span>
+              </div>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20">
+                {stats.totalReviews || reviews.length}
+              </span>
+            </button>
           </nav>
         </div>
 
@@ -737,6 +887,7 @@ export default function AdminDashboard() {
               {activeTab === 'blogs' && 'Manage Blogs & Wisdom Library'}
               {activeTab === 'queries' && 'Customer Inquiries & Consultations'}
               {activeTab === 'users' && 'Registered User Accounts'}
+              {activeTab === 'reviews' && 'Manage Client Reviews & Testimonials'}
             </h2>
           </div>
 
@@ -760,7 +911,7 @@ export default function AdminDashboard() {
           {activeTab === 'overview' && (
             <div className="space-y-6">
               {/* Stat Cards */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                 <div 
                   onClick={() => setActiveTab('astrologers')}
                   className="bg-cosmic-900/80 border border-gold-500/30 p-5 rounded-2xl shadow-md hover:border-gold-400 transition cursor-pointer"
@@ -816,6 +967,20 @@ export default function AdminDashboard() {
                   </div>
                   <span className="text-[11px] text-ivory-200/60 mt-1 block">Registered clients</span>
                 </div>
+
+                <div 
+                  onClick={() => setActiveTab('reviews')}
+                  className="bg-cosmic-900/80 border border-gold-500/30 p-5 rounded-2xl shadow-md hover:border-gold-400 transition cursor-pointer"
+                >
+                  <div className="flex items-center justify-between text-gold-400 mb-2">
+                    <span className="text-xs font-semibold uppercase tracking-wider">Client Reviews</span>
+                    <Quote className="w-4 h-4" />
+                  </div>
+                  <div className="text-2xl sm:text-3xl font-display font-bold text-white">
+                    {stats.totalReviews || reviews.length}
+                  </div>
+                  <span className="text-[11px] text-ivory-200/60 mt-1 block">Real stories & feedback</span>
+                </div>
               </div>
 
               {/* Quick Actions */}
@@ -830,6 +995,14 @@ export default function AdminDashboard() {
                   >
                     <Plus className="w-4 h-4" />
                     <span>Add New Astrologer</span>
+                  </button>
+
+                  <button
+                    onClick={handleOpenAddReview}
+                    className="px-4 py-2.5 rounded-xl bg-gold-500/15 border border-gold-500/40 text-gold-300 font-bold text-xs flex items-center gap-1.5 hover:bg-gold-500/25 transition cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add Client Review</span>
                   </button>
 
                   <button
@@ -1438,6 +1611,159 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* =========================================================
+              TAB 6: CLIENT REVIEWS & TESTIMONIALS MANAGEMENT
+          ========================================================= */}
+          {activeTab === 'reviews' && (
+            <div className="space-y-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h3 className="font-display font-bold text-xl text-white">Client Experiences & Reviews</h3>
+                  <p className="text-xs text-ivory-200/60 mt-0.5">
+                    Manage testimonials featured in the "What Our Clients Say" section on the home page.
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={loadReviews}
+                    className="p-2 rounded-xl bg-cosmic-900 border border-gold-500/30 text-gold-400 hover:bg-cosmic-800 transition cursor-pointer"
+                    title="Refresh List"
+                  >
+                    <RefreshCw className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={handleOpenAddReview}
+                    className="px-4 py-2.5 rounded-xl gold-btn text-cosmic-950 font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add New Review</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Search filter */}
+              <div className="relative max-w-md">
+                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gold-500/60" />
+                <input
+                  type="text"
+                  value={reviewSearch}
+                  onChange={(e) => setReviewSearch(e.target.value)}
+                  placeholder="Search by client name, city, or quote..."
+                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-cosmic-900 border border-gold-500/30 text-white placeholder-cosmic-600 focus:outline-none focus:border-gold-400 text-xs"
+                />
+              </div>
+
+              {loading ? (
+                <div className="py-20 text-center text-gold-400 flex flex-col items-center justify-center">
+                  <Loader2 className="w-8 h-8 animate-spin mb-2" />
+                  <span className="text-xs font-semibold">Loading Reviews...</span>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {reviews
+                    .filter((r: any) => {
+                      if (!reviewSearch.trim()) return true;
+                      const q = reviewSearch.toLowerCase();
+                      return (
+                        r.name?.toLowerCase().includes(q) ||
+                        r.location?.toLowerCase().includes(q) ||
+                        r.text?.toLowerCase().includes(q)
+                      );
+                    })
+                    .map((review: any) => (
+                      <div
+                        key={review._id || review.id}
+                        className="bg-cosmic-900 border border-gold-500/30 rounded-2xl p-6 shadow-gold-card flex flex-col justify-between relative overflow-hidden"
+                      >
+                        <div>
+                          {/* Card Top: Stars and Status Badge */}
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-1 text-gold-400">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`w-4 h-4 ${
+                                    i < Math.floor(review.rating || 5)
+                                      ? 'fill-gold-400 text-gold-400'
+                                      : 'text-cosmic-700'
+                                  }`}
+                                />
+                              ))}
+                              <span className="text-xs text-gold-300 font-bold ml-1.5">
+                                {review.rating || 5}.0
+                              </span>
+                            </div>
+
+                            <button
+                              onClick={() => handleToggleReviewActive(review)}
+                              title="Click to toggle visibility on website"
+                              className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase transition cursor-pointer ${
+                                review.active !== false
+                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                  : 'bg-zinc-600/30 text-zinc-300 border border-zinc-500/30'
+                              }`}
+                            >
+                              {review.active !== false ? '• Active' : '• Hidden'}
+                            </button>
+                          </div>
+
+                          {/* Quote text */}
+                          <blockquote className="font-editorial italic text-base text-ivory-100/95 leading-relaxed mb-6">
+                            "{review.text}"
+                          </blockquote>
+                        </div>
+
+                        {/* Card Bottom: Client Info & Actions */}
+                        <div>
+                          <div className="flex items-center justify-between pt-4 border-t border-gold-500/20 mb-4">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-full bg-cosmic-950 border border-gold-500/40 text-gold-300 font-display font-bold flex items-center justify-center text-xs shadow-inner">
+                                {review.initials || (review.name ? review.name.slice(0, 2).toUpperCase() : '✦')}
+                              </div>
+                              <div>
+                                <h4 className="font-display font-bold text-white text-sm">
+                                  {review.name}
+                                </h4>
+                                <span className="text-[11px] text-ivory-200/65 block">
+                                  {review.location || 'India'}
+                                </span>
+                              </div>
+                            </div>
+                            <span className="text-[11px] text-gold-400/80 font-medium">
+                              {review.date || 'Recently'}
+                            </span>
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => handleOpenEditReview(review)}
+                              className="flex-1 py-2 px-3 rounded-xl bg-cosmic-800 hover:bg-gold-500 hover:text-cosmic-950 text-gold-300 font-semibold text-xs flex items-center justify-center gap-1.5 transition border border-gold-500/20 cursor-pointer"
+                            >
+                              <Pencil className="w-3.5 h-3.5" />
+                              <span>Edit</span>
+                            </button>
+                            <button
+                              onClick={() => handleDeleteReview(review._id || review.id, review.name)}
+                              className="p-2 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-500/20 transition cursor-pointer"
+                              title="Delete Review"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  {reviews.length === 0 && (
+                    <div className="col-span-full py-16 text-center text-ivory-200/50 bg-cosmic-900/50 rounded-2xl border border-gold-500/20">
+                      No reviews found. Click "+ Add New Review" to publish a client testimonial.
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
         </div>
       </main>
 
@@ -2028,6 +2354,149 @@ export default function AdminDashboard() {
                   className="px-5 py-2 rounded-xl gold-btn text-cosmic-950 font-bold shadow-md cursor-pointer"
                 >
                   {actionLoading ? 'Saving...' : 'Save User Settings'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          MODAL: ADD / EDIT CLIENT REVIEW
+      ========================================================= */}
+      {reviewModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="w-full max-w-lg bg-cosmic-900 border border-gold-500/40 rounded-3xl p-6 shadow-2xl relative my-8">
+            <div className="flex items-center justify-between pb-4 border-b border-gold-500/20 mb-5">
+              <h3 className="font-display font-bold text-lg text-white">
+                {editingReview ? 'Edit Client Review' : 'Add New Client Review'}
+              </h3>
+              <button
+                onClick={() => setReviewModalOpen(false)}
+                className="p-1.5 rounded-full hover:bg-cosmic-800 text-ivory-200/70 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveReview} className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                    Client Full Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={reviewForm.name}
+                    onChange={(e) => setReviewForm({ ...reviewForm, name: e.target.value })}
+                    placeholder="e.g. Sheeshpal Singh"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white placeholder-cosmic-600 focus:border-gold-400 focus:outline-none text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                    Location / City
+                  </label>
+                  <input
+                    type="text"
+                    value={reviewForm.location}
+                    onChange={(e) => setReviewForm({ ...reviewForm, location: e.target.value })}
+                    placeholder="e.g. Mumbai"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white placeholder-cosmic-600 focus:border-gold-400 focus:outline-none text-xs"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                    Rating (Stars)
+                  </label>
+                  <select
+                    value={reviewForm.rating}
+                    onChange={(e) => setReviewForm({ ...reviewForm, rating: Number(e.target.value) })}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white focus:border-gold-400 focus:outline-none text-xs"
+                  >
+                    <option value={5}>⭐⭐⭐⭐⭐ (5 Stars)</option>
+                    <option value={4}>⭐⭐⭐⭐ (4 Stars)</option>
+                    <option value={3}>⭐⭐⭐ (3 Stars)</option>
+                    <option value={2}>⭐⭐ (2 Stars)</option>
+                    <option value={1}>⭐ (1 Star)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                    Time / Date Text
+                  </label>
+                  <input
+                    type="text"
+                    value={reviewForm.date}
+                    onChange={(e) => setReviewForm({ ...reviewForm, date: e.target.value })}
+                    placeholder="e.g. 2 days ago"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white placeholder-cosmic-600 focus:border-gold-400 focus:outline-none text-xs"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                    Avatar Initials
+                  </label>
+                  <input
+                    type="text"
+                    maxLength={3}
+                    value={reviewForm.initials}
+                    onChange={(e) => setReviewForm({ ...reviewForm, initials: e.target.value.toUpperCase() })}
+                    placeholder="Auto (e.g. SS)"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white placeholder-cosmic-600 focus:border-gold-400 focus:outline-none text-xs font-mono uppercase"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gold-300 mb-1.5">
+                  Client Review / Testimonial Text *
+                </label>
+                <textarea
+                  required
+                  rows={4}
+                  value={reviewForm.text}
+                  onChange={(e) => setReviewForm({ ...reviewForm, text: e.target.value })}
+                  placeholder="Enter the client's detailed feedback, experience, or testimonial quote..."
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-cosmic-950 border border-gold-500/30 text-white placeholder-cosmic-600 focus:border-gold-400 focus:outline-none text-xs font-editorial italic leading-relaxed"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <input
+                  type="checkbox"
+                  id="reviewActive"
+                  checked={reviewForm.active}
+                  onChange={(e) => setReviewForm({ ...reviewForm, active: e.target.checked })}
+                  className="w-4 h-4 rounded accent-gold-500 cursor-pointer"
+                />
+                <label htmlFor="reviewActive" className="text-xs text-ivory-200 cursor-pointer select-none">
+                  Display and feature on BhagyaNetram Home Page
+                </label>
+              </div>
+
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-gold-500/20">
+                <button
+                  type="button"
+                  onClick={() => setReviewModalOpen(false)}
+                  className="px-4 py-2 rounded-xl bg-cosmic-800 text-ivory-200 font-semibold text-xs hover:bg-cosmic-750 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={actionLoading}
+                  className="px-5 py-2 rounded-xl gold-btn text-cosmic-950 font-bold text-xs shadow-md flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  {actionLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
+                  <span>{editingReview ? 'Update Review' : 'Publish Review'}</span>
                 </button>
               </div>
             </form>

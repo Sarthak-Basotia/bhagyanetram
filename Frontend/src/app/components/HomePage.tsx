@@ -28,6 +28,7 @@ import nidhiJi from '/src/assets/Nidhi-Ji.png';
 import panditPranav from '/src/assets/Pandit-Pranav_2.jpeg';
 import gargiJi from '/src/assets/Gargi_Ji.jpeg';
 import { fetchPublicAstrologers } from '../../api/publicContentApi';
+import { fetchPublicReviews } from '../../api/adminApi';
 
 
 export function HomePage() {
@@ -388,7 +389,7 @@ export function HomePage() {
     },
   ];
 
-  const testimonials = [
+  const defaultTestimonials = [
     {
       name: 'Sheeshpal Singh',
       initials: 'SS',
@@ -414,6 +415,20 @@ export function HomePage() {
       date: '1 week ago',
     },
   ];
+
+  const [testimonials, setTestimonials] = useState<any[]>(defaultTestimonials);
+
+  useEffect(() => {
+    fetchPublicReviews()
+      .then((res) => {
+        if (res && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          setTestimonials(res.data);
+        }
+      })
+      .catch((err) => {
+        console.warn('Failed to fetch public reviews, using defaults:', err);
+      });
+  }, []);
 
   return (
     <div className="min-h-screen bg-ivory-50 text-cosmic-950 font-sans selection:bg-gold-500 selection:text-cosmic-900">
@@ -1216,10 +1231,10 @@ export function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-7">
             {testimonials.map((testimonial, index) => (
-              <article key={index} className="bg-white rounded-3xl border border-gold-500/30 p-7 sm:p-8 shadow-gold-card flex flex-col justify-between">
+              <article key={testimonial._id || index} className="bg-white rounded-3xl border border-gold-500/30 p-7 sm:p-8 shadow-gold-card flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-1 text-gold-500 mb-5">
-                    {[...Array(testimonial.rating)].map((_, i) => (
+                    {[...Array(testimonial.rating || 5)].map((_, i) => (
                       <Star key={i} className="w-5 h-5 fill-current" />
                     ))}
                   </div>
@@ -1232,14 +1247,14 @@ export function HomePage() {
                 <div className="flex items-center justify-between pt-4 border-t border-ivory-200">
                   <div className="flex items-center gap-3">
                     <div className="w-11 h-11 rounded-full bg-cosmic-900 text-gold-300 font-display font-bold flex items-center justify-center text-sm">
-                      {testimonial.initials}
+                      {testimonial.initials || (testimonial.name ? testimonial.name.slice(0, 2).toUpperCase() : '✦')}
                     </div>
                     <div>
                       <div className="font-display font-bold text-cosmic-900 text-sm">{testimonial.name}</div>
-                      <div className="text-xs text-cosmic-700/75">{testimonial.location}</div>
+                      <div className="text-xs text-cosmic-700/75">{testimonial.location || 'India'}</div>
                     </div>
                   </div>
-                  <span className="text-xs text-cosmic-700/65 font-medium">{testimonial.date}</span>
+                  <span className="text-xs text-cosmic-700/65 font-medium">{testimonial.date || 'Recently'}</span>
                 </div>
               </article>
             ))}

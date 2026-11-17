@@ -218,3 +218,53 @@ export const deleteUserApi = async (id: string) => {
   if (!response.ok) throw new Error(data.error || 'Failed to delete user account');
   return data;
 };
+
+// 7. Client Reviews & Testimonials Management
+export const fetchPublicReviews = async () => {
+  const response = await fetch(`${API_BASE}/reviews`);
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Failed to fetch public reviews');
+  return data;
+};
+
+export const fetchAdminReviews = async () => {
+  const response = await fetch(`${API_BASE}/admin/reviews`, {
+    headers: getAdminHeaders(),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Failed to fetch reviews');
+  return data;
+};
+
+export const createReviewApi = async (reviewData: any) => {
+  const response = await fetch(`${API_BASE}/admin/reviews`, {
+    method: 'POST',
+    headers: getAdminHeaders(),
+    body: JSON.stringify(reviewData),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Failed to create review');
+  return data;
+};
+
+export const updateReviewApi = async (id: string, reviewData: any) => {
+  const response = await fetch(`${API_BASE}/admin/reviews/${id}`, {
+    method: 'PUT',
+    headers: getAdminHeaders(),
+    body: JSON.stringify(reviewData),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Failed to update review');
+  return data;
+};
+
+export const deleteReviewApi = async (id: string) => {
+  const response = await fetch(`${API_BASE}/admin/reviews/${id}`, {
+    method: 'DELETE',
+    headers: getAdminHeaders(),
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.error || 'Failed to delete review');
+  return data;
+};
+
