@@ -234,7 +234,7 @@ function AppContent() {
                   <h4 className="font-display text-base font-semibold text-white tracking-wider uppercase mb-5 border-l-2 border-gold-400 pl-3">
                     Spiritual Guidance
                   </h4>
-                  <ul className="space-y-2.5 text-sm mb-6">
+                  <ul className="space-y-2.5 text-sm mb-5">
                     <li>
                       <Link to="/blog" onClick={scrollToTop} className="hover:text-gold-400 transition-colors">
                         Wisdom &amp; Articles
@@ -255,8 +255,58 @@ function AppContent() {
                         Vedic Tarot &amp; Card Guidance
                       </Link>
                     </li>
-                    
                   </ul>
+
+                  <div>
+                    <span className="block text-xs uppercase tracking-wider text-gold-400/90 font-semibold mb-2.5">
+                      Follow Us
+                    </span>
+                    <div className="flex items-center gap-3">
+                      {/* Instagram */}
+                      <a
+                        href="https://www.instagram.com/bhagyanetram/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Instagram"
+                        className="w-9 h-9 rounded-full bg-cosmic-800 border border-gold-500/30 flex items-center justify-center text-ivory-100 hover:bg-gold-500 hover:text-cosmic-900 transition-all hover:scale-105 shadow-sm"
+                        title="Follow BhagyaNetram on Instagram"
+                      >
+                        <svg className="w-4 h-4 fill-none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                          <rect x="2" y="2" width="20" height="20" rx="5" />
+                          <circle cx="12" cy="12" r="4" />
+                          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
+                        </svg>
+                      </a>
+
+                      {/* Facebook */}
+                      <a
+                        href="https://www.facebook.com/BhagyaNetram/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Facebook"
+                        className="w-9 h-9 rounded-full bg-cosmic-800 border border-gold-500/30 flex items-center justify-center text-ivory-100 hover:bg-gold-500 hover:text-cosmic-900 transition-all hover:scale-105 shadow-sm"
+                        title="Follow BhagyaNetram on Facebook"
+                      >
+                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                          <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+                        </svg>
+                      </a>
+
+                      {/* YouTube */}
+                      <a
+                        href="https://www.youtube.com/@BhagyaNetram"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="YouTube"
+                        className="w-9 h-9 rounded-full bg-cosmic-800 border border-gold-500/30 flex items-center justify-center text-ivory-100 hover:bg-gold-500 hover:text-cosmic-900 transition-all hover:scale-105 shadow-sm"
+                        title="Subscribe to BhagyaNetram on YouTube"
+                      >
+                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
 

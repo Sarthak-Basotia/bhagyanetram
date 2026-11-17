@@ -1470,7 +1470,7 @@ export default function AdminDashboard() {
               </span>
             </button>
 
-            <button
+            {/* <button
               onClick={() => {
                 setActiveTab('subadmins');
                 loadSubadmins();
@@ -1488,7 +1488,7 @@ export default function AdminDashboard() {
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20">
                 {subadmins.length}
               </span>
-            </button>
+            </button> */}
           </nav>
         </div>
 
@@ -1544,7 +1544,7 @@ export default function AdminDashboard() {
             </button>
 
             {/* Quick Action: Manage Subadmins */}
-            <button
+            {/* <button
               onClick={() => {
                 loadSubadmins();
                 setSubadminsModalOpen(true);
@@ -1559,7 +1559,7 @@ export default function AdminDashboard() {
                   {subadmins.length}
                 </span>
               )}
-            </button>
+            </button> */}
 
             {/* Admin Profile Dropdown Trigger (Highlighted by user) */}
             <div className="relative">
