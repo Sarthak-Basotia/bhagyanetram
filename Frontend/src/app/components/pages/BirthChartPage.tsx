@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Sparkles, Compass, AlertTriangle, CheckCircle2, Loader2, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -9,6 +10,7 @@ export default function BirthChartPage() {
   const [chartData, setChartData] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'D1' | 'D9' | 'YOGAS'>('D1');
   const [error, setError] = useState('');
+  const [agreedToPolicy, setAgreedToPolicy] = useState(false);
 
   // Default form state (Using New Delhi coordinates as fallback)
   const [formData, setFormData] = useState({
@@ -22,6 +24,10 @@ export default function BirthChartPage() {
 
   const handleCalculate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!agreedToPolicy) {
+      setError('Please agree to the Terms & Conditions and Privacy Policy to proceed.');
+      return;
+    }
     setLoading(true);
     setError('');
     
@@ -181,6 +187,28 @@ export default function BirthChartPage() {
                     <label className="block text-xs font-semibold uppercase tracking-wider text-cosmic-800 mb-1 font-display">Longitude *</label>
                     <input required type="number" step="any" placeholder="77.20" defaultValue={77.20} className="w-full px-3 py-2.5 rounded-xl border border-gold-500/30 bg-ivory-50/70 text-cosmic-900 text-xs focus:outline-none focus:border-gold-500" onChange={e => setFormData({...formData, lon: parseFloat(e.target.value)})} />
                   </div>
+                </div>
+
+                <div className="flex items-start gap-2.5 pt-1">
+                  <input
+                    type="checkbox"
+                    id="birthchart-agree-policy"
+                    required
+                    checked={agreedToPolicy}
+                    onChange={(e) => setAgreedToPolicy(e.target.checked)}
+                    className="mt-0.5 w-4 h-4 rounded border-gold-500/50 text-gold-600 focus:ring-gold-500 cursor-pointer accent-gold-600"
+                  />
+                  <label htmlFor="birthchart-agree-policy" className="text-xs text-cosmic-800 leading-snug cursor-pointer select-none">
+                    I agree to the{' '}
+                    <Link to="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                      Terms &amp; Conditions
+                    </Link>{' '}
+                    and{' '}
+                    <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                      Privacy Policy
+                    </Link>
+                    .
+                  </label>
                 </div>
 
                 <button

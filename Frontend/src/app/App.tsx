@@ -255,11 +255,7 @@ function AppContent() {
                         Vedic Tarot &amp; Card Guidance
                       </Link>
                     </li>
-                    <li>
-                      <Link to="/admin/login" onClick={scrollToTop} className="text-gold-400/80 hover:text-gold-300 transition-colors text-xs font-semibold flex items-center gap-1.5 pt-2">
-                        <span>🔐 Admin Portal</span>
-                      </Link>
-                    </li>
+                    
                   </ul>
                 </div>
               </div>

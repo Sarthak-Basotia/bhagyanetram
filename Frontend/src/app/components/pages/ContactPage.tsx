@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   Phone, Mail, MapPin, Clock, Send, MessageCircle, Sparkles, 
   CheckCircle2, HelpCircle, Copy, Check, Tag, Compass, Sun, 
@@ -24,6 +25,7 @@ export function ContactPage() {
 
   const [copiedCode, setCopiedCode] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [agreedToPolicy, setAgreedToPolicy] = useState(false);
 
   const handleCopyCode = (code = 'VASTU20') => {
     navigator.clipboard.writeText(code);
@@ -45,6 +47,10 @@ export function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!agreedToPolicy) {
+      alert('Please agree to the Terms & Conditions and Privacy Policy to proceed.');
+      return;
+    }
     try {
       await submitConsultationBooking({
         name: formData.name,
@@ -748,6 +754,29 @@ export function ContactPage() {
                         rows={4}
                         className="w-full px-4 py-3 rounded-xl border border-gold-500/30 bg-ivory-50/70 text-cosmic-900 text-sm focus:outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-500/20 resize-none"
                       />
+                    </div>
+
+                    {/* Consent & Privacy Policy Checkbox */}
+                    <div className="flex items-start gap-2.5 pt-1">
+                      <input
+                        type="checkbox"
+                        id="contact-agree-policy"
+                        required
+                        checked={agreedToPolicy}
+                        onChange={(e) => setAgreedToPolicy(e.target.checked)}
+                        className="mt-0.5 w-4 h-4 rounded border-gold-500/50 text-gold-600 focus:ring-gold-500 cursor-pointer accent-gold-600"
+                      />
+                      <label htmlFor="contact-agree-policy" className="text-xs text-cosmic-800 leading-snug cursor-pointer select-none">
+                        I agree to the{' '}
+                        <Link to="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                          Terms &amp; Conditions
+                        </Link>{' '}
+                        and{' '}
+                        <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                          Privacy Policy
+                        </Link>
+                        .
+                      </label>
                     </div>
 
                     {/* Dual Action Buttons */}

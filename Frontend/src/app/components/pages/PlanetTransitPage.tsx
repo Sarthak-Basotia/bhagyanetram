@@ -1,5 +1,6 @@
 import React, { useState, useEffect, FormEvent } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { fetchPlanetTransit } from '../../../api/astrologyApi';
 import { NorthIndianChart } from '../NorthIndianChart';
 import { Loader2, Settings2, Table as TableIcon, Sparkles, Compass, ArrowRight } from 'lucide-react';
@@ -15,6 +16,7 @@ export default function PlanetTransitPage() {
   const [chartData, setChartData] = useState<{ ascendant: number, planets: any[], rawDetails: any[] } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [agreedToPolicy, setAgreedToPolicy] = useState(false);
 
   // Form State (Defaults to current time and New Delhi coordinates)
   const [datetime, setDatetime] = useState(getLocalDatetimeString(new Date()));
@@ -59,6 +61,10 @@ export default function PlanetTransitPage() {
 
   const handleUpdate = (e: FormEvent) => {
     e.preventDefault();
+    if (!agreedToPolicy) {
+      setError('Please agree to the Terms & Conditions and Privacy Policy before proceeding.');
+      return;
+    }
     fetchChart(datetime, lat, lon, tzOffset);
   };
 
@@ -158,6 +164,28 @@ export default function PlanetTransitPage() {
                   className="w-full px-4 py-2.5 rounded-xl border border-gold-500/30 bg-ivory-50/70 text-cosmic-900 text-xs focus:outline-none focus:border-gold-500"
                   required
                 />
+              </div>
+
+              <div className="flex items-start gap-2.5 pt-1">
+                <input
+                  type="checkbox"
+                  id="transit-agree-policy"
+                  required
+                  checked={agreedToPolicy}
+                  onChange={(e) => setAgreedToPolicy(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded border-gold-500/50 text-gold-600 focus:ring-gold-500 cursor-pointer accent-gold-600"
+                />
+                <label htmlFor="transit-agree-policy" className="text-xs text-cosmic-800 leading-snug cursor-pointer select-none">
+                  I agree to the{' '}
+                  <Link to="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                    Terms &amp; Conditions
+                  </Link>{' '}
+                  and{' '}
+                  <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                    Privacy Policy
+                  </Link>
+                  .
+                </label>
               </div>
 
               <button

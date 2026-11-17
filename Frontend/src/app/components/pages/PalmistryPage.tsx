@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { Hand, Camera, Upload, LogIn, CheckCircle2, Lock, Loader2, Sparkles, AlertCircle, ArrowRight, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
@@ -266,14 +267,22 @@ export default function PalmistryPage() {
                   <div className="flex items-start gap-2.5 pt-2">
                     <input
                       type="checkbox"
-                      id="terms"
+                      id="palmistry-terms"
                       required
-                      className="mt-1 accent-gold-600 rounded"
+                      className="mt-0.5 w-4 h-4 rounded border-gold-500/50 text-gold-600 focus:ring-gold-500 cursor-pointer accent-gold-600"
                       checked={authForm.terms}
                       onChange={e => setAuthForm({...authForm, terms: e.target.checked})}
                     />
-                    <label htmlFor="terms" className="text-xs text-cosmic-600 leading-snug">
-                      I accept the  privacy terms and authorize BhagyaNetram to send a secure verification code to my email.
+                    <label htmlFor="palmistry-terms" className="text-xs text-cosmic-800 leading-snug cursor-pointer select-none">
+                      I agree to the{' '}
+                      <Link to="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                        Terms &amp; Conditions
+                      </Link>{' '}
+                      and{' '}
+                      <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                        Privacy Policy
+                      </Link>
+                      , and authorize BhagyaNetram to send a secure verification code to my email.
                     </label>
                   </div>
                   <button

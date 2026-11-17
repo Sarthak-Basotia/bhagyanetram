@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Sparkles, Compass, AlertTriangle, CheckCircle2, Loader2, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -6,12 +7,17 @@ import { motion } from 'framer-motion';
 export default function FreeKundli() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [agreedToPolicy, setAgreedToPolicy] = useState(false);
   const [formData, setFormData] = useState({
     name: '', dob: '', time: '', lat: 28.6139, lon: 77.2090, tz_offset: 5.5
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!agreedToPolicy) {
+      alert('Please agree to the Terms & Conditions and Privacy Policy to generate your Kundli.');
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch('/api/astrology/kundli', {
@@ -133,6 +139,28 @@ export default function FreeKundli() {
                     onChange={e => setFormData({...formData, lon: parseFloat(e.target.value)})} 
                   />
                 </div>
+              </div>
+
+              <div className="md:col-span-2 flex items-start gap-2.5 pt-1">
+                <input
+                  type="checkbox"
+                  id="kundli-agree-policy"
+                  required
+                  checked={agreedToPolicy}
+                  onChange={(e) => setAgreedToPolicy(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded border-gold-500/50 text-gold-600 focus:ring-gold-500 cursor-pointer accent-gold-600"
+                />
+                <label htmlFor="kundli-agree-policy" className="text-xs text-cosmic-800 leading-snug cursor-pointer select-none">
+                  I agree to the{' '}
+                  <Link to="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                    Terms &amp; Conditions
+                  </Link>{' '}
+                  and{' '}
+                  <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                    Privacy Policy
+                  </Link>
+                  .
+                </label>
               </div>
 
               <div className="md:col-span-2 pt-3">

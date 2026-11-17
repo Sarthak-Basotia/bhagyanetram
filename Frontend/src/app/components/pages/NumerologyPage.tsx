@@ -1,5 +1,6 @@
 import React, { useState, FormEvent } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { 
   Calculator, User, Star, Compass, AlertCircle, 
   CheckCircle2, Sparkles, Gem, Heart, Brain, Loader2, ArrowRight 
@@ -11,6 +12,7 @@ export default function NumerologyPage() {
   const [name, setName] = useState('');
   const [dob, setDob] = useState('');
   const [gender, setGender] = useState('male');
+  const [agreedToPolicy, setAgreedToPolicy] = useState(false);
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -18,6 +20,10 @@ export default function NumerologyPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!agreedToPolicy) {
+      setError('Please agree to the Terms & Conditions and Privacy Policy before proceeding.');
+      return;
+    }
     setLoading(true);
     setError('');
     
@@ -126,6 +132,28 @@ export default function NumerologyPage() {
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                 </select>
+              </div>
+
+              <div className="md:col-span-3 flex items-start gap-2.5 pt-1">
+                <input
+                  type="checkbox"
+                  id="numerology-agree-policy"
+                  required
+                  checked={agreedToPolicy}
+                  onChange={(e) => setAgreedToPolicy(e.target.checked)}
+                  className="mt-0.5 w-4 h-4 rounded border-gold-500/50 text-gold-600 focus:ring-gold-500 cursor-pointer accent-gold-600"
+                />
+                <label htmlFor="numerology-agree-policy" className="text-xs text-cosmic-800 leading-snug cursor-pointer select-none">
+                  I agree to the{' '}
+                  <Link to="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                    Terms &amp; Conditions
+                  </Link>{' '}
+                  and{' '}
+                  <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                    Privacy Policy
+                  </Link>
+                  .
+                </label>
               </div>
 
               <div className="md:col-span-3 pt-2">

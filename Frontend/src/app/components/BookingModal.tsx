@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -37,6 +38,7 @@ export function BookingModal({ open, onOpenChange, reason, astrologerName }: Boo
     time: '',
     message: '',
   });
+  const [agreedToPolicy, setAgreedToPolicy] = useState(false);
 
   const handleServiceToggle = (serviceId: string) => {
     setFormData((prev) => {
@@ -59,6 +61,11 @@ export function BookingModal({ open, onOpenChange, reason, astrologerName }: Boo
     
     if (formData.services.length === 0) {
       alert('Please select at least one service.');
+      return;
+    }
+
+    if (!agreedToPolicy) {
+      alert('Please agree to the Terms & Conditions and Privacy Policy to proceed.');
       return;
     }
 
@@ -270,6 +277,28 @@ export function BookingModal({ open, onOpenChange, reason, astrologerName }: Boo
                 rows={2}
                 className="bg-white border-gold-500/35 text-cosmic-900 text-sm focus:border-gold-600 rounded-xl"
               />
+            </div>
+
+            <div className="flex items-start gap-2.5 pt-1">
+              <input
+                type="checkbox"
+                id="booking-agree-policy"
+                required
+                checked={agreedToPolicy}
+                onChange={(e) => setAgreedToPolicy(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded border-gold-500/50 text-gold-600 focus:ring-gold-500 cursor-pointer accent-gold-600"
+              />
+              <label htmlFor="booking-agree-policy" className="text-xs text-cosmic-800 leading-snug cursor-pointer select-none">
+                I agree to the{' '}
+                <Link to="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                  Terms &amp; Conditions
+                </Link>{' '}
+                and{' '}
+                <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                  Privacy Policy
+                </Link>
+                .
+              </label>
             </div>
 
             <button

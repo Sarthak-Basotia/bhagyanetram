@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { fetchGemstones } from '../../../api/astrologyApi';
 import { Sparkles, Gem, Star, Shield, Loader2, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -8,6 +9,7 @@ export default function GemstoneGuidePage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState('');
+  const [agreedToPolicy, setAgreedToPolicy] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '', dob: '', time: '',
@@ -16,6 +18,10 @@ export default function GemstoneGuidePage() {
 
   const handleCalculate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!agreedToPolicy) {
+      setError('Please agree to the Terms & Conditions and Privacy Policy before proceeding.');
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -108,6 +114,28 @@ export default function GemstoneGuidePage() {
               <label className="block text-xs font-semibold uppercase tracking-wider text-cosmic-800 mb-1.5 font-display">Birth City Longitude</label>
               <input required type="number" step="any" defaultValue={77.20} className="w-full px-4 py-3 rounded-xl border border-gold-500/30 bg-ivory-50/70 text-cosmic-900 text-sm focus:outline-none focus:border-gold-500" onChange={e => setFormData({...formData, lon: parseFloat(e.target.value)})} />
             </div>
+          </div>
+
+          <div className="flex items-start gap-2.5 pt-1">
+            <input
+              type="checkbox"
+              id="gemstone-agree-policy"
+              required
+              checked={agreedToPolicy}
+              onChange={(e) => setAgreedToPolicy(e.target.checked)}
+              className="mt-0.5 w-4 h-4 rounded border-gold-500/50 text-gold-600 focus:ring-gold-500 cursor-pointer accent-gold-600"
+            />
+            <label htmlFor="gemstone-agree-policy" className="text-xs text-cosmic-800 leading-snug cursor-pointer select-none">
+              I agree to the{' '}
+              <Link to="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                Terms &amp; Conditions
+              </Link>{' '}
+              and{' '}
+              <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold-700 underline font-semibold hover:text-gold-800">
+                Privacy Policy
+              </Link>
+              .
+            </label>
           </div>
 
           <button
