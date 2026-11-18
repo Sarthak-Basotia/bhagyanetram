@@ -6,8 +6,63 @@ on:
       - main
       
 jobs:
+  test:
+    name: Run Automated Application Tests
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+
+    env:
+      DATABASE_URL: mongodb://127.0.0.1:27017/bhagyanetram_test
+      JWT_SECRET: test_jwt_secret_key_123456
+      ADMIN_JWT_SECRET: test_admin_jwt_secret_key_789012
+      NODE_ENV: test
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: |
+            Backend/package-lock.json
+            Frontend/package-lock.json
+
+      - name: Install Backend Dependencies
+        run: |
+          cd Backend
+          npm install
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd Frontend
+          npm install
+
+      - name: Run Backend Tests (Verify All Endpoints & Domain Functions)
+        run: |
+          cd Backend
+          npm test
+
+      - name: Run Frontend Tests
+        run: |
+          cd Frontend
+          npm test
+
+      - name: Verify Frontend Production Build
+        run: |
+          cd Frontend
+          npm run build
+
   deploy:
     name: Deploy to VPS
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
@@ -45,5 +100,3 @@ jobs:
             sudo systemctl reload nginx
             
             echo "Deployment Successful!"
-
-            

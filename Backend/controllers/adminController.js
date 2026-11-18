@@ -742,6 +742,10 @@ export const getSubadmins = async (req, res) => {
 
 export const createSubadmin = async (req, res) => {
   try {
+    if (req.user?.role !== 'superadmin') {
+      return res.status(403).json({ error: 'Only Super Admin can create sub-administrators.' });
+    }
+
     const { name, email, password, role = 'subadmin', permissions = [] } = req.body;
 
     if (!name || !email || !password) {

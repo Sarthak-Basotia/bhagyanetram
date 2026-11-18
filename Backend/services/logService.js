@@ -60,6 +60,7 @@ export const logAdminActivity = async ({
     });
 
     await logEntry.save();
+    return logEntry;
   } catch (error) {
     console.warn('[logAdminActivity] Error logging admin action:', error.message);
   }

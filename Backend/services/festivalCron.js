@@ -23,20 +23,22 @@ export const initializeFestivalQueue = async () => {
 };
 
 // CRON JOB: Runs at 00:01 AM on the 1st of every month
-cron.schedule('1 0 1 * *', async () => {
-  console.log("Running monthly Festival verification...");
-  try {
-    const now = new Date();
-    const currentMonth = now.getMonth() + 1;
-    const currentYear = now.getFullYear();
+if (process.env.NODE_ENV !== 'test') {
+  cron.schedule('1 0 1 * *', async () => {
+    console.log("Running monthly Festival verification...");
+    try {
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1;
+      const currentYear = now.getFullYear();
 
-    const verifiedMonth = await generateMonthCalendar(currentYear, currentMonth);
-    await Festival.findOneAndUpdate(
-      { year: currentYear, month: currentMonth },
-      verifiedMonth,
-      { upsert: true, new: true }
-    );
-  } catch (err) {
-    console.error("Monthly festival update error:", err.message);
-  }
-});
+      const verifiedMonth = await generateMonthCalendar(currentYear, currentMonth);
+      await Festival.findOneAndUpdate(
+        { year: currentYear, month: currentMonth },
+        verifiedMonth,
+        { upsert: true, new: true }
+      );
+    } catch (err) {
+      console.error("Monthly festival update error:", err.message);
+    }
+  });
+}

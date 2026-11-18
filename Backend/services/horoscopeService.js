@@ -10,7 +10,7 @@ export const SIGNS = [
 ];
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY || 'sk-dummy-key-for-test',
 });
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

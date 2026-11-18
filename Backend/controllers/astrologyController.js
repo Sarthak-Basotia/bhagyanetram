@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import { Festival } from '../models/Festival.js';
 import { generateMonthCalendar } from '../services/festivalGenerator.js';
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY || 'sk-dummy-key-for-test' });
 
 // Point to the Python FastAPI engine (Ensure ASTRO_ENGINE_URL is set in your .env)
 const PYTHON_ENGINE_URL = process.env.ASTRO_ENGINE_URL || "http://127.0.0.1:8000";

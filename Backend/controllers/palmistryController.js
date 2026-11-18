@@ -2,7 +2,7 @@ import OpenAI from 'openai';
 import User from '../models/User.js';
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.OPENAI_API_KEY || 'sk-dummy-key-for-test',
 });
 
 export const analyzePalm = async (req, res) => {
