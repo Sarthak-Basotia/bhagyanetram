@@ -5,7 +5,7 @@ import { Hand, Camera, Upload, LogIn, CheckCircle2, Lock, Loader2, Sparkles, Ale
 import { motion } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "https://api.bhagyanetram.com";
+const API_BASE_URL = "https://bhagyanetram.com";
 
 export default function PalmistryPage() {
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
